@@ -822,7 +822,7 @@ export default function Home() {
             fetchDomohoniData();
             fetchDoaniData();
             fetchDaliaData();
-        }, 600000); // 6000 milliseconds = 6 seconds
+        }, 6000); // 6000 milliseconds = 6 seconds
 
         // Cleanup: Clear the interval when the component unmounts
         return () => {
