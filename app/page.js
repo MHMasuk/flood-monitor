@@ -88,10 +88,18 @@ async function getDaliaPointData() {
 }
 
 export default async function Home() {
-    const mikliGongStationData = await getMikliGongStationData()
-    const domohoniWaterLevelData = await getDomohoniStationData()
-    const daliaStationData = await fetchDaliaStationData()
-    const doaniaStationData = await fetchDoaniaStationData()
+    const mikliGongStationData = await getMikliGongStationData({
+        next: { revalidate: 5 }
+    })
+    const domohoniWaterLevelData = await getDomohoniStationData({
+        next: { revalidate: 5 }
+    })
+    const daliaStationData = await fetchDaliaStationData({
+        next: { revalidate: 5 }
+    })
+    const doaniaStationData = await fetchDoaniaStationData({
+        next: { revalidate: 5 }
+    })
 
     const daliaDataNew = [
         {
