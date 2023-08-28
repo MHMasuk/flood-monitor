@@ -45,7 +45,7 @@ export async function getDomohoniStationData() {
                     valueIsRelationField: false,
                     fieldName: 'id.dataTime',
                     operator: 'btn',
-                    value: `${getFormattedDate(getLocalDate(new Date().setDate(new Date().getDate() - 3)))},${getFormattedDate(getLocalDate(new Date()))}`
+                    value: `${getFormattedDate(new Date().setDate(new Date().getDate() - 3))},${getFormattedDate(new Date())}`
                 }
             }
         }

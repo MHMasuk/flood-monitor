@@ -3,13 +3,23 @@
 import React, {useEffect, useState} from 'react';
 
 import dynamic from "next/dynamic";
+import {convertToGMTPlus6} from "@/utils/convertToUtc";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false, })
 
 
-import useSound from 'use-sound';
-
-const LineChartWithDangerLine = ({data, title, hfl, danger, warning, paperColor}) => {
+const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paperColor}) => {
     const [chartHeight, setChartHeight] = useState(260); // Default chart height
+
+    // Convert datetime values in the data array to GMT+6
+    const data = chart_data.map(entry => {
+        return {
+            ...entry,
+            "id": {
+                ...entry.id,
+                "dataTime": convertToGMTPlus6(entry.id.dataTime)
+            }
+        };
+    });
 
     // Function to update the chart height based on screen size
     const updateChartHeight = () => {

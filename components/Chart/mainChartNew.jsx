@@ -152,7 +152,7 @@ const MainChartNew = (props) => {
         <div className='flex gap-2 mb-1'>
             <div className={`w-full ${mikligongAnimation ? 'animate-pulse' : ''}`}>
                 <LineChartWithDangerLine
-                    data={mikliGongStationData}
+                    chart_data={mikliGongStationData}
                     title="Hydrograph view of - Mekhliganj (R/B)"
                     hfl="66.62"
                     danger="65.8"
@@ -163,7 +163,7 @@ const MainChartNew = (props) => {
 
             <div className={`w-full ${domohoniAnimation ? 'animate-pulse' : ''}`}>
                 <LineChartWithDangerLine
-                    data={domohoniWaterLevelData}
+                    chart_data={domohoniWaterLevelData}
                     title="Hydrograph view of - DOMOHANI"
                     hfl="89.3"
                     danger="85.95"
@@ -175,7 +175,7 @@ const MainChartNew = (props) => {
         <div className='flex gap-2'>
             <div className={`w-full ${daliaAnimation ? 'animate-pulse' : ''}`}>
                 <DaliaChartDemo
-                    data={daliaStationData}
+                    chart_data={daliaStationData}
                     title="Hydrograph view of - Dalia (SW291.5 R)"
                     hfl="52.84"
                     danger="52.15"
@@ -186,7 +186,7 @@ const MainChartNew = (props) => {
 
             <div className={`w-full ${doaniaAnimation ? 'animate-pulse' : ''}`}>
                 <DoaniaChart
-                    data={doaniaStationData}
+                    chart_data={doaniaStationData}
                     title="Hydrograph view of - Doani (SW291.5 L)"
                     hfl="52.84"
                     danger="52.15"
