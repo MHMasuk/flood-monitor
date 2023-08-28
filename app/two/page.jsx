@@ -1,0 +1,182 @@
+import LineChartWithDangerLine from "@/components/Chart/lineChartWithDangerLine";
+import CustomChart from "@/components/Chart/CustomChart";
+import React from "react";
+
+async function getData() {
+    const baseUrl = 'https://ffs.india-water.gov.in/iam/api/new-entry-data/specification/sorted';
+
+    const sortCriteria = {
+        sortOrderDtos: [
+            {
+                sortDirection: 'ASC',
+                field: 'id.dataTime'
+            }
+        ]
+    };
+
+    const specification = {
+        where: {
+            where: {
+                where: {
+                    expression: {
+                        valueIsRelationField: false,
+                        fieldName: 'id.stationCode',
+                        operator: 'eq',
+                        value: '023-LBDJPG'
+                    }
+                },
+                and: {
+                    expression: {
+                        valueIsRelationField: false,
+                        fieldName: 'id.datatypeCode',
+                        operator: 'eq',
+                        value: 'HHS'
+                    }
+                }
+            },
+            and: {
+                expression: {
+                    valueIsRelationField: false,
+                    fieldName: 'dataValue',
+                    operator: 'null',
+                    value: 'false'
+                }
+            },
+            and: {
+                expression: {
+                    valueIsRelationField: false,
+                    fieldName: 'id.dataTime',
+                    operator: 'btn',
+                    value: '2023-08-14T16:32:25.554,2023-08-17T16:32:25.554'
+                }
+            }
+        }
+    };
+
+    const queryParams = new URLSearchParams({
+        'sort-criteria': JSON.stringify(sortCriteria),
+        'specification': JSON.stringify(specification)
+    });
+
+    const finalUrl = `${baseUrl}?${queryParams.toString()}`;
+
+    console.log(finalUrl);
+    // const new_url = "https://ffs.india-water.gov.in/iam/api/new-entry-data/specification/sorted?sort-criteria=%7B%22sortOrderDtos%22:%5B%7B%22sortDirection%22:%22ASC%22,%22field%22:%22id.dataTime%22%7D%5D%7D&specification=%7B%22where%22:%7B%22where%22:%7B%22where%22:%7B%22expression%22:%7B%22valueIsRelationField%22:false,%22fieldName%22:%22id.stationCode%22,%22operator%22:%22eq%22,%22value%22:%22023-LBDJPG%22%7D%7D,%22and%22:%7B%22expression%22:%7B%22valueIsRelationField%22:false,%22fieldName%22:%22id.datatypeCode%22,%22operator%22:%22eq%22,%22value%22:%22HHS%22%7D%7D%7D,%22and%22:%7B%22expression%22:%7B%22valueIsRelationField%22:false,%22fieldName%22:%22dataValue%22,%22operator%22:%22null%22,%22value%22:%22false%22%7D%7D%7D,%22and%22:%7B%22expression%22:%7B%22valueIsRelationField%22:false,%22fieldName%22:%22id.dataTime%22,%22operator%22:%22btn%22,%22value%22:%222023-08-14T16:32:25.554,2023-08-17T16:32:25.554%22%7D%7D%7D";
+    const res = await fetch(finalUrl)
+    // The return value is *not* serialized
+    // You can return Date, Map, Set, etc.
+
+    if (!res.ok) {
+        // This will activate the closest `error.js` Error Boundary
+        throw new Error('Failed to fetch data')
+    }
+
+    return res.json()
+}
+
+
+async function getDomohoniWaterLevel() {
+    const baseUrl = 'https://ffs.india-water.gov.in/iam/api/new-entry-data/specification/sorted';
+
+    const sortCriteria = {
+        sortOrderDtos: [
+            {
+                sortDirection: 'ASC',
+                field: 'id.dataTime'
+            }
+        ]
+    };
+
+    const specification = {
+        where: {
+            where: {
+                where: {
+                    expression: {
+                        valueIsRelationField: false,
+                        fieldName: 'id.stationCode',
+                        operator: 'eq',
+                        value: '022-LBDJPG'
+                    }
+                },
+                and: {
+                    expression: {
+                        valueIsRelationField: false,
+                        fieldName: 'id.datatypeCode',
+                        operator: 'eq',
+                        value: 'HHS'
+                    }
+                }
+            },
+            and: {
+                expression: {
+                    valueIsRelationField: false,
+                    fieldName: 'dataValue',
+                    operator: 'null',
+                    value: 'false'
+                }
+            },
+            and: {
+                expression: {
+                    valueIsRelationField: false,
+                    fieldName: 'id.dataTime',
+                    operator: 'btn',
+                    value: '2023-08-17T16:06:29.745,2023-08-20T16:06:29.745'
+                }
+            }
+        }
+    };
+
+    const queryParams = new URLSearchParams({
+        'sort-criteria': JSON.stringify(sortCriteria),
+        'specification': JSON.stringify(specification)
+    });
+
+    const finalUrl = `${baseUrl}?${queryParams.toString()}`;
+
+    // console.log(finalUrl);
+
+    const res = await fetch(finalUrl)
+    // The return value is *not* serialized
+    // You can return Date, Map, Set, etc.
+
+    if (!res.ok) {
+        // This will activate the closest `error.js` Error Boundary
+        throw new Error('Failed to fetch data')
+    }
+
+    return res.json()
+}
+
+export default async function Home() {
+    const data = await getData()
+    const domohoniWaterLevelData = await getDomohoniWaterLevel()
+
+    return (
+        <main className="bg-red-700 flex justify-center item-center py-10 pt-2 h-full">
+            <div className="w-full mx-5">
+                <div className=''>
+                    <div className="p-1 rounded-lg shadow-lg w-full">
+                       <CustomChart data={data} />
+                    </div>
+
+                    <div className="p-1 rounded-lg shadow-lg w-full">
+                        <button>Turn On Audio</button>
+                        <LineChartWithDangerLine data={data} />
+                    </div>
+                </div>
+                {/*<div className='flex justify-between gap-4 mt-3'>*/}
+                {/*    <div className="p-1 rounded-lg shadow-lg w-full">*/}
+                {/*        <LineChartWithDangerLine data={data} />*/}
+                {/*    </div>*/}
+
+                {/*    <div className="p-1 rounded-lg shadow-lg w-full">*/}
+                {/*        <LineChart*/}
+                {/*            width={chartWidth * gridColumnWidth}*/}
+                {/*            height={chartHeight}*/}
+                {/*        />*/}
+                {/*    </div>*/}
+                {/*</div>*/}
+            </div>
+        </main>
+    )
+}
