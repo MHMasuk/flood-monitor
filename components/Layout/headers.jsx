@@ -16,7 +16,7 @@ const Headers = () => {
                 <Image src="/icons/bangladesh-govt-logo-vector.svg" alt="Heart Icon" width={50} height={20} />
             </div>
             <div className="navbar-end">
-                <Link href="/trend" className="btn">Teesta Plots</Link>
+                <Link href="/trend" target="_blank" className="btn">Teesta Plots</Link>
                 <WordWideConcernsIcon />
             </div>
         </div>
