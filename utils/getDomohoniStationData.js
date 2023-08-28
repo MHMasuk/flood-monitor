@@ -61,7 +61,7 @@ export async function getDomohoniStationData() {
     // console.log(finalUrl);
 
     const res = await fetch(finalUrl, {
-        next: { revalidate: 1 }
+        next: { revalidate: 5 }
     })
     // The return value is *not* serialized
     // You can return Date, Map, Set, etc.
