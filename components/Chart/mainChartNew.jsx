@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import LineChartWithDangerLine from "@/components/Chart/lineChartWithDangerLine";
-import DaliaChart from "@/components/Chart/DaliaChart";
 import useSound from "use-sound";
 import DaliaChartDemo from "@/components/Chart/DaliaChatDemo";
 import DoaniaChart from "@/components/Chart/DoaniaChart";

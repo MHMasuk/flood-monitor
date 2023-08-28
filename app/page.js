@@ -3,7 +3,6 @@ import {getMikliGongStationData} from "@/utils/getMikliGongStationData";
 import {getDomohoniStationData} from "@/utils/getDomohoniStationData";
 import {fetchDaliaStationData} from "@/utils/getDaliaStationData";
 import {fetchDoaniaStationData} from "@/utils/getDoniaStationData";
-import MainChart from "@/components/Chart/mainChart";
 import MainChartNew from "@/components/Chart/mainChartNew";
 
 async function getDaliaPointData() {

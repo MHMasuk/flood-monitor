@@ -17,7 +17,7 @@ export async function fetchDaliaStationData() {
 
         const response = await fetch(`https://swh.bwdb.gov.bd/api/observation?series_id=7068&date_from=${getFormattedDate(getLocalDate(new Date().setDate(new Date().getDate() - 3)))}&date_to=${getFormattedDate(getLocalDate(new Date()))}`, requestOptions);
 
-        console.log("fetchDaliaPointData(): fetchDaliaPointData", `https://swh.bwdb.gov.bd/api/observation?series_id=7068&date_from=${getFormattedDate(getLocalDate(new Date().setDate(new Date().getDate() - 3)))}&date_to=${getFormattedDate(getLocalDate(new Date()))}`)
+        // console.log("fetchDaliaPointData(): fetchDaliaPointData", `https://swh.bwdb.gov.bd/api/observation?series_id=7068&date_from=${getFormattedDate(getLocalDate(new Date().setDate(new Date().getDate() - 3)))}&date_to=${getFormattedDate(getLocalDate(new Date()))}`)
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
