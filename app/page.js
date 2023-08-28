@@ -1,9 +1,13 @@
+"use client";
+
 // api call
 import {getMikliGongStationData} from "@/utils/getMikliGongStationData";
 import {getDomohoniStationData} from "@/utils/getDomohoniStationData";
 import {fetchDaliaStationData} from "@/utils/getDaliaStationData";
 import {fetchDoaniaStationData} from "@/utils/getDoniaStationData";
-import MainChartNew from "@/components/Chart/mainChartNew";
+import MainChartNew from "@/app/components/Chart/mainChartNew";
+import {fetchProduct} from "@/utils/productApi";
+import React, {useEffect, useRef, useState} from "react";
 
 async function getDaliaPointData() {
     let accessToken = JSON.stringify("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIxLCJyb2xlX2lkIjoxLCJ1c2VybmFtZSI6ImZmd2MiLCJuYW1lIjoiZmZ3YyIsImRlc2lnbmF0aW9uIjoiZmZ3YyIsImVtYWlsIjpudWxsLCJwZXJtaXNzaW9ucyI6WyJtb2RpZnkgQ29uZmlndXJhdGlvbnMiLCJtb2RpZnkgYW5hbHlzaXMiLCJtb2RpZnkgZGFxIiwibW9kaWZ5IGRhcS1wcm9jZXNzb3IiLCJtb2RpZnkgZGF0YS1vcmlnaW4iLCJtb2RpZnkgZGF0YS1vcmlnaW4tcGFyYW1ldGVyIiwibW9kaWZ5IGRhdGEtc2VyaWVzIiwibW9kaWZ5IGRhdGEtc291cmNlIiwibW9kaWZ5IGVkaXQtb2JzZXJ2YXRpb24iLCJtb2RpZnkgZm9sZGVyIiwibW9kaWZ5IGlkYXEiLCJtb2RpZnkgaW1hZ2VzIiwibW9kaWZ5IGludmVudG9yeSIsIm1vZGlmeSBtYWludGVuYW5jZSIsIm1vZGlmeSBtZXRhLWRhdGEiLCJtb2RpZnkgbWV0YS1kYXRhLXRlbXBsYXRlIiwibW9kaWZ5IHBhcmFtZXRlciIsIm1vZGlmeSBwYXJhbWV0ZXItdHlwZSIsIm1vZGlmeSBwZXJtaXNzaW9uIiwibW9kaWZ5IHFjLWNoZWNrIiwibW9kaWZ5IHFjLXJ1bGUiLCJtb2RpZnkgcm9sZSIsIm1vZGlmeSBzdGF0aW9uIiwibW9kaWZ5IHRhZyIsIm1vZGlmeSB0b29scyIsIm1vZGlmeSB1bml0IiwibW9kaWZ5IHVzZXIiLCJ2aWV3IENvbmZpZ3VyYXRpb25zIiwidmlldyBhbmFseXNpcyIsInZpZXcgZGFxIiwidmlldyBkYXEtcHJvY2Vzc29yIiwidmlldyBkYXRhLW9yaWdpbiIsInZpZXcgZGF0YS1vcmlnaW4tcGFyYW1ldGVyIiwidmlldyBkYXRhLXNlcmllcyIsInZpZXcgZGF0YS1zb3VyY2UiLCJ2aWV3IGVkaXQtb2JzZXJ2YXRpb24iLCJ2aWV3IGZvbGRlciIsInZpZXcgaWRhcSIsInZpZXcgaW1hZ2VzIiwidmlldyBpbnZlbnRvcnkiLCJ2aWV3IG1haW50ZW5hbmNlIiwidmlldyBtZXRhLWRhdGEiLCJ2aWV3IG1ldGEtZGF0YS10ZW1wbGF0ZSIsInZpZXcgcGFyYW1ldGVyIiwidmlldyBwYXJhbWV0ZXItdHlwZSIsInZpZXcgcGVybWlzc2lvbiIsInZpZXcgcWMtY2hlY2siLCJ2aWV3IHFjLXJ1bGUiLCJ2aWV3IHJvbGUiLCJ2aWV3IHN0YXRpb24iLCJ2aWV3IHRhZyIsInZpZXcgdG9vbHMiLCJ2aWV3IHVuaXQiLCJ2aWV3IHVzZXIiXSwiY2xpZW50aXAiOiIxNzIuMzEuMTEuMjIiLCJpYXQiOjE2OTI4NTM4MDQsImV4cCI6MTY5Mjk0MDIwNH0.3eo3u5YD3giYee8lCWh7QOt97oTXkurZ-ErwgAyK_vA")
@@ -87,20 +91,7 @@ async function getDaliaPointData() {
 
 }
 
-export default async function Home() {
-    const mikliGongStationData = await getMikliGongStationData({
-        next: { revalidate: 5 }
-    })
-    const domohoniWaterLevelData = await getDomohoniStationData({
-        next: { revalidate: 5 }
-    })
-    const daliaStationData = await fetchDaliaStationData({
-        next: { revalidate: 5 }
-    })
-    const doaniaStationData = await fetchDoaniaStationData({
-        next: { revalidate: 5 }
-    })
-
+export default function Home() {
     const daliaDataNew = [
         {
             "datetime": "2023-08-27T03:30:00",
@@ -307,7 +298,7 @@ export default async function Home() {
         },
         {
             "datetime": "2023-08-27T07:45:00",
-            "value": 51.800
+            "value": 52.90
         },
         // {
         //     "datetime": "2023-08-27T08:00:00",
@@ -729,14 +720,150 @@ export default async function Home() {
         }
     ]
 
+    const [productData, setProductData] = useState([]);
+    const [mikliGongStationData, setMikliGongStationData] = useState([]);
+    const [domohoniWaterLevelData, setDomohoniWaterLevelData] = useState([]);
+    const [daliaStationData, setDaliaStationData] = useState([]);
+    const [doaniaStationData, setDoaniaStationData] = useState([]);
+    const [loading, setLoading] = useState(true); // Add loading state
+
+    const intervalRef = useRef(null); // Create a ref to hold the interval ID
+
+    useEffect(() => {
+        // This function fetches data from the API
+        // const fetchProductData = () => {
+        //     fetch('/api/product')
+        //         .then((response) => response.json())
+        //         .then((data) => {
+        //             // Set the data received from the API in state
+        //             setProductData(data);
+        //             // setLoading(false); // Set loading to false when data is received
+        //             console.log(data);
+        //         })
+        //         .catch((error) => {
+        //             setLoading(false); // Set loading to false on error as well
+        //             console.error('Error fetching data:', error);
+        //         });
+        // };
+
+        const fetchDoaniData = () => {
+            fetch('/api/doani')
+                .then((response) => response.json())
+                .then((data) => {
+                    // Set the data received from the API in state
+                    setDoaniaStationData(data);
+                    // setLoading(false); // Set loading to false when data is received
+                    console.log("fetchDoaniData(): data", data.data);
+                })
+                .catch((error) => {
+                    setLoading(false); // Set loading to false on error as well
+                    console.error('Error fetching data:', error);
+                });
+        };
+
+        const fetchDaliaData = () => {
+            fetch('/api/dalia')
+                .then((response) => response.json())
+                .then((data) => {
+                    // Set the data received from the API in state
+                    setDaliaStationData(data);
+                    // setLoading(false); // Set loading to false when data is received
+                    console.log("fetchDaliaData(): data", data);
+                })
+                .catch((error) => {
+                    setLoading(false); // Set loading to false on error as well
+                    console.error('Error fetching data:', error);
+                });
+        };
+
+        const fetchMikligongData = () => {
+            fetch('/api/mikligong')
+                .then((response) => response.json())
+                .then((data) => {
+                    // Set the data received from the API in state
+                    setMikliGongStationData(data);
+                    // setLoading(false); // Set loading to false when data is received
+                    console.log("fetchMikligongData(): data", data);
+                })
+                .catch((error) => {
+                    setLoading(false); // Set loading to false on error as well
+                    console.error('Error fetching data:', error);
+                });
+        };
+
+
+        const fetchDomohoniData = () => {
+            fetch('/api/domohoni')
+                .then((response) => response.json())
+                .then((data) => {
+                    // Set the data received from the API in state
+                    setDomohoniWaterLevelData(data);
+                    setLoading(false); // Set loading to false when data is received
+                    console.log("fetchDomohoniData(): data", data);
+                })
+                .catch((error) => {
+                    setLoading(false); // Set loading to false on error as well
+                    console.error('Error fetching data:', error);
+                });
+        };
+
+
+        // Initial data fetch
+        // fetchProductData();
+        fetchMikligongData();
+        fetchDomohoniData();
+        fetchDoaniData();
+        fetchDaliaData();
+
+        // Set up an interval to fetch data every 6 seconds
+        intervalRef.current = setInterval(() => {
+            // fetchProductData();
+            fetchMikligongData();
+            fetchDomohoniData();
+            fetchDoaniData();
+            fetchDaliaData();
+        }, 600000); // 6000 milliseconds = 6 seconds
+
+        // Cleanup: Clear the interval when the component unmounts
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, []); // The empty dependency array ensures this code runs only once when the component mounts
+
+    // Render a loading indicator when loading is true
+    // if (loading) {
+    //     return (
+    //         <div className="h-screen flex justify-center items-center p-4">
+    //             <h1>Loading...</h1>
+    //         </div>
+    //     );
+    // }
+
     return (
         <main className="h-screen flex justify-center items-center">
-            <MainChartNew
-                mikliGongStationData={mikliGongStationData}
-                domohoniWaterLevelData={domohoniWaterLevelData}
-                daliaStationData={daliaStationData.data}
-                doaniaStationData={doaniaStationData.data}
-            />
+            {/*<MainChartNew*/}
+            {/*    mikliGongStationData={mikliGongStationData}*/}
+            {/*    domohoniWaterLevelData={domohoniWaterLevelData}*/}
+            {/*    daliaStationData={daliaStationData}*/}
+            {/*    doaniaStationData={doaniaStationData}*/}
+            {/*    productData={productData}*/}
+            {/*/>*/}
+
+            {/*{mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 && daliaStationData.length > 0 && doaniaStationData.length > 0 ? (*/}
+            {mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 ? (
+                <MainChartNew
+                    mikliGongStationData={mikliGongStationData}
+                    domohoniWaterLevelData={domohoniWaterLevelData}
+                    daliaStationData={daliaStationData.data}
+                    doaniaStationData={doaniaStationData.data}
+                    // productData={productData}
+                />
+            ) : (
+                // Render a loading indicator or message
+                <p>Loading...</p>
+            )}
         </main>
     )
 }

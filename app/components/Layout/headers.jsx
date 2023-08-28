@@ -1,6 +1,6 @@
 "use client";
 
-import WordWideConcernsIcon from "@/components/Icons/WorldWideConcers";
+import WordWideConcernsIcon from "@/app/components/Icons/WorldWideConcers";
 
 import Image from 'next/image';
 import Link from 'next/link'

@@ -1,4 +1,4 @@
-import RimesLogo from "@/components/Icons/RimesLogo";
+import RimesLogo from "@/app/components/Icons/RimesLogo";
 import Image from "next/image";
 
 const Footer = () => {

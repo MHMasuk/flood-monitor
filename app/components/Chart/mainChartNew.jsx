@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import LineChartWithDangerLine from "@/components/Chart/lineChartWithDangerLine";
+import LineChartWithDangerLine from "@/app/components/Chart/lineChartWithDangerLine";
 import useSound from "use-sound";
-import DaliaChartDemo from "@/components/Chart/DaliaChatDemo";
-import DoaniaChart from "@/components/Chart/DoaniaChart";
+import DaliaChartDemo from "@/app/components/Chart/DaliaChatDemo";
+import DoaniaChart from "@/app/components/Chart/DoaniaChart";
+import ProductChart from "@/app/components/Chart/ProductChart";
 
 const MainChartNew = (props) => {
     const {
@@ -12,9 +13,13 @@ const MainChartNew = (props) => {
         daliaStationData,
         doaniaStationData,
         domohoniWaterLevelData,
+        productData
     } = props;
 
     const [play, { stop }] = useSound("./mp3/loud_alarm.mp3");
+
+
+    console.log("MainChartNew(): daliaStationData", daliaStationData)
 
     // Define state for sound playing
     const [isSoundPlaying, setIsSoundPlaying] = useState(false);
@@ -26,7 +31,7 @@ const MainChartNew = (props) => {
     const [daliaAnimation, setDaliaAnimation] = useState(false)
 
     // Create a ref to store the interval
-    const intervalRef = useRef(null);
+    const intervalRefSound = useRef(null);
 
     // Function to check if the condition for playing sound is met
     const shouldPlaySound = () => {
@@ -47,7 +52,7 @@ const MainChartNew = (props) => {
             mikliGongData[1].dataValue > 65.8 &&
             mikliGongData[0].dataValue <= 65.8;
 
-        console.log("mikliGongData[0].dataValue, mikliGongData[1].dataValue", mikliGongData[0].dataValue, mikliGongData[1].dataValue)
+        // console.log("mikliGongData[0].dataValue, mikliGongData[1].dataValue", mikliGongData[0].dataValue, mikliGongData[1].dataValue)
 
         if (mikliGongCondition) {
             setMikligongAnimation(true)
@@ -55,9 +60,7 @@ const MainChartNew = (props) => {
 
         const domohoniCondition =
             domohoniData[1].dataValue > 89.3 &&
-            domohoniData[0].dataValue <= 89.3 ||
-            domohoniData[0].dataValue > 85.95 &&
-            domohoniData[0].dataValue <= 85.95;
+            domohoniData[0].dataValue <= 89.3;
 
         if (domohoniCondition) {
             setDomohoniAnimation(true)
@@ -65,9 +68,7 @@ const MainChartNew = (props) => {
 
         const daliaCondition =
             daliaData[1].value > 52.84 &&
-            daliaData[0].value <= 52.84 ||
-            daliaData[0].value > 52.15 &&
-            daliaData[0].value <= 52.15;
+            daliaData[0].value <= 52.84;
 
         if (daliaCondition) {
             setDaliaAnimation(true)
@@ -75,13 +76,19 @@ const MainChartNew = (props) => {
 
         const doaniaCondition =
             doaniaData[1].value > 52.84 &&
-            doaniaData[0].value <= 52.84 ||
-            doaniaData[0].value > 52.15 &&
-            doaniaData[0].value <= 52.15;
+            doaniaData[0].value <= 52.84;
 
         if (doaniaCondition) {
             setDoaniaAnimation(true)
         }
+
+        // const productCondition =
+        //     productDataNew[1].value > 52.84 &&
+        //     productDataNew[0].value <= 52.84;
+        //
+        // if (productCondition) {
+        //     setPAnimation(true)
+        // }
 
         console.log("mikliGongCondition, domohoniCondition, daliaCondition, doaniaCondition", mikliGongCondition, domohoniCondition, daliaCondition, doaniaCondition)
 
@@ -97,24 +104,24 @@ const MainChartNew = (props) => {
     // Play sound repeatedly when the condition is met
     useEffect(() => {
         // Clear the previous interval if it exists
-        clearInterval(intervalRef.current);
+        clearInterval(intervalRefSound.current);
 
         if (shouldPlaySound() && !isSoundPlaying) {
             // Start playing the sound repeatedly
-            intervalRef.current = setInterval(() => {
+            intervalRefSound.current = setInterval(() => {
                 play();
             }, 3000); // Adjust the interval as needed
             // setIsSoundPlaying(true);
         } else if (!shouldPlaySound() && isSoundPlaying) {
             // Stop playing the sound if the condition is no longer met
-            clearInterval(intervalRef.current);
+            clearInterval(intervalRefSound.current);
             stop();
             setIsSoundPlaying(false);
         }
 
         // Clean up the interval on unmount
         return () => {
-            clearInterval(intervalRef.current);
+            clearInterval(intervalRefSound.current);
         };
     }, [
         mikliGongStationData,
@@ -131,7 +138,7 @@ const MainChartNew = (props) => {
         setIsSoundPlaying(false);
 
         // Clear the interval when the "Stop" button is clicked
-        clearInterval(intervalRef.current);
+        clearInterval(intervalRefSound.current);
 
         setDoaniaAnimation(false);
         setMikligongAnimation(false);
