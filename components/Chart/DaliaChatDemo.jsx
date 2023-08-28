@@ -8,6 +8,8 @@ const Plot = dynamic(() => import("react-plotly.js"), { ssr: false, })
 const DaliaChartDemo = ({data, title, hfl, danger, warning, paperColor}) => {
     const [chartHeight, setChartHeight] = useState(270); // Default chart height
 
+    // console.log("data", data)
+
     // Function to update the chart height based on screen size
     const updateChartHeight = () => {
         const screenHeight = window.innerHeight;

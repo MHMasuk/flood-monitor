@@ -88,7 +88,6 @@ async function getDaliaPointData() {
 }
 
 export default async function Home() {
-
     const mikliGongStationData = await getMikliGongStationData()
     const domohoniWaterLevelData = await getDomohoniStationData()
     const daliaStationData = await fetchDaliaStationData()
