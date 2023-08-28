@@ -14,8 +14,6 @@ const MainChartNew = (props) => {
         domohoniWaterLevelData,
     } = props;
 
-    console.log("mikliGongStationData", mikliGongStationData)
-
     const [play, { stop }] = useSound("./mp3/loud_alarm.mp3");
 
     // Define state for sound playing
