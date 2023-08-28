@@ -3,8 +3,8 @@ import {Inter} from 'next/font/google'
 
 const inter = Inter({subsets: ['latin']})
 
-import Headers from "@/components/Layout/headers";
-import Footer from "@/components/Layout/footer";
+import Headers from "@/app/components/Layout/headers";
+import Footer from "@/app/components/Layout/footer";
 
 export const metadata = {
     title: 'Flood Monitoring.',
