@@ -1,12 +1,8 @@
 "use client";
 
 // api call
-import {getMikliGongStationData} from "@/utils/getMikliGongStationData";
-import {getDomohoniStationData} from "@/utils/getDomohoniStationData";
-import {fetchDaliaStationData} from "@/utils/getDaliaStationData";
-import {fetchDoaniaStationData} from "@/utils/getDoniaStationData";
 import MainChartNew from "@/app/components/Chart/mainChartNew";
-import {fetchProduct} from "@/utils/productApi";
+
 import React, {useEffect, useRef, useState} from "react";
 
 async function getDaliaPointData() {
