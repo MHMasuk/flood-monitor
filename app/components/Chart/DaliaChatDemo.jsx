@@ -9,7 +9,7 @@ const Plot = dynamic(() => import("react-plotly.js"), { ssr: false, })
 const DaliaChartDemo = ({chart_data, title, hfl, danger, warning, paperColor}) => {
     const [chartHeight, setChartHeight] = useState(270); // Default chart height
 
-    console.log("DaliaChartDemo chart data", chart_data)
+    // console.log("DaliaChartDemo chart data", chart_data)
 
     // Convert datetime values in the data array to GMT+6
     const data = chart_data.map(entry => {
