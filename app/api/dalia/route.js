@@ -9,7 +9,7 @@ export async function GET(request) {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token_data}`,
         },
-        next: {revalidate: 900} // in every 15 minutes
+        next: {revalidate: 30} // in every 15 minutes
     })
 
     if (!response.ok) {
