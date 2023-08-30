@@ -1,5 +1,9 @@
 "use client";
 
+
+import Cookies from 'js-cookie';
+import { serialize, parse } from 'cookie';
+
 // api call
 import MainChartNew from "@/app/components/Chart/mainChartNew";
 
@@ -86,6 +90,43 @@ async function getDaliaPointData() {
     fetchDataFromAPI();
 
 }
+
+
+function loginAndGetToken() {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+        "username": "ffwc",
+        "password": "ffwc123*#"
+    });
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+    // Return the Promise from fetch
+    return fetch("https://swh.bwdb.gov.bd/auth/login", requestOptions)
+        .then(response => response.json()) // Assuming the response contains JSON data
+        .then(data => {
+            if (data && data.token) {
+                // Store the token and the current timestamp in localStorage
+                // Cookies.set('token', data.token, { expires: 6 / 24 }); // Expires after 6 hours
+                document.cookie = serialize('token', data.token, {
+                    maxAge: 6 * 60 * 60 // 6 hours
+                });
+                localStorage.setItem('tokenTimestamp', Date.now());
+                console.log("Access token:", data.token);
+            } else {
+                console.log("Failed to obtain access token");
+            }
+        })
+        .catch(error => console.log('error', error));
+}
+
 
 export default function Home() {
     const daliaDataNew = [
@@ -725,108 +766,54 @@ export default function Home() {
 
     const intervalRef = useRef(null); // Create a ref to hold the interval ID
 
+    async function fetchData(url, setData) {
+        // Get the token and timestamp from localStorage
+        // let token = localStorage.getItem('token');
+        // let tokenTimestamp = localStorage.getItem('tokenTimestamp');
+        //
+        // // let cookies = parse(req.headers.cookie || '');
+        // // const token = cookies.token;
+        //
+        // console.log("token inside fetch data", token)
+        //
+        // // If there's no token or it's older than 6 hours, fetch a new one
+        // if (!token || Date.now() - tokenTimestamp > 6 * 60 * 60 * 1000) {
+        //     await loginAndGetToken();
+        //     // token = localStorage.getItem('token'); // Update the token
+        //     document.cookie = serialize('token', data.token);
+        // }
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            setData(data);
+        } catch (error) {
+            console.error(`Error fetching data from ${url}:`, error);
+            // Set error state here
+        }
+    }
+
     useEffect(() => {
-        // This function fetches data from the API
-        // const fetchProductData = () => {
-        //     fetch('/api/product')
-        //         .then((response) => response.json())
-        //         .then((data) => {
-        //             // Set the data received from the API in state
-        //             setProductData(data);
-        //             // setLoading(false); // Set loading to false when data is received
-        //             console.log(data);
-        //         })
-        //         .catch((error) => {
-        //             setLoading(false); // Set loading to false on error as well
-        //             console.error('Error fetching data:', error);
-        //         });
-        // };
+        // Fetch a new token before making the first API requests
+        fetchData('/api/mikligong', setMikliGongStationData);
+        fetchData('/api/domohoni', setDomohoniWaterLevelData);
+        fetchData('/api/doani', setDoaniaStationData);
+        fetchData('/api/dalia', setDaliaStationData);
 
-        const fetchDoaniData = () => {
-            fetch('/api/doani')
-                .then((response) => response.json())
-                .then((data) => {
-                    // Set the data received from the API in state
-                    setDoaniaStationData(data);
-                    // setLoading(false); // Set loading to false when data is received
-                    console.log("fetchDoaniData(): data", data.data);
-                })
-                .catch((error) => {
-                    setLoading(false); // Set loading to false on error as well
-                    console.error('Error fetching data:', error);
-                });
-        };
-
-        const fetchDaliaData = () => {
-            fetch('/api/dalia')
-                .then((response) => response.json())
-                .then((data) => {
-                    // Set the data received from the API in state
-                    setDaliaStationData(data);
-                    // setLoading(false); // Set loading to false when data is received
-                    console.log("fetchDaliaData(): data", data);
-                })
-                .catch((error) => {
-                    setLoading(false); // Set loading to false on error as well
-                    console.error('Error fetching data:', error);
-                });
-        };
-
-        const fetchMikligongData = () => {
-            fetch('/api/mikligong')
-                .then((response) => response.json())
-                .then((data) => {
-                    // Set the data received from the API in state
-                    setMikliGongStationData(data);
-                    // setLoading(false); // Set loading to false when data is received
-                    console.log("fetchMikligongData(): data", data);
-                })
-                .catch((error) => {
-                    setLoading(false); // Set loading to false on error as well
-                    console.error('Error fetching data:', error);
-                });
-        };
-
-
-        const fetchDomohoniData = () => {
-            fetch('/api/domohoni')
-                .then((response) => response.json())
-                .then((data) => {
-                    // Set the data received from the API in state
-                    setDomohoniWaterLevelData(data);
-                    setLoading(false); // Set loading to false when data is received
-                    console.log("fetchDomohoniData(): data", data);
-                })
-                .catch((error) => {
-                    setLoading(false); // Set loading to false on error as well
-                    console.error('Error fetching data:', error);
-                });
-        };
-
-
-        // Initial data fetch
-        // fetchProductData();
-        fetchMikligongData();
-        fetchDomohoniData();
-        fetchDoaniData();
-        fetchDaliaData();
-
-        // Set up an interval to fetch data every 6 seconds
+    
         intervalRef.current = setInterval(() => {
-            // fetchProductData();
-            fetchMikligongData();
-            fetchDomohoniData();
-            fetchDoaniData();
-            fetchDaliaData();
-        }, 6000); // 6000 milliseconds = 6 seconds
-
-        // Cleanup: Clear the interval when the component unmounts
+            fetchData('/api/mikligong', setMikliGongStationData);
+            fetchData('/api/domohoni', setDomohoniWaterLevelData);
+            fetchData('/api/doani', setDoaniaStationData);
+            fetchData('/api/dalia', setDaliaStationData);
+        }, 15 * 60 * 1000);
+    
         return () => {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
             }
         };
-    }, []); // The empty dependency array ensures this code runs only once when the component mounts
+    }, []);
 
     // Render a loading indicator when loading is true
     // if (loading) {
@@ -839,14 +826,6 @@ export default function Home() {
 
     return (
         <main className="h-screen flex justify-center items-center">
-            {/*<MainChartNew*/}
-            {/*    mikliGongStationData={mikliGongStationData}*/}
-            {/*    domohoniWaterLevelData={domohoniWaterLevelData}*/}
-            {/*    daliaStationData={daliaStationData}*/}
-            {/*    doaniaStationData={doaniaStationData}*/}
-            {/*    productData={productData}*/}
-            {/*/>*/}
-
             {/*{mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 && daliaStationData.length > 0 && doaniaStationData.length > 0 ? (*/}
             {mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 ? (
                 <MainChartNew
