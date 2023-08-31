@@ -826,8 +826,8 @@ export default function Home() {
 
     return (
         <main className="h-screen flex justify-center items-center">
-            {/*{mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 && daliaStationData.length > 0 && doaniaStationData.length > 0 ? (*/}
-            {mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 ? (
+            {mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 && daliaStationData.data.length > 0 && doaniaStationData.data.length > 0 ? (
+            // {mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 ? (
                 <MainChartNew
                     mikliGongStationData={mikliGongStationData}
                     domohoniWaterLevelData={domohoniWaterLevelData}
