@@ -63,6 +63,7 @@ export async function getMikliGongStationData() {
     const res = await fetch(finalUrl, {
         next: {revalidate: 30}
     })
+
     // const res = await fetch(finalUrl)
     // The return value is *not* serialized
 
