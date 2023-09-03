@@ -867,7 +867,7 @@ export default function Home() {
                 />
             ) : (
                 // Render a loading indicator or message
-                <p>Loading...</p>
+                <span className="loading loading-spinner loading-lg"></span>
             )}
         </main>
     )
