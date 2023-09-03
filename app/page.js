@@ -793,13 +793,40 @@ export default function Home() {
         }
     }
 
+    async function fetchNewData(url, setData) {
+        // Get the token and timestamp from localStorage
+        // let token = localStorage.getItem('token');
+        // let tokenTimestamp = localStorage.getItem('tokenTimestamp');
+        //
+        // // let cookies = parse(req.headers.cookie || '');
+        // // const token = cookies.token;
+        //
+        // console.log("token inside fetch data", token)
+        //
+        // // If there's no token or it's older than 6 hours, fetch a new one
+        // if (!token || Date.now() - tokenTimestamp > 6 * 60 * 60 * 1000) {
+        //     await loginAndGetToken();
+        //     // token = localStorage.getItem('token'); // Update the token
+        //     document.cookie = serialize('token', data.token);
+        // }
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            setData(data.data);
+        } catch (error) {
+            console.error(`Error fetching data from ${url}:`, error);
+            // Set error state here
+        }
+    }
+
     useEffect(() => {
         setTimeout(() => {
             // Fetch a new token before making the first API requests
             fetchData('/api/mikligong', setMikliGongStationData);
             fetchData('/api/domohoni', setDomohoniWaterLevelData);
-            fetchData('/api/doani', setDoaniaStationData);
-            fetchData('/api/dalia', setDaliaStationData);
+            fetchNewData('/api/doani', setDoaniaStationData);
+            fetchNewData('/api/dalia', setDaliaStationData);
         }, 2000)
 
     
@@ -829,13 +856,13 @@ export default function Home() {
 
     return (
         <main className="h-screen flex justify-center items-center">
-            {mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 && daliaStationData.data.length > 0 && doaniaStationData.data.length > 0 ? (
+            {mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 && daliaStationData.length > 0 && doaniaStationData.length > 0 ? (
             // {mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 ? (
                 <MainChartNew
                     mikliGongStationData={mikliGongStationData}
                     domohoniWaterLevelData={domohoniWaterLevelData}
-                    daliaStationData={daliaStationData.data}
-                    doaniaStationData={doaniaStationData.data}
+                    daliaStationData={daliaStationData}
+                    doaniaStationData={doaniaStationData}
                     // productData={productData}
                 />
             ) : (
