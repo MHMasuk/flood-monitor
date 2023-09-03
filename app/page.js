@@ -794,11 +794,13 @@ export default function Home() {
     }
 
     useEffect(() => {
-        // Fetch a new token before making the first API requests
-        fetchData('/api/mikligong', setMikliGongStationData);
-        fetchData('/api/domohoni', setDomohoniWaterLevelData);
-        fetchData('/api/doani', setDoaniaStationData);
-        fetchData('/api/dalia', setDaliaStationData);
+        setTimeout(() => {
+            // Fetch a new token before making the first API requests
+            fetchData('/api/mikligong', setMikliGongStationData);
+            fetchData('/api/domohoni', setDomohoniWaterLevelData);
+            fetchData('/api/doani', setDoaniaStationData);
+            fetchData('/api/dalia', setDaliaStationData);
+        }, 2000)
 
     
         intervalRef.current = setInterval(() => {
