@@ -806,7 +806,8 @@ export default function Home() {
             fetchData('/api/domohoni', setDomohoniWaterLevelData);
             fetchData('/api/doani', setDoaniaStationData);
             fetchData('/api/dalia', setDaliaStationData);
-        }, 15 * 60 * 1000);
+        }, 3 * 60 * 1000);
+
     
         return () => {
             if (intervalRef.current) {
