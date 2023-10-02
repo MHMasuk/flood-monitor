@@ -821,23 +821,29 @@ export default function Home() {
     }
 
     useEffect(() => {
-        setTimeout(() => {
-            // Fetch a new token before making the first API requests
-            fetchData('/api/mikligong', setMikliGongStationData);
-            fetchData('/api/domohoni', setDomohoniWaterLevelData);
-            fetchNewData('/api/doani', setDoaniaStationData);
-            fetchNewData('/api/dalia', setDaliaStationData);
-        }, 2000)
+        // setTimeout(() => {
+        //     // Fetch a new token before making the first API requests
+        //     fetchData('/api/mikligong', setMikliGongStationData);
+        //     fetchData('/api/domohoni', setDomohoniWaterLevelData);
+        //     fetchNewData('/api/doani', setDoaniaStationData);
+        //     fetchNewData('/api/dalia', setDaliaStationData);
+        // }, 2000)
+
+        // Fetch a new token before making the first API requests
+        fetchData('/api/mikligong', setMikliGongStationData);
+        fetchData('/api/domohoni', setDomohoniWaterLevelData);
+        fetchNewData('/api/doani', setDoaniaStationData);
+        fetchNewData('/api/dalia', setDaliaStationData);
 
     
         intervalRef.current = setInterval(() => {
             fetchData('/api/mikligong', setMikliGongStationData);
             fetchData('/api/domohoni', setDomohoniWaterLevelData);
-            fetchData('/api/doani', setDoaniaStationData);
-            fetchData('/api/dalia', setDaliaStationData);
-        }, 3 * 60 * 1000);
+            fetchNewData('/api/doani', setDoaniaStationData);
+            fetchNewData('/api/dalia', setDaliaStationData);
+        }, 6000 );
 
-    
+
         return () => {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
@@ -867,7 +873,8 @@ export default function Home() {
                 />
             ) : (
                 // Render a loading indicator or message
-                <span className="loading loading-spinner loading-lg"></span>
+                // <span className="loading loading-spinner loading-lg"></span>
+                <p>Loading...</p>
             )}
         </main>
     )
