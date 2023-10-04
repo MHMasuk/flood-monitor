@@ -86,6 +86,10 @@ const MainChartNew = (props) => {
         }
 
         const doaniaCondition =
+            doaniaData[1].value > 51.75 &&
+            doaniaData[0].value <= 51.75 ||
+            doaniaData[1].value > 52.15 &&
+            doaniaData[0].value <= 52.15 ||
             doaniaData[1].value > 52.84 &&
             doaniaData[0].value <= 52.84;
 
