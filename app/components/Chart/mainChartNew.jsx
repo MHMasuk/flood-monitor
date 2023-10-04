@@ -72,10 +72,12 @@ const MainChartNew = (props) => {
         }
 
         const daliaCondition =
-            (daliaData[1].value > 51.75 &&
-            daliaData[0].value <= 51.75) ||
-            (daliaData[1].dataValue > 52.84 &&
-            daliaData[0].dataValue <= 52.84);
+            doaniaData[1].value > 51.75 &&
+            doaniaData[0].value <= 51.75 ||
+            doaniaData[1].value > 52.15 &&
+            doaniaData[0].value <= 52.15 ||
+            doaniaData[1].value > 52.84 &&
+            doaniaData[0].value <= 52.84;
 
         // const daliaCondition =
         //     daliaData[1].value > 51.75 &&
