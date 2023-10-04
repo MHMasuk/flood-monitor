@@ -205,6 +205,10 @@ export default function Home() {
         {
             "datetime": "2023-08-27T08:00:00",
             "value": 51.600
+        },
+        {
+            "datetime": "2023-08-27T09:00:00",
+            "value": 53.80
         }
     ]
 
@@ -835,13 +839,13 @@ export default function Home() {
         fetchNewData('/api/doani', setDoaniaStationData);
         fetchNewData('/api/dalia', setDaliaStationData);
 
-    
+        // 900000 15 minutes 15 minutes = 15 * 60 * 1000 milliseconds
         intervalRef.current = setInterval(() => {
             fetchData('/api/mikligong', setMikliGongStationData);
             fetchData('/api/domohoni', setDomohoniWaterLevelData);
             fetchNewData('/api/doani', setDoaniaStationData);
             fetchNewData('/api/dalia', setDaliaStationData);
-        }, 6000 );
+        }, 15 * 60 * 1000);
 
 
         return () => {
@@ -867,7 +871,8 @@ export default function Home() {
                 <MainChartNew
                     mikliGongStationData={mikliGongStationData}
                     domohoniWaterLevelData={domohoniWaterLevelData}
-                    daliaStationData={daliaStationData}
+                    // daliaStationData={daliaStationData}
+                    daliaStationData={daliaDataNew}
                     doaniaStationData={doaniaStationData}
                     // productData={productData}
                 />

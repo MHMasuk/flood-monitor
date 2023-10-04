@@ -4,9 +4,10 @@ import React, {useEffect, useState} from 'react';
 import useSound from 'use-sound';
 
 import dynamic from "next/dynamic";
-import {convertToGMTPlus6} from "@/utils/convertToUtc";
+import {convertToGMTPlus6, convertToGMTPlus6And24Hours, getCurrentTimeIn24HoursFormat} from "@/utils/convertToUtc";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false, })
 
+import { DateTime } from 'luxon'
 
 const DoaniaChart = ({chart_data, title, hfl, danger, warning, paperColor}) => {
     const [chartHeight, setChartHeight] = useState(270); // Default chart height
@@ -15,10 +16,11 @@ const DoaniaChart = ({chart_data, title, hfl, danger, warning, paperColor}) => {
     const data = chart_data.map(entry => {
         return {
             "datetime": convertToGMTPlus6(entry.datetime),
-            // "datetime": entry.datetime,
             "value": entry.value
         };
     });
+
+
 
     // Function to update the chart height based on screen size
     const updateChartHeight = () => {
@@ -88,7 +90,7 @@ const DoaniaChart = ({chart_data, title, hfl, danger, warning, paperColor}) => {
         xaxis: {
             // title: 'Date and Time',
             tickangle: -45,
-            tickformat: '%d %b-%H:%M' // Format for date and time
+            tickformat: '%d %b-%H:%M', // Format for date and time
         },
         yaxis: {title: 'Water Level (m)'},
         legend: {
@@ -104,8 +106,6 @@ const DoaniaChart = ({chart_data, title, hfl, danger, warning, paperColor}) => {
         displayModeBar: false,
         scrollZoom: false
     }
-
-
 
     return (
         <div className="w-full rounded-lg relative">

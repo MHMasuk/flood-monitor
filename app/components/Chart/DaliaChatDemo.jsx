@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from 'react';
 
 import dynamic from "next/dynamic";
-import {convertToGMTPlus6, convertToUTCBDData} from "@/utils/convertToUtc";
+import {convertToGMTPlus6, convertToGMTPlus6And24Hours, convertToUTCBDData} from "@/utils/convertToUtc";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false, })
 
 const DaliaChartDemo = ({chart_data, title, hfl, danger, warning, paperColor}) => {
@@ -104,8 +104,6 @@ const DaliaChartDemo = ({chart_data, title, hfl, danger, warning, paperColor}) =
         displayModeBar: false,
         scrollZoom: false
     }
-
-
 
     return (
         <div className="w-full rounded-lg relative">

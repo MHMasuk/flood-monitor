@@ -46,7 +46,6 @@ export async function getDomohoniStationData() {
                     fieldName: 'id.dataTime',
                     operator: 'btn',
                     value: `${getFormattedDate(new Date().setDate(new Date().getDate() - 3))},${getFormattedDate(new Date())}`
-                    // value: "2023-10-01T13:35:06.558,2023-10-04T13:48:06.558"
                 }
             }
         }

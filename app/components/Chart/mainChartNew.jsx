@@ -51,8 +51,11 @@ const MainChartNew = (props) => {
         //     mikliGongData[1].dataValue <= 65.8;
 
         const mikliGongCondition =
-            mikliGongData[1].dataValue > 65.8 &&
-            mikliGongData[0].dataValue <= 65.8;
+            (mikliGongData[1].dataValue > 65.8 &&
+            mikliGongData[0].dataValue <= 65.8) ||
+            (mikliGongData[1].dataValue > 66.62 &&
+            mikliGongData[0].dataValue <= 66.62);
+
 
         // console.log("mikliGongData[0].dataValue, mikliGongData[1].dataValue", mikliGongData[0].dataValue, mikliGongData[1].dataValue)
 
@@ -69,8 +72,14 @@ const MainChartNew = (props) => {
         }
 
         const daliaCondition =
-            daliaData[1].value > 52.84 &&
-            daliaData[0].value <= 52.84;
+            (daliaData[1].value > 51.75 &&
+            daliaData[0].value <= 51.75) ||
+            (daliaData[1].dataValue > 52.84 &&
+            daliaData[0].dataValue <= 52.84);
+
+        // const daliaCondition =
+        //     daliaData[1].value > 51.75 &&
+        //     daliaData[0].value <= 51.75;
 
         if (daliaCondition) {
             setDaliaAnimation(true)
@@ -112,7 +121,7 @@ const MainChartNew = (props) => {
             // Start playing the sound repeatedly
             intervalRefSound.current = setInterval(() => {
                 play();
-            }, 3000); // Adjust the interval as needed
+            }, 6000); // Adjust the interval as needed
             // setIsSoundPlaying(true);
         } else if (!shouldPlaySound() && isSoundPlaying) {
             // Stop playing the sound if the condition is no longer met
