@@ -15,6 +15,7 @@ const DoaniaChart = ({chart_data, title, hfl, danger, warning, paperColor}) => {
     const data = chart_data.map(entry => {
         return {
             "datetime": convertToGMTPlus6(entry.datetime),
+            // "datetime": entry.datetime,
             "value": entry.value
         };
     });
@@ -92,7 +93,7 @@ const DoaniaChart = ({chart_data, title, hfl, danger, warning, paperColor}) => {
         yaxis: {title: 'Water Level (m)'},
         legend: {
             // x: 0.3,
-            y: 1.25,
+            y: 2.00,
             orientation: 'h',
         },
         paper_bgcolor: paperColor

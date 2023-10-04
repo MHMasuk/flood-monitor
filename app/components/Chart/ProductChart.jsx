@@ -92,7 +92,7 @@ const ProductChart = ({chart_data, title, hfl, danger, warning, paperColor}) => 
         yaxis: {title: 'Water Level (m)'},
         legend: {
             // x: 0.3,
-            y: 1.25,
+            y: 2.00,
             orientation: 'h',
         },
         paper_bgcolor: paperColor

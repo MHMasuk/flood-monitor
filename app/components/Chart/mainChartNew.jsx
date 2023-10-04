@@ -38,7 +38,7 @@ const MainChartNew = (props) => {
     // Function to check if the condition for playing sound is met
     const shouldPlaySound = () => {
         // Check the condition for each chart's data
-        const mikliGongData = mikliGongStationData.slice(-4); // Get last two data points
+        const mikliGongData = mikliGongStationData.slice(-2); // Get last two data points
         const domohoniData = domohoniWaterLevelData.slice(-2); // Get last two data points
         const daliaData = daliaStationData.slice(-2); // Get last two data points
         const doaniaData = doaniaStationData.slice(-2); // Get last two data points

@@ -16,7 +16,8 @@ const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paper
             ...entry,
             "id": {
                 ...entry.id,
-                "dataTime": convertToGMTPlus6(entry.id.dataTime)
+                // "dataTime": convertToGMTPlus6(entry.id.dataTime)
+                "dataTime": entry.id.dataTime
             }
         };
     });
@@ -93,7 +94,7 @@ const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paper
         yaxis: {title: 'Water Level (m)'},
         legend: {
             // x: 0.3,
-            y: 1.25,
+            y: 2.00,
             orientation: 'h',
         },
         paper_bgcolor: paperColor
