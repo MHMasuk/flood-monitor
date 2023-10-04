@@ -871,8 +871,8 @@ export default function Home() {
                 <MainChartNew
                     mikliGongStationData={mikliGongStationData}
                     domohoniWaterLevelData={domohoniWaterLevelData}
-                    // daliaStationData={daliaStationData}
-                    daliaStationData={daliaDataNew}
+                    daliaStationData={daliaStationData}
+                    // daliaStationData={daliaDataNew}
                     doaniaStationData={doaniaStationData}
                     // productData={productData}
                 />
