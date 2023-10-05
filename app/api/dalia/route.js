@@ -1,5 +1,6 @@
 import {getFormattedDate} from "@/utils/healper";
 import {NextResponse} from "next/server";
+import {getCookie} from "cookies-next";
 
 export async function GET(request) {
     const token_data = process.env.NEXT_PUBLIC_TOKEN
