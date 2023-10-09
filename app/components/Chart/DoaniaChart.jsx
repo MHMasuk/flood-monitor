@@ -89,16 +89,23 @@ const DoaniaChart = ({chart_data, title, hfl, danger, warning, paperColor}) => {
         title: title,
         xaxis: {
             // title: 'Date and Time',
-            tickangle: -45,
-            tickformat: '%d %b-%H:%M', // Format for date and time
+            // tickangle: -45,
+            // tickformat: '%d %b-%H:%M', // Format for date and time
+            tickmode: 'linear',
         },
         yaxis: {title: 'Water Level (m)'},
         legend: {
             // x: 0.3,
-            y: 2.00,
+            // y: 2.00,
             orientation: 'h',
         },
-        paper_bgcolor: paperColor
+        paper_bgcolor: paperColor,
+        margin: {
+            l: 60,  // Adjust the left margin (in pixels)
+            r: 60,  // Adjust the right margin (in pixels)
+            t: 40,  // Adjust the top margin (in pixels)
+            b: 40,  // Adjust the bottom margin (in pixels)
+        },
     };
 
     const config = {

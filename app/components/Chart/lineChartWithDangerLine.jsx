@@ -2,13 +2,15 @@
 
 import React, {useEffect, useState} from 'react';
 
+import { format, addDays } from 'date-fns';
+
 import dynamic from "next/dynamic";
 import {convertToGMTPlus6} from "@/utils/convertToUtc";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false, })
 
 
 const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paperColor}) => {
-    const [chartHeight, setChartHeight] = useState(260); // Default chart height
+    const [chartHeight, setChartHeight] = useState(270); // Default chart height
 
     // Convert datetime values in the data array to GMT+6
     const data = chart_data.map(entry => {
@@ -87,18 +89,21 @@ const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paper
     const layout = {
         title: title,
         xaxis: {
-            // title: 'Date and Time',
-            tickangle: -45,
-            tickformat: '%d %b-%H:%M' // Format for date and time
-            // tickformat: '%d %b' // Format for date and time
+            tickmode: 'linear',
         },
         yaxis: {title: 'Water Level (m)'},
         legend: {
             // x: 0.3,
-            y: 2.00,
+            // y: 1.50,
             orientation: 'h',
         },
-        paper_bgcolor: paperColor
+        paper_bgcolor: paperColor,
+        margin: {
+            l: 60,  // Adjust the left margin (in pixels)
+            r: 60,  // Adjust the right margin (in pixels)
+            t: 40,  // Adjust the top margin (in pixels)
+            b: 40,  // Adjust the bottom margin (in pixels)
+        },
     };
 
     const config = {

@@ -10,10 +10,14 @@ const Headers = () => {
     return (
         <div className="fixed top-0 navbar bg-white text-neutral-content">
             <div className="navbar-start">
-                <Image src="/icons/flood-resilience-logo.svg" alt="Heart Icon" width={90} height={15} />
+                <Link href="/">
+                    <Image src="/icons/flood-resilience-logo.svg" alt="od-resilience-logo" width={90} height={10} />
+                </Link>
             </div>
             <div className="navbar-center">
-                <Image src="/icons/bangladesh-govt-logo-vector.svg" alt="Heart Icon" width={50} height={20} />
+                <Link href="/">
+                    <Image src="/icons/pani-unnoyon-board.png" alt="pani-unnoyon-board" width={50} height={20} />
+                </Link>
             </div>
             <div className="navbar-end">
                 <Link href="/rain-fall" target="_blank" className="btn btn-sm mr-1.5">Rain Fall</Link>
