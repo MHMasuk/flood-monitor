@@ -90,6 +90,7 @@ const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paper
             // title: 'Date and Time',
             tickangle: -45,
             tickformat: '%d %b-%H:%M' // Format for date and time
+            // tickformat: '%d %b' // Format for date and time
         },
         yaxis: {title: 'Water Level (m)'},
         legend: {
