@@ -208,7 +208,7 @@ export default function Home() {
         },
         {
             "datetime": "2023-08-27T09:00:00",
-            "value": 53.80
+            "value": 53.90
         }
     ]
 
@@ -824,6 +824,15 @@ export default function Home() {
         }
     }
 
+    async function logMovies() {
+        console.log("Log movies")
+        const response = await fetch("/api/teesta-plot");
+        const movies = await response.json();
+        console.log("movies", movies);
+        const data = JSON.parse(movies)
+        console.log("data movies", data.date1)
+    }
+
     useEffect(() => {
         // setTimeout(() => {
         //     // Fetch a new token before making the first API requests
@@ -832,6 +841,7 @@ export default function Home() {
         //     fetchNewData('/api/doani', setDoaniaStationData);
         //     fetchNewData('/api/dalia', setDaliaStationData);
         // }, 2000)
+
 
         // Fetch a new token before making the first API requests
         fetchData('/api/mikligong', setMikliGongStationData);
@@ -845,7 +855,7 @@ export default function Home() {
             fetchData('/api/domohoni', setDomohoniWaterLevelData);
             fetchNewData('/api/doani', setDoaniaStationData);
             fetchNewData('/api/dalia', setDaliaStationData);
-        }, 15 * 60 * 1000);
+        }, 6000);
 
 
         return () => {
@@ -864,6 +874,8 @@ export default function Home() {
     //     );
     // }
 
+
+
     return (
         <main className="h-screen flex justify-center items-center">
             {mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 && daliaStationData.length > 0 && doaniaStationData.length > 0 ? (
@@ -874,6 +886,7 @@ export default function Home() {
                     daliaStationData={daliaStationData}
                     // daliaStationData={daliaDataNew}
                     doaniaStationData={doaniaStationData}
+                    // doaniaStationData={daliaDataNew}
                     // productData={productData}
                 />
             ) : (
