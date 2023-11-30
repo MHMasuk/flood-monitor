@@ -52,11 +52,6 @@ const Trend = () => {
             })
     }, []);
 
-    // const dischargeDaliaData = await dischargeDalia()
-    // const OutlookProbabilityDaliaData = await OutlookProbabilityDalia()
-
-    console.log("dischargeDaliaData", dischargeDaliaData)
-    console.log("OutlookProbabilityDaliaData", outlookProbabilityDaliaData)
 
     return (
         <div className="h-screen flex justify-center items-center p-4">
