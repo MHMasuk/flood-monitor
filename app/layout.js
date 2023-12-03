@@ -16,13 +16,13 @@ export const metadata = {
 export default function RootLayout({children}) {
     return (
         <html lang="en">
-        <MyJWTContextProvider>
+        {/*<MyJWTContextProvider>*/}
             <body className="max-h-screen bg-neutral">
                 <Headers />
                     {children}
                 <Footer />
             </body>
-        </MyJWTContextProvider>
+        {/*</MyJWTContextProvider>*/}
         </html>
     )
 }

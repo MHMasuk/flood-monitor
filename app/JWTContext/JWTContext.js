@@ -39,7 +39,7 @@ export function MyJWTContextProvider({ children }) {
             console.log('Token updated:', newToken);
 
             // Schedule the next token update after 18 hours
-            setTimeout(fetchToken, 18 * 60 * 60 * 1000);
+            // setTimeout(fetchToken, 18 * 60 * 60 * 1000);
             // setTimeout(fetchToken, 1000);
         } catch (error) {
             console.log('Error fetching token:', error);
