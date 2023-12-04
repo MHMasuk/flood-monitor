@@ -1,132 +1,11 @@
 "use client";
 
-
-import Cookies from 'js-cookie';
-import { serialize, parse } from 'cookie';
-
 // api call
 import MainChartNew from "@/app/components/Chart/mainChartNew";
 
 import React, {useEffect, useRef, useState} from "react";
 
-async function getDaliaPointData() {
-    let accessToken = JSON.stringify("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIxLCJyb2xlX2lkIjoxLCJ1c2VybmFtZSI6ImZmd2MiLCJuYW1lIjoiZmZ3YyIsImRlc2lnbmF0aW9uIjoiZmZ3YyIsImVtYWlsIjpudWxsLCJwZXJtaXNzaW9ucyI6WyJtb2RpZnkgQ29uZmlndXJhdGlvbnMiLCJtb2RpZnkgYW5hbHlzaXMiLCJtb2RpZnkgZGFxIiwibW9kaWZ5IGRhcS1wcm9jZXNzb3IiLCJtb2RpZnkgZGF0YS1vcmlnaW4iLCJtb2RpZnkgZGF0YS1vcmlnaW4tcGFyYW1ldGVyIiwibW9kaWZ5IGRhdGEtc2VyaWVzIiwibW9kaWZ5IGRhdGEtc291cmNlIiwibW9kaWZ5IGVkaXQtb2JzZXJ2YXRpb24iLCJtb2RpZnkgZm9sZGVyIiwibW9kaWZ5IGlkYXEiLCJtb2RpZnkgaW1hZ2VzIiwibW9kaWZ5IGludmVudG9yeSIsIm1vZGlmeSBtYWludGVuYW5jZSIsIm1vZGlmeSBtZXRhLWRhdGEiLCJtb2RpZnkgbWV0YS1kYXRhLXRlbXBsYXRlIiwibW9kaWZ5IHBhcmFtZXRlciIsIm1vZGlmeSBwYXJhbWV0ZXItdHlwZSIsIm1vZGlmeSBwZXJtaXNzaW9uIiwibW9kaWZ5IHFjLWNoZWNrIiwibW9kaWZ5IHFjLXJ1bGUiLCJtb2RpZnkgcm9sZSIsIm1vZGlmeSBzdGF0aW9uIiwibW9kaWZ5IHRhZyIsIm1vZGlmeSB0b29scyIsIm1vZGlmeSB1bml0IiwibW9kaWZ5IHVzZXIiLCJ2aWV3IENvbmZpZ3VyYXRpb25zIiwidmlldyBhbmFseXNpcyIsInZpZXcgZGFxIiwidmlldyBkYXEtcHJvY2Vzc29yIiwidmlldyBkYXRhLW9yaWdpbiIsInZpZXcgZGF0YS1vcmlnaW4tcGFyYW1ldGVyIiwidmlldyBkYXRhLXNlcmllcyIsInZpZXcgZGF0YS1zb3VyY2UiLCJ2aWV3IGVkaXQtb2JzZXJ2YXRpb24iLCJ2aWV3IGZvbGRlciIsInZpZXcgaWRhcSIsInZpZXcgaW1hZ2VzIiwidmlldyBpbnZlbnRvcnkiLCJ2aWV3IG1haW50ZW5hbmNlIiwidmlldyBtZXRhLWRhdGEiLCJ2aWV3IG1ldGEtZGF0YS10ZW1wbGF0ZSIsInZpZXcgcGFyYW1ldGVyIiwidmlldyBwYXJhbWV0ZXItdHlwZSIsInZpZXcgcGVybWlzc2lvbiIsInZpZXcgcWMtY2hlY2siLCJ2aWV3IHFjLXJ1bGUiLCJ2aWV3IHJvbGUiLCJ2aWV3IHN0YXRpb24iLCJ2aWV3IHRhZyIsInZpZXcgdG9vbHMiLCJ2aWV3IHVuaXQiLCJ2aWV3IHVzZXIiXSwiY2xpZW50aXAiOiIxNzIuMzEuMTEuMjIiLCJpYXQiOjE2OTI4NTM4MDQsImV4cCI6MTY5Mjk0MDIwNH0.3eo3u5YD3giYee8lCWh7QOt97oTXkurZ-ErwgAyK_vA")
-    function loginAndGetToken() {
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        var raw = JSON.stringify({
-            "username": "ffwc",
-            "password": "ffwc123*#"
-        });
-
-        var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow'
-        };
-
-        fetch("https://swh.bwdb.gov.bd/auth/login", requestOptions)
-            .then(response => response.json()) // Assuming the response contains JSON data
-            .then(data => {
-                if (data && data.token) {
-                    accessToken = data.token;
-                    console.log("Access token:", accessToken);
-                } else {
-                    console.log("Failed to obtain access token");
-                }
-            })
-            .catch(error => console.log('error', error));
-    }
-
-    // Function to check if the token is expired
-    function isTokenExpired() {
-        return false; // Change this to your actual logic.
-    }
-
-    // Function to handle API requests with token management
-    function fetchDataFromAPI() {
-        if (!accessToken || isTokenExpired()) {
-            // Token doesn't exist or is expired, so login and get a new token
-            loginAndGetToken();
-            // return;
-        }
-
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", `Bearer ${accessToken}`);
-
-        var requestOptions = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
-
-        var apiUrl = "http://swh.bwdb.gov.bd/api/observation";
-        var seriesId = 7068;
-        var dateFrom = "2023-08-14T18:00:00";
-        var dateTo = "2023-08-20T18:00:00";
-
-        // Construct the URL with query parameters
-        apiUrl += `?series_id=${seriesId}&date_from=${dateFrom}&date_to=${dateTo}`;
-
-        console.log("apiUrl", apiUrl)
-
-        fetch(apiUrl, requestOptions)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(result => {
-                console.log("result data", result);
-                // You can perform additional actions with the result here if needed.
-            })
-            .catch(error => console.log('error', error));
-    }
-
-    // Call the fetchDataFromAPI function to initiate the process
-    fetchDataFromAPI();
-
-}
-
-
-function loginAndGetToken() {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify({
-        "username": "ffwc",
-        "password": "ffwc123*#"
-    });
-
-    var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-    };
-
-    // Return the Promise from fetch
-    return fetch("https://swh.bwdb.gov.bd/auth/login", requestOptions)
-        .then(response => response.json()) // Assuming the response contains JSON data
-        .then(data => {
-            if (data && data.token) {
-                // Store the token and the current timestamp in localStorage
-                // Cookies.set('token', data.token, { expires: 6 / 24 }); // Expires after 6 hours
-                document.cookie = serialize('token', data.token, {
-                    maxAge: 6 * 60 * 60 // 6 hours
-                });
-                localStorage.setItem('tokenTimestamp', Date.now());
-                console.log("Access token:", data.token);
-            } else {
-                console.log("Failed to obtain access token");
-            }
-        })
-        .catch(error => console.log('error', error));
-}
-
+import {fetchTokenIfExpired} from "@/utils/jwtToken";
 
 export default function Home() {
     const daliaDataNew = [
@@ -771,22 +650,6 @@ export default function Home() {
     const intervalRef = useRef(null); // Create a ref to hold the interval ID
 
     async function fetchData(url, setData) {
-        // Get the token and timestamp from localStorage
-        // let token = localStorage.getItem('token');
-        // let tokenTimestamp = localStorage.getItem('tokenTimestamp');
-        //
-        // // let cookies = parse(req.headers.cookie || '');
-        // // const token = cookies.token;
-        //
-        // console.log("token inside fetch data", token)
-        //
-        // // If there's no token or it's older than 6 hours, fetch a new one
-        // if (!token || Date.now() - tokenTimestamp > 6 * 60 * 60 * 1000) {
-        //     await loginAndGetToken();
-        //     // token = localStorage.getItem('token'); // Update the token
-        //     document.cookie = serialize('token', data.token);
-        // }
-
         try {
             const response = await fetch(url);
             const data = await response.json();
@@ -798,39 +661,27 @@ export default function Home() {
     }
 
     async function fetchNewData(url, setData) {
-        // Get the token and timestamp from localStorage
-        // let token = localStorage.getItem('token');
-        // let tokenTimestamp = localStorage.getItem('tokenTimestamp');
-        //
-        // // let cookies = parse(req.headers.cookie || '');
-        // // const token = cookies.token;
-        //
-        // console.log("token inside fetch data", token)
-        //
-        // // If there's no token or it's older than 6 hours, fetch a new one
-        // if (!token || Date.now() - tokenTimestamp > 6 * 60 * 60 * 1000) {
-        //     await loginAndGetToken();
-        //     // token = localStorage.getItem('token'); // Update the token
-        //     document.cookie = serialize('token', data.token);
-        // }
+
+        const tokenData = await fetchTokenIfExpired();
+
+        console.log("tokenData tokenData", tokenData)
 
         try {
-            const response = await fetch(url);
+            // const response = await fetch(url);
+            const response = await fetch(url, {
+                method: 'GET', // or 'POST' or any other HTTP method
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Custom-Token': `${tokenData}`,
+                },
+                // You can include additional options like body, credentials, etc.
+            });
             const data = await response.json();
             setData(data.data);
         } catch (error) {
             console.error(`Error fetching data from ${url}:`, error);
             // Set error state here
         }
-    }
-
-    async function logMovies() {
-        console.log("Log movies")
-        const response = await fetch("/api/teesta-plot");
-        const movies = await response.json();
-        console.log("movies", movies);
-        const data = JSON.parse(movies)
-        console.log("data movies", data.date1)
     }
 
     useEffect(() => {

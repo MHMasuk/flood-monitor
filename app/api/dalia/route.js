@@ -1,16 +1,13 @@
 import {getFormattedDate} from "@/utils/healper";
 import {NextResponse} from "next/server";
 
-// import {getGlobalVariable} from "@/apiGlobalVariable";
-
 export async function GET(request) {
-    const token_data = process.env.NEXT_PUBLIC_TOKEN
-    // const token_data = getGlobalVariable()
+    const JWTToken = request.headers.get("Custom-Token");
 
     const response = await fetch(`https://swh.bwdb.gov.bd/api/observation?series_id=7068&date_from=${getFormattedDate(new Date().setDate(new Date().getDate() - 3))}&date_to=${getFormattedDate(new Date())}`, {
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token_data}`,
+            'Authorization': `Bearer ${JWTToken}`,
         },
         next: {revalidate: 30} // in every 15 minutes
     })
