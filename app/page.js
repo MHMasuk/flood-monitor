@@ -664,8 +664,6 @@ export default function Home() {
 
         const tokenData = await fetchTokenIfExpired();
 
-        console.log("tokenData tokenData", tokenData)
-
         try {
             // const response = await fetch(url);
             const response = await fetch(url, {
@@ -706,7 +704,7 @@ export default function Home() {
             fetchData('/api/domohoni', setDomohoniWaterLevelData);
             fetchNewData('/api/doani', setDoaniaStationData);
             fetchNewData('/api/dalia', setDaliaStationData);
-        }, 6000);
+        }, 10000);
 
 
         return () => {

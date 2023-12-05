@@ -1,14 +1,16 @@
 import jwt from 'jsonwebtoken'
 
 
+let storedToken = "YOUR_STORED_TOKEN";
+
 const fetchToken = async () => {
     try {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
         const raw = JSON.stringify({
-            "username": "ffwc",
-            "password": "ffwc123*#"
+            "username": process.env.NEXT_PUBLIC_USERNAME,
+            "password": process.env.NEXT_PUBLIC_PASSWORD
         });
 
         const requestOptions = {
@@ -26,8 +28,7 @@ const fetchToken = async () => {
         const result = await response.json();
         const newToken = result.token;
 
-        // setGlobalVariable(newToken)
-        console.log('Token updated:', newToken);
+        storedToken = result.token
 
         // Schedule the next token update after 18 hours
         // setTimeout(fetchToken, 18 * 60 * 60 * 1000);
@@ -53,7 +54,7 @@ const decodeToken = (token) => {
 
 export const fetchTokenIfExpired = async () => {
     try {
-        const storedToken = "YOUR_STORED_TOKEN"; // Store your token somewhere
+        // let storedToken = "YOUR_STORED_TOKEN"; // Store your token somewhere
         const expirationTime = decodeToken(storedToken);
 
         // Check if the token is expired or doesn't exist
