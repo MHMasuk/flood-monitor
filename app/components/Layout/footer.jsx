@@ -5,8 +5,8 @@ const Footer = () => {
   return (
       <footer className="footer items-center fixed bottom-0 bg-neutral text-neutral-content p-1">
           <div className="items-center grid-flow-col">
-              <RimesLogo />
-              <p>Technical Partner Implementing</p>
+              {/*<RimesLogo />*/}
+              <p>Technical Partner Implementing by <strong>The Regional Integrated Multi-Hazard Early Warning System</strong></p>
           </div>
           <div className="flex items-center gap-4 md:place-self-center md:justify-self-end">
               <p>Partner</p>

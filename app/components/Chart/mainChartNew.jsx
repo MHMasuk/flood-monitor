@@ -20,9 +20,6 @@ const MainChartNew = (props) => {
 
     const [play, { stop }] = useSound("./mp3/loud_alarm.mp3");
 
-
-    // console.log("MainChartNew(): daliaStationData", daliaStationData)
-
     // Define state for sound playing
     const [isSoundPlaying, setIsSoundPlaying] = useState(false);
 

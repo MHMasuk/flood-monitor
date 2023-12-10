@@ -4,6 +4,7 @@ import WordWideConcernsIcon from "@/app/components/Icons/WorldWideConcers";
 
 import Image from 'next/image';
 import Link from 'next/link'
+import RimesLogo from "@/app/components/Icons/RimesLogo";
 
 const Headers = () => {
 
@@ -15,7 +16,8 @@ const Headers = () => {
                 </Link>
             </div>
             <div className="navbar-center">
-                <Link href="/">
+                <RimesLogo />
+                <Link href="/" className="ml-1">
                     <Image src="/icons/pani-unnoyon-board.png" alt="pani-unnoyon-board" width={50} height={20} />
                 </Link>
             </div>
