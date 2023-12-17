@@ -12,17 +12,28 @@ const Plot = dynamic(() => import("react-plotly.js"), { ssr: false, })
 const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paperColor}) => {
     const [chartHeight, setChartHeight] = useState(270); // Default chart height
 
+    // Check if chart_data is empty
+    // if (!chart_data || chart_data.length === 0) {
+    //     return (
+    //         <div className="w-full rounded-lg relative" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    //             No data available for chart.
+    //         </div>
+    //     );
+    // }
+
     // Convert datetime values in the data array to GMT+6
     const data = chart_data.map(entry => {
         return {
             ...entry,
             "id": {
-                ...entry.id,
+                ...entry?.id,
                 // "dataTime": convertToGMTPlus6(entry.id.dataTime)
-                "dataTime": entry.id.dataTime
+                "dataTime": entry?.id?.dataTime
             }
         };
     });
+
+    // console.log("data", data[0])
 
     // Function to update the chart height based on screen size
     const updateChartHeight = () => {
@@ -44,15 +55,15 @@ const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paper
 
     const charData = [
         {
-            x: data.map(item => item.id.dataTime),
-            y: data.map(item => item.dataValue),
+            x: data.map(item => item?.id?.dataTime),
+            y: data.map(item => item?.dataValue),
             type: 'scatter',
             mode: 'lines+markers',
             line: {color: 'green',},
             name: 'Measured Water Level',
         },
         {
-            x: [data[0].id.dataTime, data[data.length - 1].id.dataTime],
+            x: [data[0]?.id?.dataTime, data[data.length - 1]?.id?.dataTime],
             y: [warning, warning], // Danger line y-values
             type: 'scatter',
             mode: 'lines+markers',
@@ -60,7 +71,7 @@ const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paper
             name: 'Warning',
         },
         {
-            x: [data[0].id.dataTime, data[data.length - 1].id.dataTime],
+            x: [data[0]?.id?.dataTime, data[data.length - 1]?.id?.dataTime],
             y: [danger, danger], // Danger line y-values
             type: 'scatter',
             mode: 'lines+markers',
@@ -68,7 +79,7 @@ const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paper
             name: 'Danger',
         },
         {
-            x: [data[0].id.dataTime, data[data.length - 1].id.dataTime],
+            x: [data[0]?.id?.dataTime, data[data.length - 1]?.id?.dataTime],
             y: [hfl, hfl], // Danger line y-values
             type: 'scatter',
             mode: 'lines+markers',
@@ -85,6 +96,8 @@ const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paper
         //     name: 'Above HFL',
         // },
     ];
+
+    // const charData = []
 
     const layout = {
         title: title,

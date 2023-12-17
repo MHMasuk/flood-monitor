@@ -48,10 +48,10 @@ const MainChartNew = (props) => {
         //     mikliGongData[1].dataValue <= 65.8;
 
         const mikliGongCondition =
-            (mikliGongData[1].dataValue > 65.8 &&
-            mikliGongData[0].dataValue <= 65.8) ||
-            (mikliGongData[1].dataValue > 66.62 &&
-            mikliGongData[0].dataValue <= 66.62);
+            (mikliGongData[1]?.dataValue > 65.8 &&
+            mikliGongData[0]?.dataValue <= 65.8) ||
+            (mikliGongData[1]?.dataValue > 66.62 &&
+            mikliGongData[0]?.dataValue <= 66.62);
 
 
         // console.log("mikliGongData[0].dataValue, mikliGongData[1].dataValue", mikliGongData[0].dataValue, mikliGongData[1].dataValue)
