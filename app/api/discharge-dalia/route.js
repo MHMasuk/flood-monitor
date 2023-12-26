@@ -60,6 +60,7 @@ export async function GET() {
 
     const date = await findLatestDateAndListFileNames()
 
+    // console.log("data", data)
 
 
 
