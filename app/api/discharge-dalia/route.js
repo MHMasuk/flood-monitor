@@ -62,8 +62,8 @@ export async function GET() {
 
     // console.log("data", data)
 
-
+    let discharge_data = date
 
     // Send the data as a JSON response
-    return NextResponse.json(date);
+    return NextResponse.json(discharge_data);
 }
