@@ -61,8 +61,8 @@ const MainChartNew = (props) => {
         }
 
         const domohoniCondition =
-            domohoniData[1].dataValue > 89.3 &&
-            domohoniData[0].dataValue <= 89.3;
+            domohoniData[1]?.dataValue > 89.3 &&
+            domohoniData[0]?.dataValue <= 89.3;
 
         if (domohoniCondition) {
             setDomohoniAnimation(true)
