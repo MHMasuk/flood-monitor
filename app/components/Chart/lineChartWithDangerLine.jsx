@@ -12,6 +12,13 @@ const Plot = dynamic(() => import("react-plotly.js"), { ssr: false, })
 const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paperColor}) => {
     const [chartHeight, setChartHeight] = useState(270); // Default chart height
 
+    // Function to update the chart height based on screen size
+    const updateChartHeight = () => {
+        const screenHeight = window.innerHeight;
+        const desiredHeight = screenHeight * 0.4; // Adjust this value as needed
+        setChartHeight(desiredHeight);
+    };
+
     useEffect(() => {
         // Set the initial chart height and add a resize event listener
         updateChartHeight();
@@ -45,13 +52,6 @@ const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paper
     });
 
     // console.log("data", data[0])
-
-    // Function to update the chart height based on screen size
-    const updateChartHeight = () => {
-        const screenHeight = window.innerHeight;
-        const desiredHeight = screenHeight * 0.4; // Adjust this value as needed
-        setChartHeight(desiredHeight);
-    };
 
     const charData = [
         {
