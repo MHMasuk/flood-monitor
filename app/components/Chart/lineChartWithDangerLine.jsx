@@ -13,13 +13,13 @@ const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paper
     const [chartHeight, setChartHeight] = useState(270); // Default chart height
 
     // Check if chart_data is empty
-    // if (!chart_data || chart_data.length === 0) {
-    //     return (
-    //         <div className="w-full rounded-lg relative" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    //             No data available for chart.
-    //         </div>
-    //     );
-    // }
+    if (!chart_data || chart_data.length === 0) {
+        return (
+            <div className="w-full rounded-lg relative flex items-center justify-center" style={{ height: chartHeight + 'px', backgroundColor: paperColor}}>
+                No data available for {title}.
+            </div>
+        );
+    }
 
     // Convert datetime values in the data array to GMT+6
     const data = chart_data.map(entry => {
