@@ -12,6 +12,17 @@ const Plot = dynamic(() => import("react-plotly.js"), { ssr: false, })
 const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paperColor}) => {
     const [chartHeight, setChartHeight] = useState(270); // Default chart height
 
+    useEffect(() => {
+        // Set the initial chart height and add a resize event listener
+        updateChartHeight();
+        window.addEventListener('resize', updateChartHeight);
+
+        // Clean up the event listener when the component unmounts
+        return () => {
+            window.removeEventListener('resize', updateChartHeight);
+        };
+    }, []); // Empty dependency array to run this effect once
+
     // Check if chart_data is empty
     if (!chart_data || chart_data.length === 0) {
         return (
@@ -41,17 +52,6 @@ const LineChartWithDangerLine = ({chart_data, title, hfl, danger, warning, paper
         const desiredHeight = screenHeight * 0.4; // Adjust this value as needed
         setChartHeight(desiredHeight);
     };
-
-    useEffect(() => {
-        // Set the initial chart height and add a resize event listener
-        updateChartHeight();
-        window.addEventListener('resize', updateChartHeight);
-
-        // Clean up the event listener when the component unmounts
-        return () => {
-            window.removeEventListener('resize', updateChartHeight);
-        };
-    }, []); // Empty dependency array to run this effect once
 
     const charData = [
         {
