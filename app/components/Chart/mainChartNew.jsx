@@ -48,10 +48,8 @@ const MainChartNew = (props) => {
         //     mikliGongData[1].dataValue <= 65.8;
 
         const mikliGongCondition =
-            (mikliGongData[1]?.dataValue > 65.8 &&
-            mikliGongData[0]?.dataValue <= 65.8) ||
-            (mikliGongData[1]?.dataValue > 66.62 &&
-            mikliGongData[0]?.dataValue <= 66.62);
+            mikliGongData[1]?.dataValue > 65.45 &&
+            mikliGongData[0]?.dataValue <= 65.45
 
 
         // console.log("mikliGongData[0].dataValue, mikliGongData[1].dataValue", mikliGongData[0].dataValue, mikliGongData[1].dataValue)
@@ -61,20 +59,16 @@ const MainChartNew = (props) => {
         }
 
         const domohoniCondition =
-            domohoniData[1]?.dataValue > 89.3 &&
-            domohoniData[0]?.dataValue <= 89.3;
+            domohoniData[1]?.dataValue > 85.65 &&
+            domohoniData[0]?.dataValue <= 85.65;
 
         if (domohoniCondition) {
             setDomohoniAnimation(true)
         }
 
         const daliaCondition =
-            doaniaData[1].value > 51.75 &&
-            doaniaData[0].value <= 51.75 ||
-            doaniaData[1].value > 52.15 &&
-            doaniaData[0].value <= 52.15 ||
-            doaniaData[1].value > 52.84 &&
-            doaniaData[0].value <= 52.84;
+            daliaData[1].value > 51.75 &&
+            daliaData[0].value <= 51.75
 
         // const daliaCondition =
         //     daliaData[1].value > 51.75 &&
@@ -84,13 +78,40 @@ const MainChartNew = (props) => {
             setDaliaAnimation(true)
         }
 
+        // new code
+
+        // const daliaConditions = [
+        //     { level: "warning level", threshold: 51.75 },
+        //     { level: "danger level", threshold: 52.15 },
+        //     { level: "Highest Water flow level", threshold: 52.84 }
+        // ];
+        //
+        // // Assuming daliaData is an array of data points
+        // const lastDataPoint = daliaData[daliaData.length - 1];
+        // const secondLastDataPoint = daliaData[daliaData.length - 2];
+        //
+        // let daliaCondition = false;
+        //
+        // for (const condition of daliaConditions) {
+        //     if (
+        //         lastDataPoint.value > condition.threshold &&
+        //         secondLastDataPoint.value <= condition.threshold
+        //     ) {
+        //         // If the last data point is above the threshold and the second last is not
+        //         daliaCondition = true;
+        //         break; // Exit the loop if condition is met for any level
+        //     }
+        // }
+        //
+        // if (daliaCondition) {
+        //     setDaliaAnimation(true);
+        // }
+        //
+        // console.log("daliaCondition", daliaCondition)
+
         const doaniaCondition =
             doaniaData[1].value > 51.75 &&
-            doaniaData[0].value <= 51.75 ||
-            doaniaData[1].value > 52.15 &&
-            doaniaData[0].value <= 52.15 ||
-            doaniaData[1].value > 52.84 &&
-            doaniaData[0].value <= 52.84;
+            doaniaData[0].value <= 51.75
 
         if (doaniaCondition) {
             setDoaniaAnimation(true)
