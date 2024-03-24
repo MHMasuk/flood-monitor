@@ -23,7 +23,7 @@ const Headers = () => {
             </div>
             <div className="navbar-end">
                 <Link href="/rain-fall" target="_blank" className="btn btn-sm mr-1.5">RainFall Observation</Link>
-                <Link href="/trend" target="_blank" className="btn btn-sm">Teesta Plots</Link>
+                <Link href="/trend" target="_blank" className="btn btn-sm">Teesta Hydrograph</Link>
                 <WordWideConcernsIcon />
             </div>
 

@@ -41,6 +41,16 @@ const DoaniaChart = ({chart_data, title, hfl, danger, warning, paperColor}) => {
     }, []);
 
 
+    // Check if chart_data is empty
+    if (!chart_data || chart_data.length === 0) {
+        return (
+            <div className="w-full rounded-lg relative flex items-center justify-center" style={{ height: chartHeight + 'px', backgroundColor: paperColor}}>
+                No data available for {title}.
+            </div>
+        );
+    }
+
+
     const charData = [
         {
             x: data.map(item => item.datetime),
@@ -88,9 +98,6 @@ const DoaniaChart = ({chart_data, title, hfl, danger, warning, paperColor}) => {
     const layout = {
         title: title,
         xaxis: {
-            // title: 'Date and Time',
-            // tickangle: -45,
-            // tickformat: '%d %b-%H:%M', // Format for date and time
             tickmode: 'linear',
         },
         yaxis: {title: 'Water Level (m)'},
