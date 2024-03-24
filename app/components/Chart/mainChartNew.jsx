@@ -79,36 +79,6 @@ const MainChartNew = (props) => {
         }
 
         // new code
-
-        // const daliaConditions = [
-        //     { level: "warning level", threshold: 51.75 },
-        //     { level: "danger level", threshold: 52.15 },
-        //     { level: "Highest Water flow level", threshold: 52.84 }
-        // ];
-        //
-        // // Assuming daliaData is an array of data points
-        // const lastDataPoint = daliaData[daliaData.length - 1];
-        // const secondLastDataPoint = daliaData[daliaData.length - 2];
-        //
-        // let daliaCondition = false;
-        //
-        // for (const condition of daliaConditions) {
-        //     if (
-        //         lastDataPoint.value > condition.threshold &&
-        //         secondLastDataPoint.value <= condition.threshold
-        //     ) {
-        //         // If the last data point is above the threshold and the second last is not
-        //         daliaCondition = true;
-        //         break; // Exit the loop if condition is met for any level
-        //     }
-        // }
-        //
-        // if (daliaCondition) {
-        //     setDaliaAnimation(true);
-        // }
-        //
-        // console.log("daliaCondition", daliaCondition)
-
         const doaniaCondition =
             doaniaData[1].value > 51.75 &&
             doaniaData[0].value <= 51.75

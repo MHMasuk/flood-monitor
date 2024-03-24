@@ -614,9 +614,9 @@ export default function Home() {
 
     async function fetchNewData(url, setData) {
 
-        const tokenData = await fetchTokenIfExpired();
-
         try {
+            const tokenData = await fetchTokenIfExpired();
+
             // const response = await fetch(url);
             const response = await fetch(url, {
                 method: 'GET', // or 'POST' or any other HTTP method
@@ -630,20 +630,12 @@ export default function Home() {
             setData(data.data);
         } catch (error) {
             console.error(`Error fetching data from ${url}:`, error);
-            // Set error state here
+
+            setData([]);
         }
     }
 
     useEffect(() => {
-        // setTimeout(() => {
-        //     // Fetch a new token before making the first API requests
-        //     fetchData('/api/mikligong', setMikliGongStationData);
-        //     fetchData('/api/domohoni', setDomohoniWaterLevelData);
-        //     fetchNewData('/api/doani', setDoaniaStationData);
-        //     fetchNewData('/api/dalia', setDaliaStationData);
-        // }, 2000)
-
-
         // Fetch a new token before making the first API requests
         fetchData('/api/mikligong', setMikliGongStationData);
         fetchData('/api/domohoni', setDomohoniWaterLevelData);

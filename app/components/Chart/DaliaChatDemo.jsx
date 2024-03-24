@@ -9,13 +9,10 @@ const Plot = dynamic(() => import("react-plotly.js"), { ssr: false, })
 const DaliaChartDemo = ({chart_data, title, hfl, danger, warning, paperColor}) => {
     const [chartHeight, setChartHeight] = useState(270); // Default chart height
 
-    // console.log("DaliaChartDemo chart data", chart_data)
-
     // Convert datetime values in the data array to GMT+6
     const data = chart_data.map(entry => {
         return {
             "datetime": convertToGMTPlus6(entry.datetime),
-            // "datetime": entry.datetime,
             "value": entry.value
         };
     });
@@ -38,6 +35,14 @@ const DaliaChartDemo = ({chart_data, title, hfl, danger, warning, paperColor}) =
         };
     }, []); // Empty dependency array to run this effect once
 
+    // Check if chart_data is empty
+    if (!chart_data || chart_data.length === 0) {
+        return (
+            <div className="w-full rounded-lg relative flex items-center justify-center" style={{ height: chartHeight + 'px', backgroundColor: paperColor}}>
+                No data available for {title}.
+            </div>
+        );
+    }
 
     const charData = [
         {
@@ -71,26 +76,13 @@ const DaliaChartDemo = ({chart_data, title, hfl, danger, warning, paperColor}) =
             mode: 'lines+markers',
             line: {color: 'red'},
             name: 'HFL',
-        },
-        // Add a trace for the warning when line is above HFL
-        // {
-        //     x: data.map(item => item.id.dataTime),
-        //     y: data.map(item => item.dataValue > 65.62 ? item.dataValue : null), // Null values where no warning
-        //     type: 'scatter',
-        //     mode: 'markers',
-        //     marker: { color: 'red', size: 8, symbol: 'triangle-up' },
-        //     name: 'Above HFL',
-        // },
+        }
     ];
 
     const layout = {
         title: title,
         xaxis: {
-            // title: 'Date and Time',
-            // tickangle: -45,
-            // tickformat: '%d %b-%H:%M' // Format for date and
             tickmode: 'linear',
-            // nticks: 20,
         },
         yaxis: {title: 'Water Level (m)'},
         legend: {
