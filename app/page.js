@@ -6,8 +6,10 @@ import MainChartNew from "@/app/components/Chart/mainChartNew";
 import React, {useEffect, useRef, useState} from "react";
 
 import {fetchTokenIfExpired} from "@/utils/jwtToken";
+import {useDummyDataContext} from "@/app/context/DummyDataContext";
 
 export default function Home() {
+    const {dummyData} = useDummyDataContext();
     const daliaDataNew = [
         {
             "datetime": "2023-08-27T03:30:00",
@@ -101,80 +103,80 @@ export default function Home() {
 
     const doaniaData = [
         {
-            "datetime":"2024-03-04T02:30:00",
-            "value":49.162
+            "datetime": "2024-03-04T02:30:00",
+            "value": 49.162
         },
         {
-            "datetime":"2024-03-04T02:45:00",
-            "value":49.159
+            "datetime": "2024-03-04T02:45:00",
+            "value": 49.159
         },
         {
-            "datetime":"2024-03-04T03:00:00",
-            "value":49.155
+            "datetime": "2024-03-04T03:00:00",
+            "value": 49.155
         },
         {
-            "datetime":"2024-02-25T03:15:00",
-            "value":49.098
+            "datetime": "2024-02-25T03:15:00",
+            "value": 49.098
         },
         {
-            "datetime":"2024-02-25T03:30:00",
-            "value":48.99
+            "datetime": "2024-02-25T03:30:00",
+            "value": 48.99
         },
         {
-            "datetime":"2024-02-25T03:45:00",
-            "value":48.938
+            "datetime": "2024-02-25T03:45:00",
+            "value": 48.938
         },
         {
-            "datetime":"2024-02-25T04:00:00",
-            "value":48.905
+            "datetime": "2024-02-25T04:00:00",
+            "value": 48.905
         },
         {
-            "datetime":"2024-02-25T04:15:00",
-            "value":48.884
+            "datetime": "2024-02-25T04:15:00",
+            "value": 48.884
         },
         {
-            "datetime":"2024-02-25T04:30:00",
-            "value":48.813
+            "datetime": "2024-02-25T04:30:00",
+            "value": 48.813
         },
         {
-            "datetime":"2024-02-25T04:45:00",
-            "value":48.776
+            "datetime": "2024-02-25T04:45:00",
+            "value": 48.776
         },
         {
-            "datetime":"2024-02-25T05:00:00",
-            "value":48.746
+            "datetime": "2024-02-25T05:00:00",
+            "value": 48.746
         },
         {
-            "datetime":"2024-02-25T05:15:00",
-            "value":48.731
+            "datetime": "2024-02-25T05:15:00",
+            "value": 48.731
         },
         {
-            "datetime":"2024-02-25T05:30:00",
-            "value":48.718
+            "datetime": "2024-02-25T05:30:00",
+            "value": 48.718
         },
         {
-            "datetime":"2024-02-25T05:45:00",
-            "value":48.709
+            "datetime": "2024-02-25T05:45:00",
+            "value": 48.709
         },
         {
-            "datetime":"2024-02-25T06:00:00",
-            "value":48.698
+            "datetime": "2024-02-25T06:00:00",
+            "value": 48.698
         },
         {
-            "datetime":"2024-02-25T06:15:00",
-            "value":48.692
+            "datetime": "2024-02-25T06:15:00",
+            "value": 48.692
         },
         {
-            "datetime":"2024-02-25T06:30:00",
-            "value":48.686
+            "datetime": "2024-02-25T06:30:00",
+            "value": 48.686
         },
         {
-            "datetime":"2024-02-25T06:45:00",
-            "value":48.678
+            "datetime": "2024-02-25T06:45:00",
+            "value": 48.678
         },
         {
-            "datetime":"2024-02-25T07:00:00",
-            "value":48.678
+            "datetime": "2024-02-25T07:00:00",
+            "value": 48.678
         }
     ]
 
@@ -662,21 +664,38 @@ export default function Home() {
         <main className="h-screen flex justify-center items-center">
             {/*{mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 && daliaStationData.length > 0 && doaniaStationData.length > 0 ? (*/}
             {/*{domohoniWaterLevelData.length > 0 && daliaStationData.length > 0 && doaniaStationData.length > 0 ? (*/}
-            { daliaStationData.length > 0 && doaniaStationData.length > 0 ? (
-            // {mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 ? (
-                <MainChartNew
-                    mikliGongStationData={mikliGongStationData}
-                    domohoniWaterLevelData={domohoniWaterLevelData}
-                    daliaStationData={daliaStationData}
-                    doaniaStationData={doaniaStationData}
-                    // productData={productData}
+            {daliaStationData.length > 0 && doaniaStationData.length > 0 ? (
+                // {mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 ? (
+                //     <MainChartNew
+                //         mikliGongStationData={mikliGongStationData}
+                //         domohoniWaterLevelData={domohoniWaterLevelData}
+                //         daliaStationData={daliaStationData}
+                //         doaniaStationData={doaniaStationData}
+                //         // productData={productData}
+                //
+                //         // For test purpose
+                //         // mikliGongStationData={mikligongData}
+                //         // domohoniWaterLevelData={domohoniDataNew}
+                //         // daliaStationData={daliaDataNew}
+                //         // doaniaStationData={daliaDataNew}
+                //     />
 
-                    // For test purpose
-                    // mikliGongStationData={mikligongData}
-                    // domohoniWaterLevelData={domohoniDataNew}
-                    // daliaStationData={daliaDataNew}
-                    // doaniaStationData={daliaDataNew}
-                />
+                dummyData ? (
+                    <MainChartNew
+                        // For test purpose
+                        mikliGongStationData={mikligongData}
+                        domohoniWaterLevelData={domohoniDataNew}
+                        daliaStationData={daliaDataNew}
+                        doaniaStationData={daliaDataNew}
+                    />
+                ) : (
+                    <MainChartNew
+                        mikliGongStationData={mikliGongStationData}
+                        domohoniWaterLevelData={domohoniWaterLevelData}
+                        daliaStationData={daliaStationData}
+                        doaniaStationData={doaniaStationData}
+                    />
+                )
             ) : (
                 // Render a loading indicator or message
                 <p>Loading...</p>
