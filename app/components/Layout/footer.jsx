@@ -10,7 +10,7 @@ const Footer = () => {
           </div>
           <div className="flex items-center gap-4 md:place-self-center md:justify-self-end">
               <p>Partner</p>
-              <Image src='/icons/gku_logo.jpg' alt='GKU Logo' width={40} height={40} quality={100}/>
+              <Image className="bg-white" src='/icons/gku_logo.png' alt='GKU Logo' width={200} height={100} quality={100}/>
           </div>
       </footer>
   )
