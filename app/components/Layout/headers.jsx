@@ -12,7 +12,7 @@ const Headers = () => {
         <div className="fixed top-0 navbar bg-white text-neutral-content">
             <div className="navbar-start">
                 <Link href="/">
-                    <Image src="/icons/flood-resilience-logo.svg" alt="od-resilience-logo" width={90} height={10} />
+                    <Image src="/icons/flood_resilence.png" alt="od-resilience-logo" width={100} height={20} />
                 </Link>
             </div>
             <div className="navbar-center">
@@ -22,11 +22,10 @@ const Headers = () => {
                 </Link>
             </div>
             <div className="navbar-end">
-                <Link href="/rain-fall" target="_blank" className="btn btn-sm mr-1.5">RainFall Observation</Link>
+                <Link href="/rain-fall" target="_blank" className="btn btn-sm mr-1.5">RainFall Forecast</Link>
                 <Link href="/trend" target="_blank" className="btn btn-sm">Teesta Hydrograph</Link>
                 <WordWideConcernsIcon />
             </div>
-
         </div>
     )
 }
