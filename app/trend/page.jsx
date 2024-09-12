@@ -58,12 +58,12 @@ const Trend = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col justify-center items-center">
                     {/*<img src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/${dischargeDaliaData}`} alt="Image 1" className="max-h-screen w-auto" />*/}
-                    <img src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/10092024_corr_DL.png`} alt="Image 1" className="max-h-screen w-auto" />
+                    <img src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/11092024_corr_DL.png`} alt="Image 1" className="max-h-screen w-auto" />
                     {/*<img src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/${outlookProbabilityDaliaData}`} alt="Image 2" className="max-h-screen w-auto" />*/}
                 </div>
                 <div className="flex flex-col justify-center items-center">
                     {/*<img src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/${outlookProbabilityDaliaData}`} alt="Image 2" className="max-h-screen w-auto" />*/}
-                    <img src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/exceendence20240910.png`} alt="Image 2" className="max-h-screen w-auto" />
+                    <img src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/exceendence20240911.png`} alt="Image 2" className="max-h-screen w-auto" />
                 </div>
             </div>
         </div>
