@@ -22,7 +22,6 @@ const DoaniaChart = ({chart_data, title, hfl, danger, warning, paperColor}) => {
             };
         });
 
-
     // Function to update the chart height based on screen size
     const updateChartHeight = () => {
         const screenHeight = window.innerHeight;
