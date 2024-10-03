@@ -13,13 +13,14 @@ const DoaniaChart = ({chart_data, title, hfl, danger, warning, paperColor}) => {
     const [chartHeight, setChartHeight] = useState(270); // Default chart height
 
     // Convert datetime values in the data array to GMT+6
-    const data = chart_data.map(entry => {
-        return {
-            "datetime": convertToGMTPlus6(entry.datetime),
-            "value": entry.value
-        };
-    });
-
+    const data = chart_data
+        .filter(entry => entry.value >= 0)  // Remove entries with negative values
+        .map(entry => {
+            return {
+                "datetime": convertToGMTPlus6(entry.datetime),
+                "value": entry.value
+            };
+        });
 
 
     // Function to update the chart height based on screen size
