@@ -5,6 +5,7 @@ import WordWideConcernsIcon from "@/app/components/Icons/WorldWideConcers";
 import Image from 'next/image';
 import Link from 'next/link'
 import RimesLogo from "@/app/components/Icons/RimesLogo";
+import LiveClockUpdate from "@/app/components/Chart/LiveClockUpdate";
 
 const Headers = () => {
 
@@ -14,6 +15,9 @@ const Headers = () => {
                 <Link href="/">
                     <Image src="/icons/flood_resilence.png" alt="od-resilience-logo" width={100} height={20} />
                 </Link>
+                <div className="ml-8 text-2xl text-black font-bold">
+                    <LiveClockUpdate />
+                </div>
             </div>
             <div className="navbar-center">
                 <RimesLogo />
