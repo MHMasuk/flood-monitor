@@ -16,7 +16,7 @@ const MainChartNew = (props) => {
         productData
     } = props;
 
-    console.log("data mikliGongStationData, daliaStationData, doaniaStationData, domohoniWaterLevelData", mikliGongStationData.length, daliaStationData.length, doaniaStationData.length, domohoniWaterLevelData.length)
+    console.log("data mikliGongStationData, daliaStationData, doaniaStationData, domohoniWaterLevelData", mikliGongStationData.length, daliaStationData.length, doaniaStationData.length, domohoniWaterLevelData)
 
     const [play, { stop }] = useSound("./mp3/loud_alarm.mp3");
 
