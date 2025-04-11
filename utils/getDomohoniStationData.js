@@ -51,7 +51,7 @@ export async function getDomohoniStationData() {
         }
     };
 
-    console.log("data, ", `${getFormattedDate(new Date().setDate(new Date().getDate() - 3))},${getFormattedDate(new Date())}`)
+    // console.log("data, ", `${getFormattedDate(new Date().setDate(new Date().getDate() - 3))},${getFormattedDate(new Date())}`)
     const queryParams = new URLSearchParams({
         'sort-criteria': JSON.stringify(sortCriteria),
         'specification': JSON.stringify(specification)
@@ -61,7 +61,9 @@ export async function getDomohoniStationData() {
 
     // console.log(finalUrl);
 
-    const res = await fetch(finalUrl, {next: {revalidate: 30}})
+    const res = await fetch(finalUrl, {
+        cache: 'no-store' // Disable caching
+    })
     // The return value is *not* serialized
     // You can return Date, Map, Set, etc.
 
