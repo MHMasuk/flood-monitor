@@ -1,0 +1,23 @@
+{
+  "regions": ["bom1"],
+  "functions": {
+    "app/api/mikligong/route.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "app/api/domohoni/route.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/mikligong",
+      "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/domohoni",
+      "schedule": "*/10 * * * *"
+    }
+  ]
+}
