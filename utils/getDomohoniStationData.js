@@ -59,7 +59,7 @@ export async function getDomohoniStationData() {
 
     const finalUrl = `${baseUrl}?${queryParams.toString()}`;
 
-    // console.log(finalUrl);
+    console.log(finalUrl);
 
     const res = await fetch(finalUrl, {
         cache: 'no-store' // Disable caching
