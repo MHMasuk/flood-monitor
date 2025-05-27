@@ -1,69 +1,87 @@
 "use client"
 
-import React, {useEffect, useState, useMemo} from "react";
-
-// async function dischargeDalia() {
-//     const res = await fetch('/api/discharge-dalia', { next: { revalidate: 3600 }})
-//     // // The return value is *not* serialized
-//     // // You can return Date, Map, Set, etc.
-//     //
-//     // console.log(JSON.stringify(res.text()))
-//     //
-//     if (!res.ok) {
-//         // This will activate the closest `error.js` Error Boundary
-//         throw new Error('Failed to fetch data')
-//     }
-//
-//     return res.json()
-// }
-//
-// async function OutlookProbabilityDalia() {
-//     const res = await fetch('/api/probability-dalia', { next: { revalidate: 3600 }})
-//     // // The return value is *not* serialized
-//     // // You can return Date, Map, Set, etc.
-//     //
-//     // console.log(JSON.stringify(res.text()))
-//     //
-//     if (!res.ok) {
-//         // This will activate the closest `error.js` Error Boundary
-//         throw new Error('Failed to fetch data')
-//     }
-//
-//     return res.json()
-// }
-
-
+import React, {useEffect, useState} from "react";
 
 const Trend = () => {
-    const [dischargeDaliaData, setDischargeDaliaData] = useState(null)
-    const [outlookProbabilityDaliaData, setOutlookProbabilityDaliaData] = useState(null)
+    const [imageData, setImageData] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
-        fetch('/api/probability-dalia')
-            .then((res) => res.json())
-            .then((data) => {
-                setOutlookProbabilityDaliaData(data)
-            })
+        const fetchData = async () => {
+            try {
+                setLoading(true)
+                const res = await fetch('/api/trend-data')
 
-        fetch('/api/discharge-dalia')
-            .then((res) => res.json())
-            .then((data) => {
-                setDischargeDaliaData(data)
-            })
-    }, []);
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`)
+                }
 
+                const response = await res.json()
+
+                // console.log(response)
+
+                setImageData(response)
+            } catch (err) {
+                console.error('Error fetching data:', err)
+                setError(err.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchData()
+    }, [])
+
+    if (loading) {
+        return (
+            <div className="h-screen flex justify-center items-center">
+                <div className="flex flex-col items-center space-y-4">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    <p className="text-gray-600">Loading trend data...</p>
+                </div>
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="h-screen flex justify-center items-center">
+                <div className="text-center">
+                    <p className="text-red-600 mb-4">Error loading data: {error}</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    >
+                        Retry
+                    </button>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="h-screen flex justify-center items-center p-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col justify-center items-center">
-                    {/*<img src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/${dischargeDaliaData}`} alt="Image 1" className="max-h-screen w-auto" />*/}
-                    <img src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/14102024_corr_DL.png`} alt="Image 1" className="max-h-screen w-auto" />
-                    {/*<img src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/${outlookProbabilityDaliaData}`} alt="Image 2" className="max-h-screen w-auto" />*/}
+                    <img
+                        src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/${imageData?.discharge_level?.replace('./plots/', '') || '14102024_corr_DL.png'}`}
+                        alt="Discharge Level Chart"
+                        className="max-h-screen w-auto"
+                        onError={(e) => {
+                            e.target.src = `https://flood-ffwc.rimes.int/others/teesta-tank-plts/14102024_corr_DL.png`
+                        }}
+                    />
                 </div>
                 <div className="flex flex-col justify-center items-center">
-                    {/*<img src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/${outlookProbabilityDaliaData}`} alt="Image 2" className="max-h-screen w-auto" />*/}
-                    <img src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/exceendence20241014.png`} alt="Image 2" className="max-h-screen w-auto" />
+                    <img
+                        src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/${imageData?.exceedance?.replace('./plots/', '') || 'exceendence20241014.png'}`}
+                        alt="Exceedance Chart"
+                        className="max-h-screen w-auto"
+                        onError={(e) => {
+                            e.target.src = `https://flood-ffwc.rimes.int/others/teesta-tank-plts/exceendence20241014.png`
+                        }}
+                    />
                 </div>
             </div>
         </div>
