@@ -662,43 +662,31 @@ export default function Home() {
 
     return (
         <main className="h-screen flex justify-center items-center">
-            {/*{mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 && daliaStationData.length > 0 && doaniaStationData.length > 0 ? (*/}
-            {/*{domohoniWaterLevelData.length > 0 && daliaStationData.length > 0 && doaniaStationData.length > 0 ? (*/}
-            {daliaStationData.length > 0 && doaniaStationData.length > 0 ? (
-                // {mikliGongStationData.length > 0 && domohoniWaterLevelData.length > 0 ? (
-                //     <MainChartNew
-                //         mikliGongStationData={mikliGongStationData}
-                //         domohoniWaterLevelData={domohoniWaterLevelData}
-                //         daliaStationData={daliaStationData}
-                //         doaniaStationData={doaniaStationData}
-                //         // productData={productData}
-                //
-                //         // For test purpose
-                //         // mikliGongStationData={mikligongData}
-                //         // domohoniWaterLevelData={domohoniDataNew}
-                //         // daliaStationData={daliaDataNew}
-                //         // doaniaStationData={daliaDataNew}
-                //     />
-
+            {/* Safe null checks using optional chaining and logical OR */}
+            {(daliaStationData?.length > 0) ? (
                 dummyData ? (
                     <MainChartNew
                         // For test purpose
-                        mikliGongStationData={mikligongData}
-                        domohoniWaterLevelData={domohoniDataNew}
-                        daliaStationData={daliaDataNew}
-                        doaniaStationData={daliaDataNew}
+                        mikliGongStationData={mikligongData || []}
+                        domohoniWaterLevelData={domohoniDataNew || []}
+                        daliaStationData={daliaDataNew || []}
+                        doaniaStationData={daliaDataNew || []}
                     />
                 ) : (
                     <MainChartNew
-                        mikliGongStationData={mikliGongStationData}
-                        domohoniWaterLevelData={domohoniWaterLevelData}
-                        daliaStationData={daliaStationData}
-                        doaniaStationData={doaniaStationData}
+                        mikliGongStationData={mikliGongStationData || []}
+                        domohoniWaterLevelData={domohoniWaterLevelData || []}
+                        daliaStationData={daliaStationData || []}
+                        doaniaStationData={doaniaStationData || []}
                     />
                 )
             ) : (
-                // Render a loading indicator or message
-                <p>Loading...</p>
+                // Enhanced loading/error state with white background
+                <div className="bg-white p-8 rounded-lg border border-gray-200 shadow-lg text-center">
+                    <div className="loading loading-spinner loading-lg mb-4"></div>
+                    <p className="text-gray-600 text-lg">Loading chart data...</p>
+                    <p className="text-gray-400 text-sm mt-2">Please wait while we fetch the latest data</p>
+                </div>
             )}
         </main>
     )

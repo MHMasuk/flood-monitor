@@ -8,9 +8,14 @@ const fetchToken = async () => {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
+        // const raw = JSON.stringify({
+        //     "username": process.env.NEXT_PUBLIC_USERNAME,
+        //     "password": process.env.NEXT_PUBLIC_PASSWORD
+        // });
+
         const raw = JSON.stringify({
-            "username": process.env.NEXT_PUBLIC_USERNAME,
-            "password": process.env.NEXT_PUBLIC_PASSWORD
+            "username": 'rimes',
+            "password": 'swcswc!@#$'
         });
 
         const requestOptions = {
