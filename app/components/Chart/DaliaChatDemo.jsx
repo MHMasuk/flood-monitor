@@ -85,6 +85,13 @@ const DaliaChartDemo = ({chart_data, title, hfl, danger, warning, paperColor}) =
         title: title,
         xaxis: {
             tickmode: 'linear',
+            tickformat: '%d %b %Y', // Show full date and time
+            // tickangle: -45, // Rotate labels to prevent overlap
+            automargin: true, // Automatically adjust margins for rotated labels
+            nticks: 10, // Limit number of ticks to prevent overcrowding
+            tickfont: {
+                size: 10 // Smaller font size for better fit
+            }
         },
         yaxis: {title: 'Water Level (m)'},
         legend: {
@@ -95,7 +102,7 @@ const DaliaChartDemo = ({chart_data, title, hfl, danger, warning, paperColor}) =
             l: 60,  // Adjust the left margin (in pixels)
             r: 60,  // Adjust the right margin (in pixels)
             t: 40,  // Adjust the top margin (in pixels)
-            b: 40,  // Adjust the bottom margin (in pixels)
+            b: 80,  // Increase bottom margin for rotated labels
         },
     };
 
