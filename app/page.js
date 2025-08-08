@@ -71,7 +71,7 @@ export default function Home() {
 
     return (
         <main className="h-screen flex justify-center items-center">
-            {(daliaStationData?.length > 0) ? (
+            {(mikliGongStationData?.length > 0) ? (
                 <MainChartNew
                     mikliGongStationData={mikliGongStationData || []}
                     domohoniWaterLevelData={domohoniWaterLevelData || []}
@@ -86,6 +86,13 @@ export default function Home() {
                     <p className="text-gray-400 text-sm mt-2">Please wait while we fetch the latest data</p>
                 </div>
             )}
+
+            {/*<MainChartNew*/}
+            {/*    mikliGongStationData={mikliGongStationData || []}*/}
+            {/*    domohoniWaterLevelData={domohoniWaterLevelData || []}*/}
+            {/*    daliaStationData={daliaStationData || []}*/}
+            {/*    doaniaStationData={doaniaStationData || []}*/}
+            {/*/>*/}
         </main>
     )
 }
