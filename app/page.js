@@ -71,28 +71,28 @@ export default function Home() {
 
     return (
         <main className="h-screen flex justify-center items-center">
-            {(mikliGongStationData?.length > 0) ? (
-                <MainChartNew
-                    mikliGongStationData={mikliGongStationData || []}
-                    domohoniWaterLevelData={domohoniWaterLevelData || []}
-                    daliaStationData={daliaStationData || []}
-                    doaniaStationData={doaniaStationData || []}
-                />
-            ) : (
-                // Loading state
-                <div className="bg-white p-8 rounded-lg border border-gray-200 shadow-lg text-center">
-                    <div className="loading loading-spinner loading-lg mb-4"></div>
-                    <p className="text-gray-600 text-lg">Loading chart data...</p>
-                    <p className="text-gray-400 text-sm mt-2">Please wait while we fetch the latest data</p>
-                </div>
-            )}
+            {/*{(mikliGongStationData?.length > 0) ? (*/}
+            {/*    <MainChartNew*/}
+            {/*        mikliGongStationData={mikliGongStationData || []}*/}
+            {/*        domohoniWaterLevelData={domohoniWaterLevelData || []}*/}
+            {/*        daliaStationData={daliaStationData || []}*/}
+            {/*        doaniaStationData={doaniaStationData || []}*/}
+            {/*    />*/}
+            {/*) : (*/}
+            {/*    // Loading state*/}
+            {/*    <div className="bg-white p-8 rounded-lg border border-gray-200 shadow-lg text-center">*/}
+            {/*        <div className="loading loading-spinner loading-lg mb-4"></div>*/}
+            {/*        <p className="text-gray-600 text-lg">Loading chart data...</p>*/}
+            {/*        <p className="text-gray-400 text-sm mt-2">Please wait while we fetch the latest data</p>*/}
+            {/*    </div>*/}
+            {/*)}*/}
 
-            {/*<MainChartNew*/}
-            {/*    mikliGongStationData={mikliGongStationData || []}*/}
-            {/*    domohoniWaterLevelData={domohoniWaterLevelData || []}*/}
-            {/*    daliaStationData={daliaStationData || []}*/}
-            {/*    doaniaStationData={doaniaStationData || []}*/}
-            {/*/>*/}
+            <MainChartNew
+                mikliGongStationData={mikliGongStationData || []}
+                domohoniWaterLevelData={domohoniWaterLevelData || []}
+                daliaStationData={daliaStationData || []}
+                doaniaStationData={doaniaStationData || []}
+            />
         </main>
     )
 }

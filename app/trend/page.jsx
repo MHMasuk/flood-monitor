@@ -65,7 +65,8 @@ const Trend = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col justify-center items-center">
                     <img
-                        src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/${imageData?.discharge_level?.replace('./plots/', '') || '14102024_corr_DL.png'}`}
+                        // src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/${imageData?.discharge_level?.replace('./plots/', '') || '14102024_corr_DL.png'}`}
+                        src={`https://flood-ffwc.rimes.int/others/teesta-tank-new-plts/${imageData?.discharge_level?.replace('./plots/', '') || '14102024_corr_DL.png'}`}
                         alt="Discharge Level Chart"
                         className="max-h-screen w-auto"
                         onError={(e) => {
@@ -75,7 +76,8 @@ const Trend = () => {
                 </div>
                 <div className="flex flex-col justify-center items-center">
                     <img
-                        src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/${imageData?.exceedance?.replace('./plots/', '') || 'exceendence20241014.png'}`}
+                        // src={`https://flood-ffwc.rimes.int/others/teesta-tank-plts/${imageData?.exceedance?.replace('./plots/', '') || 'exceendence20241014.png'}`}
+                        src={`https://flood-ffwc.rimes.int/others/teesta-tank-new-plts/${imageData?.exceedance?.replace('./plots/', '') || 'exceendence20241014.png'}`}
                         alt="Exceedance Chart"
                         className="max-h-screen w-auto"
                         onError={(e) => {
