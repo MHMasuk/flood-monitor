@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
     try {
         // Use await instead of .then() and disable caching
-        const res = await fetch('https://flood-ffwc.rimes.int/others/teesta-tank-plts/update.json', {
+        const res = await fetch('https://flood-ffwc.rimes.int/others/teesta-tank-new-plts/update.json', {
             cache: 'no-store' // Disable caching
         });
 
