@@ -3,9 +3,6 @@ import {Inter} from 'next/font/google'
 
 const inter = Inter({subsets: ['latin']})
 
-import Headers from "@/app/components/Layout/headers";
-import Footer from "@/app/components/Layout/footer";
-
 import {DummyDataProvider} from "@/app/context/DummyDataContext";
 
 export const metadata = {
@@ -17,10 +14,8 @@ export default function RootLayout({children}) {
     return (
         <DummyDataProvider>
             <html lang="en">
-                <body className="max-h-screen bg-neutral">
-                    <Headers />
-                        {children}
-                    <Footer />
+                <body className={`max-h-screen bg-neutral ${inter.className}`}>
+                    {children}
                 </body>
             </html>
         </DummyDataProvider>

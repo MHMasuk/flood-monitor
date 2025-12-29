@@ -1,9 +1,13 @@
+"use client";
 import React, { useState, useEffect } from "react";
 
 const LiveClockUpdate = () => {
-    const [date, setDate] = useState(new Date());
+    const [date, setDate] = useState(null);
 
     useEffect(() => {
+        // Set initial date on client-side only
+        setDate(new Date());
+
         const timerID = setInterval(() => tick(), 1000);
 
         return () => {
@@ -14,6 +18,15 @@ const LiveClockUpdate = () => {
     const tick = () => {
         setDate(new Date());
     };
+
+    // Show placeholder during SSR to avoid hydration mismatch
+    if (!date) {
+        return (
+            <div>
+                <h2>--:--:-- --</h2>
+            </div>
+        );
+    }
 
     return (
         <div>
