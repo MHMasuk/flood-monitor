@@ -1,14 +1,12 @@
-import TeestaHeader from "./components/TeestaHeader";
-import TeestaFooter from "./components/TeestaFooter";
-import Footer from "@/app/components/Layout/footer";
 import Headers from "@/app/components/Layout/headers";
+import Footer from "@/app/components/Layout/footer";
 
-export default function TeestaLayout({ children }) {
-  return (
-    <>
-      <Headers />
-        {children}
-      <Footer />
-    </>
-  );
+export default function MainLayout({ children }) {
+    return (
+        <>
+            <Headers />
+            {children}
+            <Footer />
+        </>
+    );
 }

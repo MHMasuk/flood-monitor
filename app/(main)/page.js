@@ -1,71 +1,64 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { fetchTokenIfExpired } from "@/utils/jwtToken";
-import TeestaMainChart from "./components/TeestaMainChart";
+// api call
+import MainChartNew from "@/app/components/Chart/mainChartNew";
 
-// India station configuration - supports multiple stations
-const INDIA_STATION_CONFIG = [
-    {
-        stationCode: "022-LBDJPG"
-    },
-    {
-        stationCode: "023-LBDJPG"
-    },
-];
+import React, {useEffect, useRef, useState} from "react";
 
-const BD_STATION_CONFIG = [
-    {
-        series_id: "7068",
-        name: "Dalia (SW291.5 R)",
-        hfl: "52.84",
-        danger: "52.15",
-        warning: "51.75"
-    },
-    {
-        series_id: "7110",
-        name: "Doani (SW291.5 L)",
-        hfl: "52.84",
-        danger: "52.15",
-        warning: "51.75"
+import {fetchTokenIfExpired} from "@/utils/jwtToken";
+
+export default function Home() {
+    const [mikliGongStationData, setMikliGongStationData] = useState([]);
+    const [domohoniWaterLevelData, setDomohoniWaterLevelData] = useState([]);
+    const [daliaStationData, setDaliaStationData] = useState([]);
+    const [doaniaStationData, setDoaniaStationData] = useState([]);
+    const [loading, setLoading] = useState(true); // Add loading state
+
+    const intervalRef = useRef(null); // Create a ref to hold the interval ID
+
+    async function fetchData(url, setData) {
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            setData(data);
+        } catch (error) {
+            console.error(`Error fetching data from ${url}:`, error);
+            // Set error state here
+        }
     }
-]
 
-const TeestaPage = () => {
-    const [stationData, setStationData] = useState([]);
-    const [stationConfig, setStationConfig] = useState(null);
-    const [stationName, setStationName] = useState("");
-    const intervalRef = useRef(null);
-
-    async function fetchTeestaData() {
+    async function fetchNewData(url, setData) {
         try {
             const tokenData = await fetchTokenIfExpired();
 
-            const response = await fetch('/api/teesta', {
+            const response = await fetch(url, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'Custom-Token': `${tokenData}`,
                 },
             });
-
             const data = await response.json();
-
-            setStationData(data.data || []);
-            setStationConfig(data.config || null);
-            setStationName(data.station || "");
+            setData(data.data);
         } catch (error) {
-            console.error('Error fetching Teesta data:', error);
+            console.error(`Error fetching data from ${url}:`, error);
+            setData([]);
         }
     }
 
     useEffect(() => {
         // Fetch data on component mount
-        fetchTeestaData();
+        fetchData('/api/mikligong', setMikliGongStationData);
+        fetchData('/api/domohoni', setDomohoniWaterLevelData);
+        fetchNewData('/api/doani', setDoaniaStationData);
+        fetchNewData('/api/dalia', setDaliaStationData);
 
         // Set up interval to fetch data every 15 minutes
         intervalRef.current = setInterval(() => {
-            fetchTeestaData();
+            fetchData('/api/mikligong', setMikliGongStationData);
+            fetchData('/api/domohoni', setDomohoniWaterLevelData);
+            fetchNewData('/api/doani', setDoaniaStationData);
+            fetchNewData('/api/dalia', setDaliaStationData);
         }, 15 * 60 * 1000);
 
         // Cleanup interval on component unmount
@@ -78,16 +71,28 @@ const TeestaPage = () => {
 
     return (
         <main className="h-screen flex justify-center items-center">
-            <TeestaMainChart
-                stationData={stationData}
-                stationConfig={stationConfig}
-                stationName={stationName}
-                indiaStationConfigs={INDIA_STATION_CONFIG}
-                bdStationConfigs={BD_STATION_CONFIG}
-                useDummyData={false}
+            {/*{(mikliGongStationData?.length > 0) ? (*/}
+            {/*    <MainChartNew*/}
+            {/*        mikliGongStationData={mikliGongStationData || []}*/}
+            {/*        domohoniWaterLevelData={domohoniWaterLevelData || []}*/}
+            {/*        daliaStationData={daliaStationData || []}*/}
+            {/*        doaniaStationData={doaniaStationData || []}*/}
+            {/*    />*/}
+            {/*) : (*/}
+            {/*    // Loading state*/}
+            {/*    <div className="bg-white p-8 rounded-lg border border-gray-200 shadow-lg text-center">*/}
+            {/*        <div className="loading loading-spinner loading-lg mb-4"></div>*/}
+            {/*        <p className="text-gray-600 text-lg">Loading chart data...</p>*/}
+            {/*        <p className="text-gray-400 text-sm mt-2">Please wait while we fetch the latest data</p>*/}
+            {/*    </div>*/}
+            {/*)}*/}
+
+            <MainChartNew
+                mikliGongStationData={mikliGongStationData || []}
+                domohoniWaterLevelData={domohoniWaterLevelData || []}
+                daliaStationData={daliaStationData || []}
+                doaniaStationData={doaniaStationData || []}
             />
         </main>
-    );
-};
-
-export default TeestaPage;
+    )
+}
