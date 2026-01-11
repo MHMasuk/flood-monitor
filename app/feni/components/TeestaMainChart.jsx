@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import useSound from "use-sound";
 import TeestaLineChart from "./Charts/TeestaLineChart";
-import IndiaSiteLineChart from "@/app/components/Chart/IndiaSiteLineChart";
+import FfwcIndiaLineChart from "./Charts/FfwcIndiaLineChart";
 import { fetchTokenIfExpired } from "@/utils/jwtToken";
 import { DUMMY_BD_STATION_DATA } from "./Charts/dummyBdStationData";
 
@@ -220,17 +220,16 @@ const TeestaMainChart = (props) => {
                     );
                 })}
 
-                {/* Render IndiaSiteLineChart for each India station config */}
+                {/* Render FfwcIndiaLineChart for each India station config */}
                 {safeIndiaStationConfigs.map((config) => {
                     const chartId = `india-${config.stationCode}`;
                     const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
 
                     return (
                         <div key={config.stationCode} className={`w-full md:w-[calc(50%-0.5rem)] ${isAlerting ? 'animate-pulse' : ''}`}>
-                            <IndiaSiteLineChart
+                            <FfwcIndiaLineChart
                                 stationCode={config.stationCode}
                                 paperColor="#fef9c3"
-                                useDummyData={useDummyData}
                                 chartId={chartId}
                                 onThresholdCrossed={onThresholdCrossed}
                             />

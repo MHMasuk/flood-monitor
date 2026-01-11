@@ -4,10 +4,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { fetchTokenIfExpired } from "@/utils/jwtToken";
 import TeestaMainChart from "./components/TeestaMainChart";
 
-// India station configuration - supports multiple stations
+// India station configuration - supports multiple stations (FFWC API)
 const INDIA_STATION_CONFIG = [
     {
-        stationCode: "013-MDSIL"
+        stationCode: "002-MGD5PTN"
     },
     {
         stationCode: "019-MBDGHY"

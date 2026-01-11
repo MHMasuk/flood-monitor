@@ -126,63 +126,89 @@ const TeestaLineChart = ({
             y: processedData.map(item => item.value),
             type: 'scatter',
             mode: 'lines+markers',
-            line: { color: 'green' },
-            name: 'Measured Water Level',
-        },
-        {
+            name: 'Water Level',
+            line: { color: 'green', width: 2 },
+            marker: { size: 6, color: 'green' }
+        }
+    ];
+
+    // Add warning line if exists
+    if (warning) {
+        charData.push({
             x: [processedData[0]?.datetime, processedData[processedData.length - 1]?.datetime],
             y: [warning, warning],
             type: 'scatter',
-            mode: 'lines+markers',
-            line: { color: 'yellow' },
-            name: 'Warning',
-        },
-        {
+            mode: 'lines',
+            name: 'Warning Level',
+            line: { color: 'orange', width: 2, dash: 'dash' }
+        });
+    }
+
+    // Add danger line if exists
+    if (danger) {
+        charData.push({
             x: [processedData[0]?.datetime, processedData[processedData.length - 1]?.datetime],
             y: [danger, danger],
             type: 'scatter',
-            mode: 'lines+markers',
-            line: { color: '#FFCC00' },
-            name: 'Danger',
-        },
-        {
+            mode: 'lines',
+            name: 'Danger Level',
+            line: { color: 'red', width: 2, dash: 'dash' }
+        });
+    }
+
+    // Add HFL line if exists
+    if (hfl) {
+        charData.push({
             x: [processedData[0]?.datetime, processedData[processedData.length - 1]?.datetime],
             y: [hfl, hfl],
             type: 'scatter',
-            mode: 'lines+markers',
-            line: { color: 'red' },
+            mode: 'lines',
             name: 'HFL',
-        },
-    ];
+            line: { color: 'darkred', width: 2, dash: 'dot' }
+        });
+    }
 
     const layout = {
-        title: title,
-        xaxis: {
-            tickmode: 'linear',
-            tickformat: '%d %b %Y',
-            automargin: true,
-            nticks: 10,
-            tickfont: { size: 10 }
+        title: {
+            text: title,
+            font: { size: 16, family: 'Arial, sans-serif' }
         },
-        yaxis: { title: 'Water Level (m)' },
-        legend: { orientation: 'h' },
+        xaxis: {
+            title: 'Date & Time',
+            type: 'date',
+            tickformat: '%d-%b %H:%M',
+            showgrid: true
+        },
+        yaxis: {
+            title: 'Water Level (m)',
+            showgrid: true
+        },
         paper_bgcolor: paperColor,
-        margin: { l: 60, r: 60, t: 40, b: 80 },
+        plot_bgcolor: '#ffffff',
+        margin: { l: 60, r: 40, t: 60, b: 60 },
+        height: chartHeight,
+        showlegend: true,
+        legend: {
+            orientation: 'h',
+            y: -0.2,
+            x: 0.5,
+            xanchor: 'center'
+        }
     };
 
     const config = {
         responsive: true,
         displayModeBar: false,
-        scrollZoom: false
+        displaylogo: false
     };
 
     return (
-        <div className="w-full rounded-lg relative">
+        <div className="w-full border border-gray-200 rounded-lg overflow-hidden">
             <Plot
                 data={charData}
                 layout={layout}
-                style={{ height: chartHeight + 'px' }}
                 config={config}
+                style={{ width: '100%' }}
             />
         </div>
     );
