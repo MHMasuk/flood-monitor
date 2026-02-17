@@ -8,7 +8,7 @@ import { fetchTokenIfExpired } from "@/utils/jwtToken";
 import { DUMMY_BD_STATION_DATA } from "./Charts/dummyBdStationData";
 
 const TeestaMainChart = (props) => {
-    const { indiaStationConfigs, bdStationConfigs, useDummyData = false } = props;
+    const { indiaStationConfigs, bdStationConfigs, useDummyData = false, refreshInterval = 15, onRefreshIntervalChange } = props;
     const safeBdStationConfigs = React.useMemo(() => bdStationConfigs || [], [bdStationConfigs]);
     const safeIndiaStationConfigs = React.useMemo(() => indiaStationConfigs || [], [indiaStationConfigs]);
 
@@ -18,6 +18,11 @@ const TeestaMainChart = (props) => {
     const [pendingAlarm, setPendingAlarm] = useState(false);
     const intervalRefSound = useRef(null);
     const intervalRefBdData = useRef(null);
+    const intervalRefCountdown = useRef(null);
+
+    // State for countdown timer
+    const [secondsUntilRefresh, setSecondsUntilRefresh] = useState(refreshInterval * 60);
+    const [lastRefreshTime, setLastRefreshTime] = useState(new Date());
 
     // State for BD station data - stores data for each series_id
     const [bdStationDataMap, setBdStationDataMap] = useState({});
@@ -79,6 +84,10 @@ const TeestaMainChart = (props) => {
     const fetchBdStationData = useCallback(async () => {
         if (!safeBdStationConfigs.length) return;
 
+        // Update last refresh time
+        setLastRefreshTime(new Date());
+        setSecondsUntilRefresh(refreshInterval * 60);
+
         // Use dummy data if useDummyData is true
         if (useDummyData) {
             const newDataMap = {};
@@ -123,23 +132,55 @@ const TeestaMainChart = (props) => {
         } catch (error) {
             console.error('Error fetching BD station data:', error);
         }
-    }, [safeBdStationConfigs, useDummyData]);
+    }, [safeBdStationConfigs, useDummyData, refreshInterval]);
 
     // Fetch BD station data on mount and set up interval
     useEffect(() => {
         fetchBdStationData();
 
-        // Refresh BD station data every 15 minutes
+        // Clear any existing interval
+        if (intervalRefBdData.current) {
+            clearInterval(intervalRefBdData.current);
+        }
+
+        // Refresh BD station data based on refreshInterval
         intervalRefBdData.current = setInterval(() => {
             fetchBdStationData();
-        }, 15 * 60 * 1000);
+        }, refreshInterval * 60 * 1000);
 
         return () => {
             if (intervalRefBdData.current) {
                 clearInterval(intervalRefBdData.current);
             }
         };
-    }, [fetchBdStationData]);
+    }, [fetchBdStationData, refreshInterval]); // Re-run when refreshInterval changes
+
+    // Countdown timer effect
+    useEffect(() => {
+        // Reset countdown when refreshInterval changes
+        setSecondsUntilRefresh(refreshInterval * 60);
+
+        // Clear existing countdown interval
+        if (intervalRefCountdown.current) {
+            clearInterval(intervalRefCountdown.current);
+        }
+
+        // Start countdown
+        intervalRefCountdown.current = setInterval(() => {
+            setSecondsUntilRefresh(prev => {
+                if (prev <= 1) {
+                    return refreshInterval * 60;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => {
+            if (intervalRefCountdown.current) {
+                clearInterval(intervalRefCountdown.current);
+            }
+        };
+    }, [refreshInterval]);
 
     // Cleanup on unmount
     useEffect(() => {
@@ -151,7 +192,7 @@ const TeestaMainChart = (props) => {
     // Show loading state if no configs
     if (!safeBdStationConfigs.length && !safeIndiaStationConfigs.length) {
         return (
-            <div className="w-full mx-5 flex items-center justify-center h-64">
+            <div className="w-full px-5 flex items-center justify-center h-64">
                 <div className="text-center bg-white p-8 rounded-lg border border-gray-200">
                     <div className="loading loading-spinner loading-lg"></div>
                     <p className="mt-4 text-gray-600">Loading chart data...</p>
@@ -161,9 +202,9 @@ const TeestaMainChart = (props) => {
     }
 
     return (
-        <div className="w-full mx-5">
+        <div className="w-full px-5 py-2">
             {/* Central alarm control */}
-            <div className="fixed z-50 right-0 top-[50%] -translate-y-1/2 flex flex-col gap-2">
+            <div className="fixed z-50 right-4 top-[50%] -translate-y-1/2 flex flex-col gap-2">
                 {/* Enable Audio button - shows when there's a pending alarm but audio not unlocked */}
                 {pendingAlarm && !audioUnlocked && !isSoundPlaying && (
                     <button
@@ -185,17 +226,58 @@ const TeestaMainChart = (props) => {
                         </button>
                     </div>
                 )}
+
+                {/* Refresh Interval Control */}
+                {onRefreshIntervalChange && (
+                    <div className="tooltip tooltip-left" data-tip="Set Auto-Refresh Interval">
+                        <div className="dropdown dropdown-left">
+                            <label tabIndex={0} className="btn btn-sm btn-info">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                <span className="ml-1">{refreshInterval}m</span>
+                            </label>
+                            <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                                <li className="menu-title"><span>Auto-Refresh Interval</span></li>
+                                <li><a onClick={() => onRefreshIntervalChange(1)}>1 minute</a></li>
+                                <li><a onClick={() => onRefreshIntervalChange(5)}>5 minutes</a></li>
+                                <li><a onClick={() => onRefreshIntervalChange(10)}>10 minutes</a></li>
+                                <li><a onClick={() => onRefreshIntervalChange(15)}>15 minutes (Default)</a></li>
+                                <li><a onClick={() => onRefreshIntervalChange(30)}>30 minutes</a></li>
+                                <li><a onClick={() => onRefreshIntervalChange(60)}>60 minutes</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                )}
+
+                {/* Manual Refresh Button with Countdown */}
+                <div className="tooltip tooltip-left" data-tip="Manual Refresh">
+                    <button
+                        className="btn btn-sm btn-success flex flex-col items-center py-1 h-auto min-h-[3rem]"
+                        onClick={() => fetchBdStationData()}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span className="text-[10px] mt-1">
+                            {Math.floor(secondsUntilRefresh / 60)}:{String(secondsUntilRefresh % 60).padStart(2, '0')}
+                        </span>
+                    </button>
+                </div>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-4 justify-start">
                 {/* Render TeestaLineChart for each BD station config */}
-                {safeBdStationConfigs.map((config) => {
+                {safeBdStationConfigs.map((config, index) => {
                     const chartData = bdStationDataMap[config.series_id] || [];
                     const chartId = `bd-${config.series_id}`;
                     const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
+                    const totalCharts = safeBdStationConfigs.length + safeIndiaStationConfigs.length;
+                    const isLastChart = (index === safeBdStationConfigs.length - 1) && safeIndiaStationConfigs.length === 0;
+                    const shouldCenter = totalCharts % 2 === 1 && isLastChart;
 
                     return (
-                        <div key={config.series_id} className={`w-full md:w-[calc(50%-0.5rem)] ${isAlerting ? 'animate-pulse' : ''}`}>
+                        <div key={config.series_id} className={`w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'md:mx-auto' : ''}`}>
                             {chartData.length > 0 ? (
                                 <TeestaLineChart
                                     chart_data={chartData}
@@ -221,18 +303,22 @@ const TeestaMainChart = (props) => {
                 })}
 
                 {/* Render IndiaSiteLineChart for each India station config */}
-                {safeIndiaStationConfigs.map((config) => {
+                {safeIndiaStationConfigs.map((config, index) => {
                     const chartId = `india-${config.stationCode}`;
                     const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
+                    const totalCharts = safeBdStationConfigs.length + safeIndiaStationConfigs.length;
+                    const isLastChart = index === safeIndiaStationConfigs.length - 1;
+                    const shouldCenter = totalCharts % 2 === 1 && isLastChart;
 
                     return (
-                        <div key={config.stationCode} className={`w-full md:w-[calc(50%-0.5rem)] ${isAlerting ? 'animate-pulse' : ''}`}>
+                        <div key={config.stationCode} className={`w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'md:mx-auto' : ''}`}>
                             <IndiaSiteLineChart
                                 stationCode={config.stationCode}
                                 paperColor="#fef9c3"
                                 useDummyData={useDummyData}
                                 chartId={chartId}
                                 onThresholdCrossed={onThresholdCrossed}
+                                refreshInterval={refreshInterval}
                             />
                         </div>
                     );

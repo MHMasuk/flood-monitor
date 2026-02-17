@@ -1,34 +1,22 @@
 "use client";
 
-import React, {useEffect, useState, useRef, useCallback} from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import useSound from "use-sound";
-import TeestaLineChart from "./Charts/TeestaLineChart";
+import ComillaLineChart from "./Charts/ComillaLineChart";
 import FfwcIndiaLineChart from "./Charts/FfwcIndiaLineChart";
-import {fetchTokenIfExpired} from "@/utils/jwtToken";
-import {DUMMY_BD_STATION_DATA} from "./Charts/dummyBdStationData";
+import { fetchTokenIfExpired } from "@/utils/jwtToken";
+import { DUMMY_BD_STATION_DATA } from "./Charts/dummyBdStationData";
 
-const TeestaMainChart = (props) => {
-    const {
-        indiaStationConfigs,
-        bdStationConfigs,
-        useDummyData = false,
-        refreshInterval = 15,
-        onRefreshIntervalChange
-    } = props;
+const ComillaMainChart = (props) => {
+    const { indiaStationConfigs, bdStationConfigs, useDummyData = false } = props;
     const safeBdStationConfigs = React.useMemo(() => bdStationConfigs || [], [bdStationConfigs]);
     const safeIndiaStationConfigs = React.useMemo(() => indiaStationConfigs || [], [indiaStationConfigs]);
 
-    const [play, {stop}] = useSound("./mp3/loud_alarm.mp3");
+    const [play, { stop }] = useSound("./mp3/loud_alarm.mp3");
     const [isSoundPlaying, setIsSoundPlaying] = useState(false);
     const [audioUnlocked, setAudioUnlocked] = useState(false);
     const [pendingAlarm, setPendingAlarm] = useState(false);
     const intervalRefSound = useRef(null);
-    const intervalRefBdData = useRef(null);
-    const intervalRefCountdown = useRef(null);
-
-    // State for countdown timer
-    const [secondsUntilRefresh, setSecondsUntilRefresh] = useState(refreshInterval * 60);
-    const [lastRefreshTime, setLastRefreshTime] = useState(new Date());
 
     // State for BD station data - stores data for each series_id
     const [bdStationDataMap, setBdStationDataMap] = useState({});
@@ -93,10 +81,6 @@ const TeestaMainChart = (props) => {
     const fetchBdStationData = useCallback(async () => {
         if (!safeBdStationConfigs.length) return;
 
-        // Update last refresh time
-        setLastRefreshTime(new Date());
-        setSecondsUntilRefresh(refreshInterval * 60);
-
         // Use dummy data if useDummyData is true
         if (useDummyData) {
             const newDataMap = {};
@@ -123,10 +107,10 @@ const TeestaMainChart = (props) => {
                     });
 
                     const result = await response.json();
-                    return {seriesId: config.series_id, data: result.data || []};
+                    return { seriesId: config.series_id, data: result.data || [] };
                 } catch (error) {
                     console.error(`Error fetching BD station ${config.series_id}:`, error);
-                    return {seriesId: config.series_id, data: []};
+                    return { seriesId: config.series_id, data: [] };
                 }
             });
 
@@ -141,55 +125,12 @@ const TeestaMainChart = (props) => {
         } catch (error) {
             console.error('Error fetching BD station data:', error);
         }
-    }, [safeBdStationConfigs, useDummyData, refreshInterval]);
+    }, [safeBdStationConfigs, useDummyData]);
 
-    // Fetch BD station data on mount and set up interval
+    // Fetch BD station data on mount
     useEffect(() => {
         fetchBdStationData();
-
-        // Clear any existing interval
-        if (intervalRefBdData.current) {
-            clearInterval(intervalRefBdData.current);
-        }
-
-        // Refresh BD station data based on refreshInterval
-        intervalRefBdData.current = setInterval(() => {
-            fetchBdStationData();
-        }, refreshInterval * 60 * 1000);
-
-        return () => {
-            if (intervalRefBdData.current) {
-                clearInterval(intervalRefBdData.current);
-            }
-        };
-    }, [fetchBdStationData, refreshInterval]); // Re-run when refreshInterval changes
-
-    // Countdown timer effect
-    useEffect(() => {
-        // Reset countdown when refreshInterval changes
-        setSecondsUntilRefresh(refreshInterval * 60);
-
-        // Clear existing countdown interval
-        if (intervalRefCountdown.current) {
-            clearInterval(intervalRefCountdown.current);
-        }
-
-        // Start countdown
-        intervalRefCountdown.current = setInterval(() => {
-            setSecondsUntilRefresh(prev => {
-                if (prev <= 1) {
-                    return refreshInterval * 60;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-
-        return () => {
-            if (intervalRefCountdown.current) {
-                clearInterval(intervalRefCountdown.current);
-            }
-        };
-    }, [refreshInterval]);
+    }, [fetchBdStationData]);
 
     // Cleanup on unmount
     useEffect(() => {
@@ -230,57 +171,13 @@ const TeestaMainChart = (props) => {
                 {isSoundPlaying && (
                     <div className="tooltip tooltip-left" data-tip="Stop The Alarm">
                         <button className="btn btn-sm btn-error" onClick={stopCentralAlarm}>
-                            <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" width="48" height="48"
-                                 viewBox="0 0 24 24">
-                                <path
-                                    d="M3,9H7L12,4V20L7,15H3V9M16.59,12L14,9.41L15.41,8L18,10.59L20.59,8L22,9.41L19.41,12L22,14.59L20.59,16L18,13.41L15.41,16L14,14.59L16.59,12Z"/>
+                            <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
+                                <path d="M3,9H7L12,4V20L7,15H3V9M16.59,12L14,9.41L15.41,8L18,10.59L20.59,8L22,9.41L19.41,12L22,14.59L20.59,16L18,13.41L15.41,16L14,14.59L16.59,12Z"/>
                             </svg>
                             Stop
                         </button>
                     </div>
                 )}
-
-                {/* Refresh Interval Control */}
-                {/*{onRefreshIntervalChange && (*/}
-                {/*    <div className="tooltip tooltip-left" data-tip="Set Auto-Refresh Interval">*/}
-                {/*        <div className="dropdown dropdown-left">*/}
-                {/*            <label tabIndex={0} className="btn btn-sm btn-info">*/}
-                {/*                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"*/}
-                {/*                     viewBox="0 0 24 24" stroke="currentColor">*/}
-                {/*                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}*/}
-                {/*                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>*/}
-                {/*                </svg>*/}
-                {/*                <span className="ml-1">{refreshInterval}m</span>*/}
-                {/*            </label>*/}
-                {/*            <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">*/}
-                {/*                <li className="menu-title"><span>Auto-Refresh Interval</span></li>*/}
-                {/*                <li><a onClick={() => onRefreshIntervalChange(1)}>1 minute</a></li>*/}
-                {/*                <li><a onClick={() => onRefreshIntervalChange(5)}>5 minutes</a></li>*/}
-                {/*                <li><a onClick={() => onRefreshIntervalChange(10)}>10 minutes</a></li>*/}
-                {/*                <li><a onClick={() => onRefreshIntervalChange(15)}>15 minutes (Default)</a></li>*/}
-                {/*                <li><a onClick={() => onRefreshIntervalChange(30)}>30 minutes</a></li>*/}
-                {/*                <li><a onClick={() => onRefreshIntervalChange(60)}>60 minutes</a></li>*/}
-                {/*            </ul>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*)}*/}
-
-                {/* Manual Refresh Button with Countdown */}
-                {/*<div className="tooltip tooltip-left" data-tip="Manual Refresh">*/}
-                {/*    <button*/}
-                {/*        className="btn btn-sm btn-success flex flex-col items-center py-1 h-auto min-h-[3rem]"*/}
-                {/*        onClick={() => fetchBdStationData()}*/}
-                {/*    >*/}
-                {/*        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"*/}
-                {/*             stroke="currentColor">*/}
-                {/*            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}*/}
-                {/*                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>*/}
-                {/*        </svg>*/}
-                {/*        <span className="text-[10px] mt-1">*/}
-                {/*            {Math.floor(secondsUntilRefresh / 60)}:{String(secondsUntilRefresh % 60).padStart(2, '0')}*/}
-                {/*        </span>*/}
-                {/*    </button>*/}
-                {/*</div>*/}
             </div>
 
             <div className="flex flex-wrap gap-4 justify-start">
@@ -293,21 +190,19 @@ const TeestaMainChart = (props) => {
                     const shouldCenter = totalCharts % 2 === 1 && isLastChart;
 
                     return (
-                        <div key={config.stationCode}
-                             className={`w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'md:mx-auto' : ''}`}>
+                        <div key={config.stationCode} className={`w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'md:mx-auto' : ''}`}>
                             <FfwcIndiaLineChart
                                 stationCode={config.stationCode}
                                 stationName={config.name}
                                 paperColor="#fef9c3"
                                 chartId={chartId}
                                 onThresholdCrossed={onThresholdCrossed}
-                                refreshInterval={refreshInterval}
                             />
                         </div>
                     );
                 })}
 
-                {/* Render TeestaLineChart for each BD station config */}
+                {/* Render ComillaLineChart for each BD station config */}
                 {safeBdStationConfigs.map((config, index) => {
                     const chartData = bdStationDataMap[config.series_id] || [];
                     const chartId = `bd-${config.series_id}`;
@@ -317,10 +212,9 @@ const TeestaMainChart = (props) => {
                     const shouldCenter = totalCharts % 2 === 1 && isLastChart;
 
                     return (
-                        <div key={config.series_id}
-                             className={`w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'md:mx-auto' : ''}`}>
+                        <div key={config.series_id} className={`w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'md:mx-auto' : ''}`}>
                             {chartData.length > 0 ? (
-                                <TeestaLineChart
+                                <ComillaLineChart
                                     chart_data={chartData}
                                     title={`Hydrograph view of - ${config.name}`}
                                     danger={config.danger}
@@ -332,8 +226,7 @@ const TeestaMainChart = (props) => {
                                     useDummyData={useDummyData}
                                 />
                             ) : (
-                                <div
-                                    className="w-full h-96 flex items-center justify-center border border-gray-200 bg-white">
+                                <div className="w-full h-96 flex items-center justify-center border border-gray-200 bg-white">
                                     <div className="text-center">
                                         <div className="loading loading-spinner loading-md"></div>
                                         <p className="text-gray-500 mt-2">Loading {config.name}...</p>
@@ -348,4 +241,4 @@ const TeestaMainChart = (props) => {
     );
 };
 
-export default TeestaMainChart;
+export default ComillaMainChart;

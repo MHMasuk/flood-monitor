@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const Footer = () => {
   return (
-      <footer className="footer items-center fixed bottom-0 bg-neutral text-neutral-content p-1">
+      <footer className="footer items-center fixed bottom-0 w-full h-12 bg-neutral text-neutral-content p-1 z-50 shadow-lg">
           <div className="items-center grid-flow-col">
               {/*<RimesLogo />*/}
               <p>Technical Partner & Implementing by <strong>Regional Integrated Multi-Hazard Early Warning System(RIMES)</strong></p>

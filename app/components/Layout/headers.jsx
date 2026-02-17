@@ -10,7 +10,7 @@ import LiveClockUpdate from "@/app/components/Chart/LiveClockUpdate";
 const Headers = () => {
 
     return (
-        <div className="fixed top-0 navbar bg-white text-neutral-content">
+        <div className="fixed top-0 w-full h-16 navbar bg-white text-neutral-content z-50 shadow-sm">
             <div className="navbar-start">
                 <Link href="/">
                     <Image src="/icons/flood_resilence.png" alt="od-resilience-logo" width={100} height={20} />

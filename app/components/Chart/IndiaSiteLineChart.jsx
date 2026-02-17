@@ -11,7 +11,8 @@ const IndiaSiteLineChart = ({
     paperColor = '#ffffff',
     useDummyData = false,
     chartId = '',
-    onThresholdCrossed = null // Callback when threshold is crossed
+    onThresholdCrossed = null, // Callback when threshold is crossed
+    refreshInterval = 15 // Refresh interval in minutes (default: 15)
 }) => {
     const [chartHeight, setChartHeight] = useState(400);
     const [chartData, setChartData] = useState([]);
@@ -160,10 +161,10 @@ const IndiaSiteLineChart = ({
         fetchStationInfo();
         fetchData(true); // Initial load
 
-        // Refresh data every 5 minutes (silent refresh, no loading state)
-        const interval = setInterval(() => fetchData(false), 5 * 60 * 1000);
+        // Refresh data based on refreshInterval prop
+        const interval = setInterval(() => fetchData(false), refreshInterval * 60 * 1000);
         return () => clearInterval(interval);
-    }, [stationCode]);
+    }, [stationCode, refreshInterval]); // Added refreshInterval to dependencies
 
     // Re-check water level alerts when stationInfo or chartData changes
     useEffect(() => {

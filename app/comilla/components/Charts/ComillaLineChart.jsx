@@ -7,7 +7,7 @@ import { DUMMY_BD_STATION_DATA } from './dummyBdStationData';
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-const TeestaLineChart = ({
+const ComillaLineChart = ({
     chart_data,
     title,
     hfl,
@@ -103,8 +103,8 @@ const TeestaLineChart = ({
 
     if (!dataToUse || dataToUse.length === 0) {
         return (
-            <div 
-                className="w-full rounded-lg relative flex items-center justify-center" 
+            <div
+                className="w-full rounded-lg relative flex items-center justify-center"
                 style={{ height: chartHeight + 'px', backgroundColor: paperColor }}
             >
                 No data available for {title}.
@@ -189,7 +189,7 @@ const TeestaLineChart = ({
         },
         paper_bgcolor: paperColor,
         plot_bgcolor: '#ffffff',
-        margin: { l: 60, r: 40, t: 60, b: 60 },
+        margin: { l: 60, r: 40, t: 60, b: 80 },
         height: chartHeight,
         showlegend: true,
         legend: {
@@ -218,4 +218,4 @@ const TeestaLineChart = ({
     );
 };
 
-export default TeestaLineChart;
+export default ComillaLineChart;

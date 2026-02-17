@@ -80,13 +80,12 @@ export const DUMMY_BD_STATION_DATA = [
     { "datetime": "2025-12-29T07:00:00", "value": 50.011 },
     { "datetime": "2025-12-29T08:00:00", "value": 50.023 },
     { "datetime": "2025-12-29T09:00:00", "value": 50.03 },
-    { "datetime": "2025-12-29T10:00:00", "value": 50.3 },
+    { "datetime": "2025-12-29T10:00:00", "value": 50.034 },
     // ⚠️ CHANGE THIS VALUE TO TEST SOUND ALERTS:
     // - Set to 51.80 to trigger WARNING sound (>= 51.75)
     // - Set to 52.20 to trigger DANGER sound (>= 52.15)
     // - Set to 52.90 to trigger HFL sound (>= 52.84)
-    { "datetime": "2025-12-29T10:45:00", "value": 50.2 },
-    { "datetime": "2025-12-29T10:55:00", "value": 50.75 }
+    { "datetime": "2025-12-29T10:45:00", "value": 50.032 }
 ];
 
 // Dummy station info for testing

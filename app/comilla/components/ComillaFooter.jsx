@@ -1,6 +1,6 @@
 import RimesLogo from "@/app/components/Icons/RimesLogo";
 
-const TeestaFooter = () => {
+const ComillaFooter = () => {
     return (
         <footer className="footer items-center fixed bottom-0 w-full h-14 bg-neutral text-neutral-content p-1 z-50 shadow-lg">
             <div className="items-center grid-flow-col">
@@ -17,4 +17,4 @@ const TeestaFooter = () => {
     );
 };
 
-export default TeestaFooter;
+export default ComillaFooter;

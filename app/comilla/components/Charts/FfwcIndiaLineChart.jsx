@@ -10,8 +10,7 @@ const FfwcIndiaLineChart = ({
     stationName,
     paperColor = '#ffffff',
     chartId = '',
-    onThresholdCrossed = null, // Callback when threshold is crossed
-    refreshInterval = 15 // Refresh interval in minutes (default: 15)
+    onThresholdCrossed = null // Callback when threshold is crossed
 }) => {
     const [chartHeight, setChartHeight] = useState(400);
     const [chartData, setChartData] = useState([]);
@@ -162,15 +161,8 @@ const FfwcIndiaLineChart = ({
     useEffect(() => {
         if (stationCode && stationInfo.name) {
             fetchData(true);
-
-            // Set up periodic refresh based on refreshInterval prop
-            const interval = setInterval(() => {
-                fetchData(false);
-            }, refreshInterval * 60 * 1000);
-
-            return () => clearInterval(interval);
         }
-    }, [stationCode, stationInfo.name, refreshInterval]); // Added refreshInterval to dependencies
+    }, [stationCode, stationInfo.name]);
 
     // Prepare data for Plotly
     const preparePlotData = () => {
@@ -317,4 +309,3 @@ const FfwcIndiaLineChart = ({
 };
 
 export default FfwcIndiaLineChart;
-

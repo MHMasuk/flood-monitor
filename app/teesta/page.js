@@ -35,6 +35,7 @@ const TeestaPage = () => {
     const [stationData, setStationData] = useState([]);
     const [stationConfig, setStationConfig] = useState(null);
     const [stationName, setStationName] = useState("");
+    const [refreshInterval, setRefreshInterval] = useState(15); // Default 15 minutes
     const intervalRef = useRef(null);
 
     async function fetchTeestaData() {
@@ -63,21 +64,26 @@ const TeestaPage = () => {
         // Fetch data on component mount
         fetchTeestaData();
 
-        // Set up interval to fetch data every 15 minutes
+        // Clear any existing interval
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+        }
+
+        // Set up interval to fetch data based on refreshInterval state
         intervalRef.current = setInterval(() => {
             fetchTeestaData();
-        }, 15 * 60 * 1000);
+        }, refreshInterval * 60 * 1000);
 
-        // Cleanup interval on component unmount
+        // Cleanup interval on component unmount or when interval changes
         return () => {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
             }
         };
-    }, []);
+    }, [refreshInterval]); // Re-run when refreshInterval changes
 
     return (
-        <main className="h-screen flex justify-center items-center">
+        <div className="w-full py-4">
             <TeestaMainChart
                 stationData={stationData}
                 stationConfig={stationConfig}
@@ -85,8 +91,10 @@ const TeestaPage = () => {
                 indiaStationConfigs={INDIA_STATION_CONFIG}
                 bdStationConfigs={BD_STATION_CONFIG}
                 useDummyData={false}
+                refreshInterval={refreshInterval}
+                onRefreshIntervalChange={setRefreshInterval}
             />
-        </main>
+        </div>
     );
 };
 
