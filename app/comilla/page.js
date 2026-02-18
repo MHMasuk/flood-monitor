@@ -10,7 +10,7 @@ const INDIA_STATION_CONFIG = [
         stationCode: "012-MDSIL",
         name: "(Upstream station of Comilla) Sonamura",
         title: "Hydrograph view of (Upstream station of Comilla) Sonamura (012-MDSIL)",
-        titleBn: "কুমিল্লা উজান স্টেশন সোনামুরা (012-MDSIL) হাইড্রোগ্রাফ",
+        titleBn: "কুমিল্লার উজান স্টেশন সোনামুরা (012-MDSIL) হাইড্রোগ্রাফ",
         paper_bgcolor: "#fde2e4",
     }
 ];
@@ -30,7 +30,7 @@ const BD_STATION_CONFIG = [
         station_id: "29",
         name: "(Downstream station of Comilla) Debidwar (SW114)",
         title: "Hydrograph view of (Down stream of Comilla) Debidwar (SW114)",
-        titleBn: "কুমিল্লা ভাটির স্টেশন দেবিদ্বার (SW114) এর হাইড্রোগ্রাফ",
+        titleBn: "কুমিল্লার ভাটির স্টেশন দেবিদ্বার (SW114) এর হাইড্রোগ্রাফ",
         hfl: "9.36",
         danger: "8.09",
         warning: "7.00",
