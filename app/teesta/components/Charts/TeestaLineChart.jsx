@@ -25,7 +25,25 @@ const TeestaLineChart = ({
 
     const updateChartHeight = () => {
         const screenHeight = window.innerHeight;
-        const desiredHeight = screenHeight * 0.4;
+        const screenWidth = window.innerWidth;
+
+        // Header (64px) + Footer (56px) + padding/margins = 120px reserved
+        const reservedSpace = 140;
+        const availableHeight = screenHeight - reservedSpace;
+
+        let desiredHeight;
+
+        if (screenWidth < 1024) {
+            desiredHeight = (availableHeight / 2) - 40;
+        } else {
+            desiredHeight = (availableHeight / 2) - 40;
+        }
+
+        const minHeight = 280;
+        const maxHeight = 550;
+
+        desiredHeight = Math.max(minHeight, Math.min(maxHeight, desiredHeight));
+
         setChartHeight(desiredHeight);
     };
 
@@ -162,27 +180,41 @@ const TeestaLineChart = ({
             tickformat: '%d %b %Y',
             automargin: true,
             nticks: 10,
-            tickfont: { size: 10 }
+            tickfont: { size: 10 },
+            tickangle: 0
         },
-        yaxis: { title: 'Water Level (m)' },
-        legend: { orientation: 'h' },
+        yaxis: {
+            title: 'Water Level (m)',
+            automargin: true
+        },
+        legend: {
+            orientation: 'h',
+            y: -0.25,
+            x: 0.5,
+            xanchor: 'center',
+            yanchor: 'top'
+        },
         paper_bgcolor: paperColor,
-        margin: { l: 60, r: 60, t: 40, b: 80 },
+        margin: { l: 55, r: 20, t: 50, b: 60 },
+        height: chartHeight,
+        autosize: true
     };
 
     const config = {
         responsive: true,
         displayModeBar: false,
-        scrollZoom: false
+        scrollZoom: false,
+        useResizeHandler: true
     };
 
     return (
-        <div className="w-full rounded-lg relative">
+        <div className="w-full border border-gray-200 rounded-lg overflow-hidden">
             <Plot
                 data={charData}
                 layout={layout}
-                style={{ height: chartHeight + 'px' }}
+                style={{ width: '100%', height: '100%' }}
                 config={config}
+                useResizeHandler={true}
             />
         </div>
     );

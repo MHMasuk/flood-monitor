@@ -182,7 +182,7 @@ const TeestaMainChart = (props) => {
     }
 
     return (
-        <div className="w-full px-5 py-2">
+        <div className="w-full h-full flex flex-col overflow-hidden">
             {/* Central alarm control */}
             <div className="fixed z-50 right-4 top-[50%] -translate-y-1/2 flex flex-col gap-2">
                 {/* Enable Audio button - shows when audio is not unlocked */}
@@ -254,7 +254,8 @@ const TeestaMainChart = (props) => {
                 {/*</div>*/}
             </div>
 
-            <div className="flex flex-wrap gap-4 justify-start">
+            <div className="flex-1 overflow-auto px-4 py-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
                 {/* Render FfwcIndiaLineChart for each India station config */}
                 {safeIndiaStationConfigs.map((config, index) => {
                     const chartId = `india-${config.stationCode}`;
@@ -265,7 +266,7 @@ const TeestaMainChart = (props) => {
 
                     return (
                         <div key={config.stationCode}
-                             className={`w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'md:mx-auto' : ''}`}>
+                             className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
                             <FfwcIndiaLineChart
                                 title={config.title || `Hydrograph view of ${config.name} (${config.stationCode})`}
                                 titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য (${config.stationCode})`}
@@ -291,7 +292,7 @@ const TeestaMainChart = (props) => {
 
                     return (
                         <div key={config.station_id}
-                             className={`w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'md:mx-auto' : ''}`}>
+                             className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
                             {chartData.length > 0 ? (
                                 <TeestaLineChart
                                     chart_data={chartData}
@@ -317,6 +318,7 @@ const TeestaMainChart = (props) => {
                         </div>
                     );
                 })}
+            </div>
             </div>
         </div>
     );

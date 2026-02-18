@@ -29,7 +29,30 @@ const TeestaLineChart = ({
 
     const updateChartHeight = () => {
         const screenHeight = window.innerHeight;
-        const desiredHeight = screenHeight * 0.4;
+        const screenWidth = window.innerWidth;
+
+        // Header (64px) + Footer (56px) + padding/margins = 120px reserved
+        // Divide remaining space by number of rows (assuming 2 charts per row on desktop)
+        const reservedSpace = 140; // Header + Footer + padding
+        const availableHeight = screenHeight - reservedSpace;
+
+        let desiredHeight;
+
+        if (screenWidth < 1024) {
+            // Mobile/Tablet: Stack vertically, so divide by number of charts
+            desiredHeight = (availableHeight / 2) - 40; // -40 for gaps
+        } else {
+            // Desktop: 2 columns, so charts are side by side
+            // If you have 4 charts (2 rows), divide by 2
+            desiredHeight = (availableHeight / 2) - 40; // -40 for gaps between rows
+        }
+
+        // Set reasonable constraints
+        const minHeight = 280;
+        const maxHeight = 550;
+
+        desiredHeight = Math.max(minHeight, Math.min(maxHeight, desiredHeight));
+
         setChartHeight(desiredHeight);
     };
 
@@ -189,25 +212,29 @@ const TeestaLineChart = ({
         },
         yaxis: {
             title: 'Water Level (m)',
-            showgrid: true
+            showgrid: true,
+            automargin: true
         },
         paper_bgcolor: paperColor,
         plot_bgcolor: '#ffffff',
-        margin: { l: 60, r: 40, t: 60, b: 60 },
+        margin: { l: 55, r: 20, t: 50, b: 60 },
         height: chartHeight,
         showlegend: true,
         legend: {
             orientation: 'h',
-            y: -0.2,
+            y: -0.25,
             x: 0.5,
-            xanchor: 'center'
-        }
+            xanchor: 'center',
+            yanchor: 'top'
+        },
+        autosize: true
     };
 
     const config = {
         responsive: true,
         displayModeBar: false,
-        displaylogo: false
+        displaylogo: false,
+        useResizeHandler: true
     };
 
     return (
@@ -216,7 +243,8 @@ const TeestaLineChart = ({
                 data={charData}
                 layout={layout}
                 config={config}
-                style={{ width: '100%' }}
+                style={{ width: '100%', height: '100%' }}
+                useResizeHandler={true}
             />
         </div>
     );

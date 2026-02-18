@@ -202,7 +202,7 @@ const TeestaMainChart = (props) => {
     }
 
     return (
-        <div className="w-full px-5 py-2">
+        <div className="w-full h-full flex flex-col overflow-hidden">
             {/* Central alarm control */}
             <div className="fixed z-50 right-4 top-[50%] -translate-y-1/2 flex flex-col gap-2">
                 {/* Enable Audio button - shows when there's a pending alarm but audio not unlocked */}
@@ -266,7 +266,8 @@ const TeestaMainChart = (props) => {
                 </div>
             </div>
 
-            <div className="flex flex-wrap gap-4 justify-start">
+            <div className="flex-1 overflow-auto px-4 py-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
                 {/* Render TeestaLineChart for each BD station config */}
                 {safeBdStationConfigs.map((config, index) => {
                     const chartData = bdStationDataMap[config.series_id] || [];
@@ -277,7 +278,7 @@ const TeestaMainChart = (props) => {
                     const shouldCenter = totalCharts % 2 === 1 && isLastChart;
 
                     return (
-                        <div key={config.series_id} className={`w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'md:mx-auto' : ''}`}>
+                        <div key={config.series_id} className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
                             {chartData.length > 0 ? (
                                 <TeestaLineChart
                                     chart_data={chartData}
@@ -311,7 +312,7 @@ const TeestaMainChart = (props) => {
                     const shouldCenter = totalCharts % 2 === 1 && isLastChart;
 
                     return (
-                        <div key={config.stationCode} className={`w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'md:mx-auto' : ''}`}>
+                        <div key={config.stationCode} className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
                             <IndiaSiteLineChart
                                 stationCode={config.stationCode}
                                 paperColor="#fef9c3"
@@ -323,6 +324,7 @@ const TeestaMainChart = (props) => {
                         </div>
                     );
                 })}
+            </div>
             </div>
         </div>
     );

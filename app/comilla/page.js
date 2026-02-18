@@ -108,7 +108,7 @@ const ComillaPage = () => {
     }, []);
 
     return (
-        <div className="w-full py-4">
+        <div className="w-full h-full">
             <ComillaMainChart
                 stationData={stationData}
                 stationConfig={stationConfig}

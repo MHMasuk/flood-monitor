@@ -132,7 +132,7 @@ const TeestaPage = () => {
     }, [refreshInterval]); // Re-run when refreshInterval changes
 
     return (
-        <div className="w-full py-4">
+        <div className="w-full h-full">
             <TeestaMainChart
                 stationData={stationData}
                 stationConfig={stationConfig}

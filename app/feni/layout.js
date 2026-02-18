@@ -7,9 +7,9 @@ import { LanguageProvider } from "@/app/context/LanguageContext";
 export default function TeestaLayout({ children }) {
   return (
     <LanguageProvider defaultLanguage="bn">
-      <div className="min-h-screen flex flex-col">
+      <div className="h-screen flex flex-col overflow-hidden">
         <TeestaHeader />
-        <main className="flex-1 pt-16 pb-12">
+        <main className="flex-1 overflow-hidden pt-16 pb-14">
           {children}
         </main>
         <TeestaFooter />
