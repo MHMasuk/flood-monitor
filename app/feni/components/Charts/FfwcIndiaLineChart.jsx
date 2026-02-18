@@ -286,12 +286,12 @@ const FfwcIndiaLineChart = ({
         },
         paper_bgcolor: paperColor,
         plot_bgcolor: '#ffffff',
-        margin: { l: 55, r: 20, t: 50, b: 60 },
+        margin: { l: 55, r: 20, t: 50, b: 80 },
         height: chartHeight,
         showlegend: true,
         legend: {
             orientation: 'h',
-            y: -0.25,
+            y: -0.30,
             x: 0.5,
             xanchor: 'center',
             yanchor: 'top'

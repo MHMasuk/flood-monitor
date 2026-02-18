@@ -210,48 +210,6 @@ const TeestaMainChart = (props) => {
                         </button>
                     </div>
                 )}
-
-                {/* Refresh Interval Control */}
-                {/*{onRefreshIntervalChange && (*/}
-                {/*    <div className="tooltip tooltip-left" data-tip="Set Auto-Refresh Interval">*/}
-                {/*        <div className="dropdown dropdown-left">*/}
-                {/*            <label tabIndex={0} className="btn btn-sm btn-info">*/}
-                {/*                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"*/}
-                {/*                     viewBox="0 0 24 24" stroke="currentColor">*/}
-                {/*                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}*/}
-                {/*                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>*/}
-                {/*                </svg>*/}
-                {/*                <span className="ml-1">{refreshInterval}m</span>*/}
-                {/*            </label>*/}
-                {/*            <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">*/}
-                {/*                <li className="menu-title"><span>Auto-Refresh Interval</span></li>*/}
-                {/*                <li><a onClick={() => onRefreshIntervalChange(1)}>1 minute</a></li>*/}
-                {/*                <li><a onClick={() => onRefreshIntervalChange(5)}>5 minutes</a></li>*/}
-                {/*                <li><a onClick={() => onRefreshIntervalChange(10)}>10 minutes</a></li>*/}
-                {/*                <li><a onClick={() => onRefreshIntervalChange(15)}>15 minutes (Default)</a></li>*/}
-                {/*                <li><a onClick={() => onRefreshIntervalChange(30)}>30 minutes</a></li>*/}
-                {/*                <li><a onClick={() => onRefreshIntervalChange(60)}>60 minutes</a></li>*/}
-                {/*            </ul>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*)}*/}
-
-                {/* Manual Refresh Button with Countdown */}
-                {/*<div className="tooltip tooltip-left" data-tip="Manual Refresh">*/}
-                {/*    <button*/}
-                {/*        className="btn btn-sm btn-success flex flex-col items-center py-1 h-auto min-h-[3rem]"*/}
-                {/*        onClick={() => fetchBdStationData()}*/}
-                {/*    >*/}
-                {/*        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"*/}
-                {/*             stroke="currentColor">*/}
-                {/*            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}*/}
-                {/*                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>*/}
-                {/*        </svg>*/}
-                {/*        <span className="text-[10px] mt-1">*/}
-                {/*            {Math.floor(secondsUntilRefresh / 60)}:{String(secondsUntilRefresh % 60).padStart(2, '0')}*/}
-                {/*        </span>*/}
-                {/*    </button>*/}
-                {/*</div>*/}
             </div>
 
             <div className="flex-1 overflow-auto px-4 py-4">

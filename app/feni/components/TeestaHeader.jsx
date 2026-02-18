@@ -13,7 +13,7 @@ const TeestaHeader = () => {
                 {/*    /!* Add your custom logo here *!/*/}
                 {/*    <Image src="/icons/flood_resilence.png" alt="flood-resilience-logo" width={100} height={20} />*/}
                 {/*</Link>*/}
-                <div className="ml-8 text-2xl text-black font-bold">
+                <div className="ml-8 text-xl text-black font-bold">
                     <LiveClockUpdate />
                 </div>
             </div>
@@ -27,7 +27,7 @@ const TeestaHeader = () => {
             <div className="navbar-end">
                 <Link href="/rain-forecast" target="_blank" className="btn btn-sm mr-1.5">RainFall Forecast</Link>
                 {/*<WordWideConcernsIcon />*/}
-                <Image className="bg-white" src='/icons/uk_aid.png' alt='UK International Development Logo' width={180} height={70} quality={100}/>
+                <Image className="bg-white" src='/icons/uk_aid.png' alt='UK International Development Logo' width={160} height={50} quality={100}/>
             </div>
         </div>
     );
