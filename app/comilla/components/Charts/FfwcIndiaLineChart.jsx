@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import dynamic from "next/dynamic";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
@@ -10,8 +11,11 @@ const FfwcIndiaLineChart = ({
     stationName,
     paperColor = '#ffffff',
     chartId = '',
+    title, // English title
+    titleBn, // Bangla title (optional)
     onThresholdCrossed = null // Callback when threshold is crossed
 }) => {
+    const { language } = useLanguage();
     const [chartHeight, setChartHeight] = useState(400);
     const [chartData, setChartData] = useState([]);
     const [initialLoading, setInitialLoading] = useState(true);
@@ -230,7 +234,7 @@ const FfwcIndiaLineChart = ({
 
     const layout = {
         title: {
-            text: `Hydrograph view of - ${stationName || stationInfo.name} (${stationCode})`,
+            text: language === 'bn' && titleBn ? titleBn : (title || `Hydrograph view of ${stationName || stationInfo.name} (${stationCode})`),
             font: { size: 16, family: 'Arial, sans-serif' }
         },
         xaxis: {

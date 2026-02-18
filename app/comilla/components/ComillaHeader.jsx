@@ -27,7 +27,7 @@ const ComillaHeader = () => {
             <div className="navbar-end">
                 <Link href="/rain-forecast" target="_blank" className="btn btn-sm mr-1.5">RainFall Forecast</Link>
                 {/*<WordWideConcernsIcon />*/}
-                <Image className="bg-white" src='/icons/uk_aid.png' alt='UK International Development Logo' width={200} height={80} quality={100}/>
+                <Image className="bg-white" src='/icons/uk_aid.png' alt='UK International Development Logo' width={180} height={80} quality={100}/>
             </div>
         </div>
     );

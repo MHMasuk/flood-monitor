@@ -4,12 +4,14 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import dynamic from "next/dynamic";
 import { convertToGMTPlus6 } from "@/utils/convertToUtc";
 import { DUMMY_BD_STATION_DATA } from './dummyBdStationData';
+import { useLanguage } from "@/app/context/LanguageContext";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 const TeestaLineChart = ({
     chart_data,
     title,
+    titleBn, // Bangla title (optional)
     hfl,
     danger,
     warning,
@@ -18,6 +20,8 @@ const TeestaLineChart = ({
     onThresholdCrossed = null,
     useDummyData = false
 }) => {
+    console.log("title", title)
+    const { language } = useLanguage();
     const [chartHeight, setChartHeight] = useState(400);
     const [hasTriggeredWarning, setHasTriggeredWarning] = useState(false);
     const [hasTriggeredDanger, setHasTriggeredDanger] = useState(false);
@@ -170,7 +174,7 @@ const TeestaLineChart = ({
 
     const layout = {
         title: {
-            text: title,
+            text: language === 'bn' && titleBn ? titleBn : title,
             font: { size: 16, family: 'Arial, sans-serif' }
         },
         xaxis: {

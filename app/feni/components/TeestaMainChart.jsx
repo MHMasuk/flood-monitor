@@ -4,13 +4,13 @@ import React, {useEffect, useState, useRef, useCallback} from "react";
 import useSound from "use-sound";
 import TeestaLineChart from "./Charts/TeestaLineChart";
 import FfwcIndiaLineChart from "./Charts/FfwcIndiaLineChart";
-import {fetchTokenIfExpired} from "@/utils/jwtToken";
 import {DUMMY_BD_STATION_DATA} from "./Charts/dummyBdStationData";
 
 const TeestaMainChart = (props) => {
     const {
         indiaStationConfigs,
         bdStationConfigs,
+        bdForecastData,
         useDummyData = false,
         refreshInterval = 15,
         onRefreshIntervalChange
@@ -102,46 +102,17 @@ const TeestaMainChart = (props) => {
             const newDataMap = {};
             safeBdStationConfigs.forEach(config => {
                 // Use the same dummy data for all BD stations
-                newDataMap[config.series_id] = DUMMY_BD_STATION_DATA;
+                newDataMap[config.station_id] = DUMMY_BD_STATION_DATA;
             });
             setBdStationDataMap(newDataMap);
             return;
         }
 
-        try {
-            const tokenData = await fetchTokenIfExpired();
-
-            // Fetch data for each BD station config
-            const fetchPromises = safeBdStationConfigs.map(async (config) => {
-                try {
-                    const response = await fetch(`/api/bd-station/${config.series_id}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Custom-Token': `${tokenData}`,
-                        },
-                    });
-
-                    const result = await response.json();
-                    return {seriesId: config.series_id, data: result.data || []};
-                } catch (error) {
-                    console.error(`Error fetching BD station ${config.series_id}:`, error);
-                    return {seriesId: config.series_id, data: []};
-                }
-            });
-
-            const results = await Promise.all(fetchPromises);
-
-            // Update state with all fetched data
-            const newDataMap = {};
-            results.forEach(result => {
-                newDataMap[result.seriesId] = result.data;
-            });
-            setBdStationDataMap(newDataMap);
-        } catch (error) {
-            console.error('Error fetching BD station data:', error);
+        // Use forecast data from props if available
+        if (bdForecastData && Object.keys(bdForecastData).length > 0) {
+            setBdStationDataMap(bdForecastData);
         }
-    }, [safeBdStationConfigs, useDummyData, refreshInterval]);
+    }, [safeBdStationConfigs, useDummyData, refreshInterval, bdForecastData]);
 
     // Fetch BD station data on mount and set up interval
     useEffect(() => {
@@ -296,9 +267,11 @@ const TeestaMainChart = (props) => {
                         <div key={config.stationCode}
                              className={`w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'md:mx-auto' : ''}`}>
                             <FfwcIndiaLineChart
+                                title={config.title || `Hydrograph view of ${config.name} (${config.stationCode})`}
+                                titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য (${config.stationCode})`}
                                 stationCode={config.stationCode}
                                 stationName={config.name}
-                                paperColor="#fef9c3"
+                                paperColor={config.paper_bgcolor || "#fef9c3"}
                                 chartId={chartId}
                                 onThresholdCrossed={onThresholdCrossed}
                                 refreshInterval={refreshInterval}
@@ -309,24 +282,25 @@ const TeestaMainChart = (props) => {
 
                 {/* Render TeestaLineChart for each BD station config */}
                 {safeBdStationConfigs.map((config, index) => {
-                    const chartData = bdStationDataMap[config.series_id] || [];
-                    const chartId = `bd-${config.series_id}`;
+                    const chartData = bdStationDataMap[config.station_id] || [];
+                    const chartId = `bd-${config.station_id}`;
                     const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
                     const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
                     const isLastChart = index === safeBdStationConfigs.length - 1;
                     const shouldCenter = totalCharts % 2 === 1 && isLastChart;
 
                     return (
-                        <div key={config.series_id}
+                        <div key={config.station_id}
                              className={`w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(50%-0.5rem)] ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'md:mx-auto' : ''}`}>
                             {chartData.length > 0 ? (
                                 <TeestaLineChart
                                     chart_data={chartData}
-                                    title={`Hydrograph view of - ${config.name}`}
+                                    title={config.title || `Hydrograph view of ${config.name}`}
+                                    titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য`}
                                     danger={config.danger}
                                     warning={config.warning}
                                     hfl={config.hfl}
-                                    paperColor="#fef9c3"
+                                    paperColor={config.paper_bgcolor || "#fef9c3"}
                                     chartId={chartId}
                                     onThresholdCrossed={onThresholdCrossed}
                                     useDummyData={useDummyData}
