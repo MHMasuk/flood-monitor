@@ -202,7 +202,7 @@ const ComillaLineChart = ({
             tickangle: 0,
             automargin: true,
             tickmode: 'auto',
-            nticks: 7
+            nticks: 5
         },
         yaxis: {
             title: 'Water Level (m)',

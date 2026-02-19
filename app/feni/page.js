@@ -18,7 +18,8 @@ const INDIA_STATION_CONFIG = [
 
 const BD_STATION_CONFIG = [
     {
-        station_id: "21",
+        // station_id: "21",
+        station_id: "6022",
         name: "Parshuram (SW212)",
         title: "Hydrograph view of Parshuram (SW212)",
         titleBn: "পরশুরাম (SW212) পানি সমতলের হাইড্রোগ্রাফ",
@@ -32,7 +33,7 @@ const BD_STATION_CONFIG = [
         paper_bgcolor: "#e7d4f8",
     },
     {
-        station_id: "135",
+        station_id: "6092",
         name: "(Down stream of Parshuram) Horipur_C (SW213)",
         title: "Hydrograph view of (Down stream of Parshuram) Horipur_C (SW213)",
         titleBn: "পরশুরামের ভাটির স্টেশন হরিপুর_সি (SW213) এর হাইড্রোগ্রাফ",
@@ -73,23 +74,32 @@ const TeestaPage = () => {
         }
     }
 
-    async function fetchBdForecastData() {
+    async function fetchBdStationData() {
         try {
-            // Fetch forecast data for all BD stations
+            const tokenData = await fetchTokenIfExpired();
+
+            // Fetch station data for all BD stations
             const fetchPromises = BD_STATION_CONFIG.map(async (config) => {
                 try {
-                    const response = await fetch(`/api/ffwc-forecast/${config.station_id}`);
-                    const data = await response.json();
+                    const response = await fetch(`/api/bd-station/${config.station_id}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Custom-Token': `${tokenData}`,
+                        },
+                    });
+
+                    const result = await response.json();
 
                     // Transform API response to match expected format
-                    const transformedData = data.map(item => ({
-                        datetime: item.fc_date,
-                        value: parseFloat(item.waterlevel)
+                    const transformedData = (result.data || []).map(item => ({
+                        datetime: item.datetime,
+                        value: parseFloat(item.value)
                     }));
 
                     return { station_id: config.station_id, data: transformedData };
                 } catch (error) {
-                    console.error(`Error fetching forecast for station ${config.station_id}:`, error);
+                    console.error(`Error fetching data for station ${config.station_id}:`, error);
                     return { station_id: config.station_id, data: [] };
                 }
             });
@@ -104,14 +114,14 @@ const TeestaPage = () => {
 
             setBdForecastData(dataMap);
         } catch (error) {
-            console.error('Error fetching BD forecast data:', error);
+            console.error('Error fetching BD station data:', error);
         }
     }
 
     useEffect(() => {
         // Fetch data on component mount
         fetchTeestaData();
-        fetchBdForecastData();
+        fetchBdStationData();
 
         // Clear any existing interval
         if (intervalRef.current) {
@@ -121,7 +131,7 @@ const TeestaPage = () => {
         // Set up interval to fetch data based on refreshInterval state
         intervalRef.current = setInterval(() => {
             fetchTeestaData();
-            fetchBdForecastData();
+            fetchBdStationData();
         }, refreshInterval * 60 * 1000);
 
         // Cleanup interval on component unmount or when interval changes

@@ -7,7 +7,16 @@ import FfwcIndiaLineChart from "./Charts/FfwcIndiaLineChart";
 import { DUMMY_BD_STATION_DATA } from "./Charts/dummyBdStationData";
 
 const ComillaMainChart = (props) => {
-    const { indiaStationConfigs, bdStationConfigs, bdForecastData, useDummyData = false } = props;
+    const {
+        indiaStationConfigs,
+        bdStationConfigs,
+        bdForecastData,
+        useDummyData = false,
+        refreshInterval = 15,
+        onRefreshIntervalChange,
+        showRainfall = false,
+        RainfallComponent = null
+    } = props;
     const safeBdStationConfigs = React.useMemo(() => bdStationConfigs || [], [bdStationConfigs]);
     const safeIndiaStationConfigs = React.useMemo(() => indiaStationConfigs || [], [indiaStationConfigs]);
 
@@ -16,6 +25,12 @@ const ComillaMainChart = (props) => {
     const [audioUnlocked, setAudioUnlocked] = useState(false);
     const [pendingAlarm, setPendingAlarm] = useState(false);
     const intervalRefSound = useRef(null);
+    const intervalRefBdData = useRef(null);
+    const intervalRefCountdown = useRef(null);
+
+    // State for countdown timer
+    const [secondsUntilRefresh, setSecondsUntilRefresh] = useState(refreshInterval * 60);
+    const [lastRefreshTime, setLastRefreshTime] = useState(new Date());
 
     // State for BD station data - stores data for each series_id
     const [bdStationDataMap, setBdStationDataMap] = useState({});
@@ -80,6 +95,10 @@ const ComillaMainChart = (props) => {
     const fetchBdStationData = useCallback(async () => {
         if (!safeBdStationConfigs.length) return;
 
+        // Update last refresh time
+        setLastRefreshTime(new Date());
+        setSecondsUntilRefresh(refreshInterval * 60);
+
         // Use dummy data if useDummyData is true
         if (useDummyData) {
             const newDataMap = {};
@@ -95,12 +114,55 @@ const ComillaMainChart = (props) => {
         if (bdForecastData && Object.keys(bdForecastData).length > 0) {
             setBdStationDataMap(bdForecastData);
         }
-    }, [safeBdStationConfigs, useDummyData, bdForecastData]);
+    }, [safeBdStationConfigs, useDummyData, refreshInterval, bdForecastData]);
 
-    // Fetch BD station data on mount
+    // Fetch BD station data on mount and set up interval
     useEffect(() => {
         fetchBdStationData();
-    }, [fetchBdStationData]);
+
+        // Clear any existing interval
+        if (intervalRefBdData.current) {
+            clearInterval(intervalRefBdData.current);
+        }
+
+        // Refresh BD station data based on refreshInterval
+        intervalRefBdData.current = setInterval(() => {
+            fetchBdStationData();
+        }, refreshInterval * 60 * 1000);
+
+        return () => {
+            if (intervalRefBdData.current) {
+                clearInterval(intervalRefBdData.current);
+            }
+        };
+    }, [fetchBdStationData, refreshInterval]); // Re-run when refreshInterval changes
+
+    // Countdown timer effect
+    useEffect(() => {
+        // Reset countdown when refreshInterval changes
+        setSecondsUntilRefresh(refreshInterval * 60);
+
+        // Clear existing countdown interval
+        if (intervalRefCountdown.current) {
+            clearInterval(intervalRefCountdown.current);
+        }
+
+        // Start countdown
+        intervalRefCountdown.current = setInterval(() => {
+            setSecondsUntilRefresh(prev => {
+                if (prev <= 1) {
+                    return refreshInterval * 60;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => {
+            if (intervalRefCountdown.current) {
+                clearInterval(intervalRefCountdown.current);
+            }
+        };
+    }, [refreshInterval]);
 
     // Cleanup on unmount
     useEffect(() => {
@@ -150,67 +212,83 @@ const ComillaMainChart = (props) => {
                 )}
             </div>
 
-            <div className="flex-1 overflow-auto px-4 py-4">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
-                {/* Render FfwcIndiaLineChart for each India station config */}
-                {safeIndiaStationConfigs.map((config, index) => {
-                    const chartId = `india-${config.stationCode}`;
-                    const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
-                    const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
-                    const isLastChart = (index === safeIndiaStationConfigs.length - 1) && safeBdStationConfigs.length === 0;
-                    const shouldCenter = totalCharts % 2 === 1 && isLastChart;
+            <div className={`flex-1 overflow-auto ${showRainfall && RainfallComponent ? 'flex gap-4' : ''}`}>
+                {/* Charts Section */}
+                <div className={`${showRainfall && RainfallComponent ? 'flex-[2]' : 'w-full'} px-4 py-4 overflow-auto`}>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
+                        {/* Render FfwcIndiaLineChart for each India station config */}
+                        {safeIndiaStationConfigs.map((config, index) => {
+                            const chartId = `india-${config.stationCode}`;
+                            const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
+                            const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
+                            const isLastChart = (index === safeIndiaStationConfigs.length - 1) && safeBdStationConfigs.length === 0;
+                            const shouldCenter = totalCharts % 2 === 1 && isLastChart;
 
-                    return (
-                        <div key={config.stationCode} className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
-                            <FfwcIndiaLineChart
-                                title={config.title || `Hydrograph view of ${config.name} (${config.stationCode})`}
-                                titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য (${config.stationCode})`}
-                                stationCode={config.stationCode}
-                                stationName={config.name}
-                                paperColor={config.paper_bgcolor}
-                                chartId={chartId}
-                                onThresholdCrossed={onThresholdCrossed}
-                            />
-                        </div>
-                    );
-                })}
-
-                {/* Render ComillaLineChart for each BD station config */}
-                {safeBdStationConfigs.map((config, index) => {
-                    const chartData = bdStationDataMap[config.station_id] || [];
-                    const chartId = `bd-${config.station_id}`;
-                    const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
-                    const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
-                    const isLastChart = index === safeBdStationConfigs.length - 1;
-                    const shouldCenter = totalCharts % 2 === 1 && isLastChart;
-
-                    return (
-                        <div key={config.station_id} className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
-                            {chartData.length > 0 ? (
-                                <ComillaLineChart
-                                    chart_data={chartData}
-                                    title={config.title || `Hydrograph view of ${config.name}`}
-                                    titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য`}
-                                    danger={config.danger}
-                                    warning={config.warning}
-                                    hfl={config.hfl}
-                                    paperColor={config.paper_bgcolor}
-                                    chartId={chartId}
-                                    onThresholdCrossed={onThresholdCrossed}
-                                    useDummyData={useDummyData}
-                                />
-                            ) : (
-                                <div className="w-full h-96 flex items-center justify-center border border-gray-200 bg-white">
-                                    <div className="text-center">
-                                        <div className="loading loading-spinner loading-md"></div>
-                                        <p className="text-gray-500 mt-2">Loading {config.name}...</p>
-                                    </div>
+                            return (
+                                <div key={config.stationCode}
+                                     className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
+                                    <FfwcIndiaLineChart
+                                        title={config.title || `Hydrograph view of ${config.name} (${config.stationCode})`}
+                                        titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য (${config.stationCode})`}
+                                        stationCode={config.stationCode}
+                                        stationName={config.name}
+                                        paperColor={config.paper_bgcolor || "#fef9c3"}
+                                        chartId={chartId}
+                                        onThresholdCrossed={onThresholdCrossed}
+                                        refreshInterval={refreshInterval}
+                                    />
                                 </div>
-                            )}
+                            );
+                        })}
+
+                        {/* Render ComillaLineChart for each BD station config */}
+                        {safeBdStationConfigs.map((config, index) => {
+                            const chartData = bdStationDataMap[config.station_id] || [];
+                            const chartId = `bd-${config.station_id}`;
+                            const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
+                            const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
+                            const isLastChart = index === safeBdStationConfigs.length - 1;
+                            const shouldCenter = totalCharts % 2 === 1 && isLastChart;
+
+                            return (
+                                <div key={config.station_id}
+                                     className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
+                                    {chartData.length > 0 ? (
+                                        <ComillaLineChart
+                                            chart_data={chartData}
+                                            title={config.title || `Hydrograph view of ${config.name}`}
+                                            titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য`}
+                                            danger={config.danger}
+                                            warning={config.warning}
+                                            hfl={config.hfl}
+                                            paperColor={config.paper_bgcolor || "#fef9c3"}
+                                            chartId={chartId}
+                                            onThresholdCrossed={onThresholdCrossed}
+                                            useDummyData={useDummyData}
+                                        />
+                                    ) : (
+                                        <div
+                                            className="w-full h-96 flex items-center justify-center border border-gray-200 bg-white">
+                                            <div className="text-center">
+                                                <div className="loading loading-spinner loading-md"></div>
+                                                <p className="text-gray-500 mt-2">Loading {config.name}...</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Rainfall Forecast Section */}
+                {showRainfall && RainfallComponent && (
+                    <div className="flex-[1] min-w-0 py-4 pr-4">
+                        <div className="h-full bg-white rounded-lg shadow-lg overflow-hidden">
+                            <RainfallComponent />
                         </div>
-                    );
-                })}
-            </div>
+                    </div>
+                )}
             </div>
         </div>
     );
