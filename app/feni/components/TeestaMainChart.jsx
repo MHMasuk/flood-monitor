@@ -13,7 +13,9 @@ const TeestaMainChart = (props) => {
         bdForecastData,
         useDummyData = false,
         refreshInterval = 15,
-        onRefreshIntervalChange
+        onRefreshIntervalChange,
+        showRainfall = false,
+        RainfallComponent = null
     } = props;
     const safeBdStationConfigs = React.useMemo(() => bdStationConfigs || [], [bdStationConfigs]);
     const safeIndiaStationConfigs = React.useMemo(() => indiaStationConfigs || [], [indiaStationConfigs]);
@@ -212,71 +214,83 @@ const TeestaMainChart = (props) => {
                 )}
             </div>
 
-            <div className="flex-1 overflow-auto px-4 py-4">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
-                {/* Render FfwcIndiaLineChart for each India station config */}
-                {safeIndiaStationConfigs.map((config, index) => {
-                    const chartId = `india-${config.stationCode}`;
-                    const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
-                    const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
-                    const isLastChart = (index === safeIndiaStationConfigs.length - 1) && safeBdStationConfigs.length === 0;
-                    const shouldCenter = totalCharts % 2 === 1 && isLastChart;
+            <div className={`flex-1 overflow-auto ${showRainfall && RainfallComponent ? 'flex gap-4' : ''}`}>
+                {/* Charts Section */}
+                <div className={`${showRainfall && RainfallComponent ? 'flex-[2]' : 'w-full'} px-4 py-4 overflow-auto`}>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
+                        {/* Render FfwcIndiaLineChart for each India station config */}
+                        {safeIndiaStationConfigs.map((config, index) => {
+                            const chartId = `india-${config.stationCode}`;
+                            const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
+                            const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
+                            const isLastChart = (index === safeIndiaStationConfigs.length - 1) && safeBdStationConfigs.length === 0;
+                            const shouldCenter = totalCharts % 2 === 1 && isLastChart;
 
-                    return (
-                        <div key={config.stationCode}
-                             className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
-                            <FfwcIndiaLineChart
-                                title={config.title || `Hydrograph view of ${config.name} (${config.stationCode})`}
-                                titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য (${config.stationCode})`}
-                                stationCode={config.stationCode}
-                                stationName={config.name}
-                                paperColor={config.paper_bgcolor || "#fef9c3"}
-                                chartId={chartId}
-                                onThresholdCrossed={onThresholdCrossed}
-                                refreshInterval={refreshInterval}
-                            />
-                        </div>
-                    );
-                })}
-
-                {/* Render TeestaLineChart for each BD station config */}
-                {safeBdStationConfigs.map((config, index) => {
-                    const chartData = bdStationDataMap[config.station_id] || [];
-                    const chartId = `bd-${config.station_id}`;
-                    const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
-                    const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
-                    const isLastChart = index === safeBdStationConfigs.length - 1;
-                    const shouldCenter = totalCharts % 2 === 1 && isLastChart;
-
-                    return (
-                        <div key={config.station_id}
-                             className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
-                            {chartData.length > 0 ? (
-                                <TeestaLineChart
-                                    chart_data={chartData}
-                                    title={config.title || `Hydrograph view of ${config.name}`}
-                                    titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য`}
-                                    danger={config.danger}
-                                    warning={config.warning}
-                                    hfl={config.hfl}
-                                    paperColor={config.paper_bgcolor || "#fef9c3"}
-                                    chartId={chartId}
-                                    onThresholdCrossed={onThresholdCrossed}
-                                    useDummyData={useDummyData}
-                                />
-                            ) : (
-                                <div
-                                    className="w-full h-96 flex items-center justify-center border border-gray-200 bg-white">
-                                    <div className="text-center">
-                                        <div className="loading loading-spinner loading-md"></div>
-                                        <p className="text-gray-500 mt-2">Loading {config.name}...</p>
-                                    </div>
+                            return (
+                                <div key={config.stationCode}
+                                     className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
+                                    <FfwcIndiaLineChart
+                                        title={config.title || `Hydrograph view of ${config.name} (${config.stationCode})`}
+                                        titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য (${config.stationCode})`}
+                                        stationCode={config.stationCode}
+                                        stationName={config.name}
+                                        paperColor={config.paper_bgcolor || "#fef9c3"}
+                                        chartId={chartId}
+                                        onThresholdCrossed={onThresholdCrossed}
+                                        refreshInterval={refreshInterval}
+                                    />
                                 </div>
-                            )}
+                            );
+                        })}
+
+                        {/* Render TeestaLineChart for each BD station config */}
+                        {safeBdStationConfigs.map((config, index) => {
+                            const chartData = bdStationDataMap[config.station_id] || [];
+                            const chartId = `bd-${config.station_id}`;
+                            const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
+                            const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
+                            const isLastChart = index === safeBdStationConfigs.length - 1;
+                            const shouldCenter = totalCharts % 2 === 1 && isLastChart;
+
+                            return (
+                                <div key={config.station_id}
+                                     className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
+                                    {chartData.length > 0 ? (
+                                        <TeestaLineChart
+                                            chart_data={chartData}
+                                            title={config.title || `Hydrograph view of ${config.name}`}
+                                            titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য`}
+                                            danger={config.danger}
+                                            warning={config.warning}
+                                            hfl={config.hfl}
+                                            paperColor={config.paper_bgcolor || "#fef9c3"}
+                                            chartId={chartId}
+                                            onThresholdCrossed={onThresholdCrossed}
+                                            useDummyData={useDummyData}
+                                        />
+                                    ) : (
+                                        <div
+                                            className="w-full h-96 flex items-center justify-center border border-gray-200 bg-white">
+                                            <div className="text-center">
+                                                <div className="loading loading-spinner loading-md"></div>
+                                                <p className="text-gray-500 mt-2">Loading {config.name}...</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Rainfall Forecast Section */}
+                {showRainfall && RainfallComponent && (
+                    <div className="flex-[1] min-w-0 py-4 pr-4">
+                        <div className="h-full bg-white rounded-lg shadow-lg overflow-hidden">
+                            <RainfallComponent />
                         </div>
-                    );
-                })}
-            </div>
+                    </div>
+                )}
             </div>
         </div>
     );

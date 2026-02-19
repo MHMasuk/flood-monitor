@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { fetchTokenIfExpired } from "@/utils/jwtToken";
 import TeestaMainChart from "./components/TeestaMainChart";
+import RainFall from "./components/RainFall";
 
 // India station configuration - supports multiple stations (FFWC API)
 const INDIA_STATION_CONFIG = [
@@ -143,6 +144,8 @@ const TeestaPage = () => {
                 useDummyData={false}
                 refreshInterval={refreshInterval}
                 onRefreshIntervalChange={setRefreshInterval}
+                showRainfall={true}
+                RainfallComponent={RainFall}
             />
         </div>
     );
