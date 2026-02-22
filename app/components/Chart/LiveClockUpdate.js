@@ -23,14 +23,21 @@ const LiveClockUpdate = () => {
     if (!date) {
         return (
             <div>
-                <h2>--:--:-- --</h2>
+                <h2>-- ---, ---- --:--:-- --</h2>
             </div>
         );
     }
 
+    const formattedDate = date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    });
+    const formattedTime = date.toLocaleTimeString();
+
     return (
         <div>
-            <h2>{date.toLocaleTimeString()}.</h2>
+            <h2>{formattedDate} {formattedTime}</h2>
         </div>
     );
 };

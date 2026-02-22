@@ -41,7 +41,17 @@ const BD_STATION_CONFIG = [
         danger: "5.08",
         warning: "5.00",
         paper_bgcolor: "#fef9c3",
-    }
+    },
+    // {
+    //     station_id: "6008",
+    //     name: "(Down stream of Parshuram) Subar Bazar (SW257.5)",
+    //     title: "Hydrograph view of (Down stream of Parshuram) Subar Bazar (SW257.5)",
+    //     titleBn: "পরশুরামের ভাটির স্টেশন সুবেরবাজার (SW257.5) এর হাইড্রোগ্রাফ",
+    //     // hfl: "6.612",
+    //     // danger: "5.08",
+    //     // warning: "5.00",
+    //     paper_bgcolor: "#fef9c3",
+    // }
 ]
 
 const TeestaPage = () => {
