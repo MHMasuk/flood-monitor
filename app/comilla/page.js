@@ -137,6 +137,30 @@ const ComillaPage = () => {
         };
     }, [refreshInterval]); // Re-run when refreshInterval changes
 
+
+    // Auto-reload page every day at 11 PM
+    useEffect(() => {
+        const checkAndReload = () => {
+            const now = new Date();
+            const targetHour = 23; // 11 PM in 24-hour format
+            const targetMinute = 0;
+
+            // Check if current time is 11:00 PM (within 1 minute window)
+            if (now.getHours() === targetHour && now.getMinutes() === targetMinute) {
+                console.log('Auto-reloading page at 11:00 PM');
+                window.location.reload();
+            }
+        };
+
+        // Check every minute
+        const reloadInterval = setInterval(checkAndReload, 60000);
+
+        // Also check immediately on mount
+        checkAndReload();
+
+        return () => clearInterval(reloadInterval);
+    }, []);
+
     return (
         <div className="w-full h-full">
             <ComillaMainChart
