@@ -4,8 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import LiveClockUpdate from "@/app/components/Chart/LiveClockUpdate";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 const TeestaHeader = () => {
+    const { language } = useLanguage();
+
     return (
         <div className="fixed top-0 w-full h-16 navbar bg-white text-neutral-content z-50 shadow-sm">
             <div className="navbar-start">
@@ -14,7 +17,7 @@ const TeestaHeader = () => {
                 {/*    <Image src="/icons/flood_resilence.png" alt="flood-resilience-logo" width={100} height={20} />*/}
                 {/*</Link>*/}
                 <div className="ml-8 text-xl text-black font-bold">
-                    <LiveClockUpdate />
+                    <LiveClockUpdate language={language} />
                 </div>
             </div>
             <div className="navbar-center">

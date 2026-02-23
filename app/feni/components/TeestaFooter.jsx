@@ -9,9 +9,13 @@ const TeestaFooter = () => {
     return (
         <footer className="footer items-center fixed bottom-0 w-full h-14 bg-neutral text-neutral-content p-1 z-50 shadow-lg">
             <div className="items-center grid-flow-col">
-                {/* Add your custom footer content here */}
+                {/* Left side content */}
+                <p className="font-bold text-lg tracking-wide">UK-Bangladesh Hydromet Collaboration</p>
+            </div>
+            <div className="items-center grid-flow-col">
+                {/* Right side content */}
                 <RimesLogo />
-                <p>Technical Partner & Implementing by <strong>Regional Integrated Multi-Hazard Early Warning System (RIMES)</strong></p>
+                <p>Technical & Implementing partner : <strong>Regional Integrated Multi-Hazard Early Warning System (RIMES)</strong></p>
             </div>
             <div className="flex items-center gap-4 md:place-self-center md:justify-self-end">
                 {/* Language Toggle Button */}

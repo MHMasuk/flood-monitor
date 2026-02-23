@@ -4,23 +4,26 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import LiveClockUpdate from "@/app/components/Chart/LiveClockUpdate";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 const ComillaHeader = () => {
+    const { language } = useLanguage();
+
     return (
         <div className="fixed top-0 w-full h-16 navbar bg-white text-neutral-content z-50 shadow-sm">
             <div className="navbar-start">
-                {/*<Link href="/comilla">*/}
+                {/*<Link href="/teesta">*/}
                 {/*    /!* Add your custom logo here *!/*/}
                 {/*    <Image src="/icons/flood_resilence.png" alt="flood-resilience-logo" width={100} height={20} />*/}
                 {/*</Link>*/}
                 <div className="ml-8 text-xl text-black font-bold">
-                    <LiveClockUpdate />
+                    <LiveClockUpdate language={language} />
                 </div>
             </div>
             <div className="navbar-center">
                 {/* Add your custom center logos here */}
                 {/*<RimesLogo />*/}
-                <Link href="/comilla">
+                <Link href="/feni">
                     <Image src="/icons/pani-unnoyon-board.png" alt="pani-unnoyon-board" width={50} height={20} />
                 </Link>
             </div>

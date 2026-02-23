@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
-const LiveClockUpdate = () => {
+const LiveClockUpdate = ({ language = 'en' }) => {
     const [date, setDate] = useState(null);
 
     useEffect(() => {
@@ -28,12 +28,21 @@ const LiveClockUpdate = () => {
         );
     }
 
-    const formattedDate = date.toLocaleDateString('en-GB', {
+    // Set locale based on language
+    const locale = language === 'bn' ? 'bn-BD' : 'en-GB';
+
+    const formattedDate = date.toLocaleDateString(locale, {
         day: '2-digit',
-        month: 'short',
+        month: 'long',
         year: 'numeric'
     });
-    const formattedTime = date.toLocaleTimeString();
+
+    const formattedTime = date.toLocaleTimeString(locale, {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+    });
 
     return (
         <div>
