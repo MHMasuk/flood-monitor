@@ -238,6 +238,7 @@ const TeestaMainChart = (props) => {
                                         chartId={chartId}
                                         onThresholdCrossed={onThresholdCrossed}
                                         refreshInterval={refreshInterval}
+                                        useDummyData={useDummyData}
                                     />
                                 </div>
                             );

@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import dynamic from "next/dynamic";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { DUMMY_INDIA_STATION_DATA } from "./dummyIndiaStationData";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
@@ -14,7 +15,8 @@ const FfwcIndiaLineChart = ({
     title, // English title
     titleBn, // Bangla title (optional)
     onThresholdCrossed = null, // Callback when threshold is crossed
-    refreshInterval = 15 // Refresh interval in minutes (default: 15)
+    refreshInterval = 15, // Refresh interval in minutes (default: 15)
+    useDummyData = false // Use dummy data instead of fetching from API
 }) => {
     console.log("title", title)
     const { language } = useLanguage();
@@ -148,6 +150,20 @@ const FfwcIndiaLineChart = ({
         setError(null);
 
         try {
+            // Use dummy data if useDummyData is true
+            if (useDummyData) {
+                console.log(`[${chartId}] Using dummy data for station ${stationCode}`);
+                setChartData(DUMMY_INDIA_STATION_DATA);
+
+                // Check water level alerts after data is set
+                checkWaterLevelAlerts(DUMMY_INDIA_STATION_DATA, stationInfo);
+
+                if (isInitial) {
+                    setInitialLoading(false);
+                }
+                return;
+            }
+
             // Calculate date (7 days ago from today for historical data)
             const date = new Date();
             date.setDate(date.getDate() - 3);
