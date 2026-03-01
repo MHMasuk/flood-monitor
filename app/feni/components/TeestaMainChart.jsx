@@ -11,12 +11,19 @@ const TeestaMainChart = (props) => {
         indiaStationConfigs,
         bdStationConfigs,
         bdForecastData,
-        useDummyData = false,
+        useDummyData = false, // Deprecated: use useIndiaDummyData and useBdDummyData instead
+        useIndiaDummyData = false, // Use dummy data for India stations
+        useBdDummyData = false, // Use dummy data for BD stations
         refreshInterval = 15,
         onRefreshIntervalChange,
         showRainfall = false,
         RainfallComponent = null
     } = props;
+
+    // For backward compatibility: if useDummyData is true and specific flags are false, use useDummyData
+    const effectiveIndiaDummyData = useIndiaDummyData || useDummyData;
+    const effectiveBdDummyData = useBdDummyData;
+
     const safeBdStationConfigs = React.useMemo(() => bdStationConfigs || [], [bdStationConfigs]);
     const safeIndiaStationConfigs = React.useMemo(() => indiaStationConfigs || [], [indiaStationConfigs]);
 
@@ -99,8 +106,8 @@ const TeestaMainChart = (props) => {
         setLastRefreshTime(new Date());
         setSecondsUntilRefresh(refreshInterval * 60);
 
-        // Use dummy data if useDummyData is true
-        if (useDummyData) {
+        // Use dummy data if effectiveBdDummyData is true
+        if (effectiveBdDummyData) {
             const newDataMap = {};
             safeBdStationConfigs.forEach(config => {
                 // Use the same dummy data for all BD stations
@@ -114,7 +121,7 @@ const TeestaMainChart = (props) => {
         if (bdForecastData && Object.keys(bdForecastData).length > 0) {
             setBdStationDataMap(bdForecastData);
         }
-    }, [safeBdStationConfigs, useDummyData, refreshInterval, bdForecastData]);
+    }, [safeBdStationConfigs, effectiveBdDummyData, refreshInterval, bdForecastData]);
 
     // Fetch BD station data on mount and set up interval
     useEffect(() => {
@@ -238,7 +245,7 @@ const TeestaMainChart = (props) => {
                                         chartId={chartId}
                                         onThresholdCrossed={onThresholdCrossed}
                                         refreshInterval={refreshInterval}
-                                        useDummyData={useDummyData}
+                                        useDummyData={effectiveIndiaDummyData}
                                     />
                                 </div>
                             );
@@ -267,7 +274,7 @@ const TeestaMainChart = (props) => {
                                             paperColor={config.paper_bgcolor || "#fef9c3"}
                                             chartId={chartId}
                                             onThresholdCrossed={onThresholdCrossed}
-                                            useDummyData={useDummyData}
+                                            useDummyData={effectiveBdDummyData}
                                         />
                                     ) : (
                                         <div
