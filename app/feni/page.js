@@ -184,7 +184,7 @@ const TeestaPage = () => {
                 indiaStationConfigs={INDIA_STATION_CONFIG}
                 bdStationConfigs={BD_STATION_CONFIG}
                 bdForecastData={bdForecastData}
-                useIndiaDummyData={true}
+                useIndiaDummyData={false}
                 useBdDummyData={false}
                 refreshInterval={refreshInterval}
                 onRefreshIntervalChange={setRefreshInterval}
