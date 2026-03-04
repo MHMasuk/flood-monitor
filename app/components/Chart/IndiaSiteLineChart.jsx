@@ -178,10 +178,13 @@ const IndiaSiteLineChart = ({
     if (initialLoading) {
         return (
             <div
-                className="w-full rounded-lg relative flex items-center justify-center"
+                className="w-full rounded-lg relative flex items-center justify-center border border-gray-200"
                 style={{ height: chartHeight + 'px', backgroundColor: paperColor }}
             >
-                Loading data for {stationInfo.name || stationCode}...
+                <div className="text-center">
+                    <div className="loading loading-spinner loading-md"></div>
+                    <p className="text-gray-500 mt-2">Loading {stationInfo.name || stationCode}...</p>
+                </div>
             </div>
         );
     }
@@ -190,10 +193,17 @@ const IndiaSiteLineChart = ({
     if (error) {
         return (
             <div
-                className="w-full rounded-lg relative flex items-center justify-center"
-                style={{ height: chartHeight + 'px', backgroundColor: paperColor }}
+                className="w-full rounded-lg relative flex items-center justify-center border border-red-200 bg-red-50"
+                style={{ height: chartHeight + 'px' }}
             >
-                Error: {error}
+                <div className="text-center p-4">
+                    <svg className="w-12 h-12 mx-auto text-red-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <p className="text-red-600 font-semibold">Error Loading Data</p>
+                    <p className="text-red-500 text-sm mt-1">{stationInfo.name || stationCode}</p>
+                    <p className="text-red-400 text-xs mt-2">{error}</p>
+                </div>
             </div>
         );
     }
@@ -202,10 +212,17 @@ const IndiaSiteLineChart = ({
     if (!chartData || chartData.length === 0) {
         return (
             <div
-                className="w-full rounded-lg relative flex items-center justify-center"
+                className="w-full rounded-lg relative flex items-center justify-center border border-gray-200"
                 style={{ height: chartHeight + 'px', backgroundColor: paperColor }}
             >
-                No data available for {stationInfo.name || stationCode}.
+                <div className="text-center p-4">
+                    <svg className="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    <p className="text-gray-600 font-semibold">No Data Available</p>
+                    <p className="text-gray-500 text-sm mt-1">{stationInfo.name || stationCode}</p>
+                    <p className="text-gray-400 text-xs mt-2">Please try again later</p>
+                </div>
             </div>
         );
     }

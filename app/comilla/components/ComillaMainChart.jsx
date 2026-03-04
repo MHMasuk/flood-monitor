@@ -253,28 +253,18 @@ const ComillaMainChart = (props) => {
                             return (
                                 <div key={config.station_id}
                                      className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
-                                    {chartData.length > 0 ? (
-                                        <ComillaLineChart
-                                            chart_data={chartData}
-                                            title={config.title || `Hydrograph view of ${config.name}`}
-                                            titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য`}
-                                            danger={config.danger}
-                                            warning={config.warning}
-                                            hfl={config.hfl}
-                                            paperColor={config.paper_bgcolor || "#fef9c3"}
-                                            chartId={chartId}
-                                            onThresholdCrossed={onThresholdCrossed}
-                                            useDummyData={useDummyData}
-                                        />
-                                    ) : (
-                                        <div
-                                            className="w-full h-96 flex items-center justify-center border border-gray-200 bg-white">
-                                            <div className="text-center">
-                                                <div className="loading loading-spinner loading-md"></div>
-                                                <p className="text-gray-500 mt-2">Loading {config.name}...</p>
-                                            </div>
-                                        </div>
-                                    )}
+                                    <ComillaLineChart
+                                        chart_data={chartData}
+                                        title={config.title || `Hydrograph view of ${config.name}`}
+                                        titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য`}
+                                        danger={config.danger}
+                                        warning={config.warning}
+                                        hfl={config.hfl}
+                                        paperColor={config.paper_bgcolor || "#fef9c3"}
+                                        chartId={chartId}
+                                        onThresholdCrossed={onThresholdCrossed}
+                                        useDummyData={useDummyData}
+                                    />
                                 </div>
                             );
                         })}
