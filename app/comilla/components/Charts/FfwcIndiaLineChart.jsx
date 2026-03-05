@@ -263,7 +263,7 @@ const FfwcIndiaLineChart = ({
             tickangle: 0,
             automargin: true,
             tickmode: 'auto',
-            nticks: 5
+            nticks: 3
         },
         yaxis: {
             title: 'Water Level (m)',
