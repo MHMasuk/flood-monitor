@@ -8,13 +8,13 @@ export default function ComillaLayout({children}) {
     return (
         <LanguageProvider defaultLanguage="bn">
             <div className="h-screen flex flex-col overflow-hidden">
-                {/*<ComillaHeader/>*/}
+                <ComillaHeader/>
                 <main className="flex-1 overflow-hidden pt-16 pb-14">
-                    <ComillaHeader/>
+                    {/*<ComillaHeader/>*/}
                         {children}
-                    <ComillaFooter/>
+                    {/*<ComillaFooter/>*/}
                 </main>
-                {/*<ComillaFooter/>*/}
+                <ComillaFooter/>
             </div>
         </LanguageProvider>
     );

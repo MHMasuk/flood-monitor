@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import useSound from "use-sound";
 import ComillaLineChart from "./Charts/ComillaLineChart";
 import FfwcIndiaLineChart from "./Charts/FfwcIndiaLineChart";
+import ComillaForecastChart from "./Charts/ComillaForecastChart";
 import { DUMMY_BD_STATION_DATA } from "./Charts/dummyBdStationData";
 
 const ComillaMainChart = (props) => {
@@ -254,13 +255,10 @@ const ComillaMainChart = (props) => {
                             const chartData = bdStationDataMap[config.station_id] || [];
                             const chartId = `bd-${config.station_id}`;
                             const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
-                            const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
-                            const isLastChart = index === safeBdStationConfigs.length - 1;
-                            const shouldCenter = totalCharts % 2 === 1 && isLastChart;
 
                             return (
                                 <div key={config.station_id}
-                                     className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
+                                     className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''}`}>
                                     <ComillaLineChart
                                         chart_data={chartData}
                                         title={config.title || `Hydrograph view of ${config.name}`}
@@ -277,6 +275,16 @@ const ComillaMainChart = (props) => {
                                 </div>
                             );
                         })}
+
+                        {/* Render Comilla Forecast Chart */}
+                        <div className="w-full h-full">
+                            <ComillaForecastChart
+                                title="Gumti River Forecast (Cumilla)"
+                                titleBn="গুমতি নদীর পূর্বাভাস (কুমিল্লা)"
+                                paperColor="#d1fae5"
+                                dangerLevel={290}
+                            />
+                        </div>
                     </div>
                 </div>
 
