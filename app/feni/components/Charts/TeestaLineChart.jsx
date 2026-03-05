@@ -18,42 +18,40 @@ const TeestaLineChart = ({
     paperColor,
     chartId = '',
     onThresholdCrossed = null,
-    useDummyData = false
+    useDummyData = false,
+    isLoading = false
 }) => {
     console.log("title", title)
     const { language } = useLanguage();
-    const [chartHeight, setChartHeight] = useState(400);
+
+    // Calculate initial height function
+    const calculateChartHeight = () => {
+        if (typeof window === 'undefined') return 400; // Default for SSR
+
+        const screenHeight = window.innerHeight;
+        const screenWidth = window.innerWidth;
+        const reservedSpace = 140;
+        const availableHeight = screenHeight - reservedSpace;
+
+        let desiredHeight;
+        if (screenWidth < 1024) {
+            desiredHeight = (availableHeight / 2) - 40;
+        } else {
+            desiredHeight = (availableHeight / 2) - 40;
+        }
+
+        const minHeight = 280;
+        const maxHeight = 550;
+        return Math.max(minHeight, Math.min(maxHeight, desiredHeight));
+    };
+
+    const [chartHeight, setChartHeight] = useState(calculateChartHeight);
     const [hasTriggeredWarning, setHasTriggeredWarning] = useState(false);
     const [hasTriggeredDanger, setHasTriggeredDanger] = useState(false);
     const [hasTriggeredHfl, setHasTriggeredHfl] = useState(false);
 
     const updateChartHeight = () => {
-        const screenHeight = window.innerHeight;
-        const screenWidth = window.innerWidth;
-
-        // Header (64px) + Footer (56px) + padding/margins = 120px reserved
-        // Divide remaining space by number of rows (assuming 2 charts per row on desktop)
-        const reservedSpace = 140; // Header + Footer + padding
-        const availableHeight = screenHeight - reservedSpace;
-
-        let desiredHeight;
-
-        if (screenWidth < 1024) {
-            // Mobile/Tablet: Stack vertically, so divide by number of charts
-            desiredHeight = (availableHeight / 2) - 40; // -40 for gaps
-        } else {
-            // Desktop: 2 columns, so charts are side by side
-            // If you have 4 charts (2 rows), divide by 2
-            desiredHeight = (availableHeight / 2) - 40; // -40 for gaps between rows
-        }
-
-        // Set reasonable constraints
-        const minHeight = 280;
-        const maxHeight = 550;
-
-        desiredHeight = Math.max(minHeight, Math.min(maxHeight, desiredHeight));
-
-        setChartHeight(desiredHeight);
+        setChartHeight(calculateChartHeight());
     };
 
     // Determine which data to use: real API data or dummy data (memoized)
@@ -127,6 +125,28 @@ const TeestaLineChart = ({
             checkWaterLevelAlerts(processedData);
         }
     }, [dataToUse, checkWaterLevelAlerts]);
+
+    // Show loading state
+    if (isLoading) {
+        const displayTitle = language === 'bn' && titleBn ? titleBn : title;
+        return (
+            <div
+                className="w-full rounded-lg relative flex items-center justify-center border border-gray-200"
+                style={{ height: chartHeight + 'px', backgroundColor: paperColor }}
+            >
+                <div className="text-center p-4">
+                    <div className="w-12 h-12 mx-auto mb-3">
+                        <svg className="animate-spin text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                    <p className="text-gray-600 font-semibold">{language === 'bn' ? 'তথ্য লোড হচ্ছে...' : 'Loading Data...'}</p>
+                    <p className="text-gray-500 text-sm mt-1">{displayTitle}</p>
+                </div>
+            </div>
+        );
+    }
 
     if (!dataToUse || dataToUse.length === 0) {
         const displayTitle = language === 'bn' && titleBn ? titleBn : title;

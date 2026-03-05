@@ -34,6 +34,7 @@ const ComillaMainChart = (props) => {
 
     // State for BD station data - stores data for each series_id
     const [bdStationDataMap, setBdStationDataMap] = useState({});
+    const [isBdDataLoading, setIsBdDataLoading] = useState(true);
 
     // Track which charts have crossed thresholds (for animation)
     const [alertedCharts, setAlertedCharts] = useState(new Set());
@@ -95,6 +96,9 @@ const ComillaMainChart = (props) => {
     const fetchBdStationData = useCallback(async () => {
         if (!safeBdStationConfigs.length) return;
 
+        // Set loading state
+        setIsBdDataLoading(true);
+
         // Update last refresh time
         setLastRefreshTime(new Date());
         setSecondsUntilRefresh(refreshInterval * 60);
@@ -107,12 +111,16 @@ const ComillaMainChart = (props) => {
                 newDataMap[config.station_id] = DUMMY_BD_STATION_DATA;
             });
             setBdStationDataMap(newDataMap);
+            setIsBdDataLoading(false);
             return;
         }
 
         // Use forecast data from props if available
         if (bdForecastData && Object.keys(bdForecastData).length > 0) {
             setBdStationDataMap(bdForecastData);
+            setIsBdDataLoading(false);
+        } else {
+            setIsBdDataLoading(false);
         }
     }, [safeBdStationConfigs, useDummyData, refreshInterval, bdForecastData]);
 
@@ -264,6 +272,7 @@ const ComillaMainChart = (props) => {
                                         chartId={chartId}
                                         onThresholdCrossed={onThresholdCrossed}
                                         useDummyData={useDummyData}
+                                        isLoading={isBdDataLoading && chartData.length === 0}
                                     />
                                 </div>
                             );
