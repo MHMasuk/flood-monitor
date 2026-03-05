@@ -250,7 +250,7 @@ const TeestaLineChart = ({
         showlegend: true,
         legend: {
             orientation: 'h',
-            y: -0.30,
+            y: -0.40,
             x: 0.5,
             xanchor: 'center',
             yanchor: 'top'
