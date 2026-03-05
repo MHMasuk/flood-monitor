@@ -249,7 +249,7 @@ const ComillaLineChart = ({
         showlegend: true,
         legend: {
             orientation: 'h',
-            y: -0.40,
+            y: -0.45,
             x: 0.5,
             xanchor: 'center',
             yanchor: 'top'

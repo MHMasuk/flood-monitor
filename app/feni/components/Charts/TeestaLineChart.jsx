@@ -245,12 +245,12 @@ const TeestaLineChart = ({
         },
         paper_bgcolor: paperColor,
         plot_bgcolor: '#ffffff',
-        margin: { l: 55, r: 20, t: 50, b: 80 },
+        margin: { l: 55, r: 20, t: 50, b: 120 },
         height: chartHeight,
         showlegend: true,
         legend: {
             orientation: 'h',
-            y: -0.40,
+            y: -0.45,
             x: 0.5,
             xanchor: 'center',
             yanchor: 'top'
