@@ -9,7 +9,7 @@ const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 const ComillaForecastChart = ({
     paperColor = '#e0f2fe',
     title = '📊 Gumti River Discharge Forecast (Cumilla)',
-    titleBn = '📊 গুমতি নদীর প্রবাহ পূর্বাভাস (কুমিল্লা)',
+    titleBn = '📊 গোমতি নদীর প্রবাহ পূর্বাভাস (কুমিল্লা)',
     dangerLevel = 290 // DL for Cumilla in m³/s
 }) => {
     const { language } = useLanguage();
@@ -106,8 +106,8 @@ const ComillaForecastChart = ({
                 type: 'scatter',
                 mode: 'lines+markers',
                 name: 'Max',
-                line: { color: '#dc2626', width: 3, dash: 'dot' },
-                marker: { size: 10, color: '#dc2626', symbol: 'triangle-up' }
+                line: { color: '#dc2626', width: 1.5, dash: 'dot' },
+                marker: { size: 6, color: '#dc2626', symbol: 'triangle-up' }
             },
             {
                 x: dates,
@@ -115,8 +115,8 @@ const ComillaForecastChart = ({
                 type: 'scatter',
                 mode: 'lines+markers',
                 name: 'Mean',
-                line: { color: '#2563eb', width: 4 },
-                marker: { size: 10, color: '#2563eb', symbol: 'circle' }
+                line: { color: '#2563eb', width: 2 },
+                marker: { size: 6, color: '#2563eb', symbol: 'circle' }
             },
             {
                 x: dates,
@@ -124,8 +124,8 @@ const ComillaForecastChart = ({
                 type: 'scatter',
                 mode: 'lines+markers',
                 name: 'Min',
-                line: { color: '#16a34a', width: 3, dash: 'dash' },
-                marker: { size: 10, color: '#16a34a', symbol: 'triangle-down' }
+                line: { color: '#16a34a', width: 1.5, dash: 'dash' },
+                marker: { size: 6, color: '#16a34a', symbol: 'triangle-down' }
             }
         ];
 
