@@ -76,6 +76,8 @@ const ComillaForecastChart = ({
         };
     }, []);
 
+
+
     // Prepare data for Plotly
     const preparePlotData = () => {
         if (!forecastData || !forecastData.data) return [];
