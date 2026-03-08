@@ -279,8 +279,8 @@ const ComillaMainChart = (props) => {
                         {/* Render Comilla Forecast Chart */}
                         <div className="w-full h-full">
                             <ComillaForecastChart
-                                title="Gumti River Forecast (Cumilla)"
-                                titleBn="গুমতি নদীর পূর্বাভাস (কুমিল্লা)"
+                                title="Gomoti River Discharge Forecast (Cumilla)"
+                                titleBn="গোমতি নদীর প্রবাহ পূর্বাভাস (কুমিল্লা)"
                                 paperColor="#d1fae5"
                                 dangerLevel={290}
                             />

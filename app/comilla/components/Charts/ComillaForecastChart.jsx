@@ -8,8 +8,8 @@ const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 const ComillaForecastChart = ({
     paperColor = '#e0f2fe',
-    title = '📊 Gumti River Discharge Forecast (Cumilla)',
-    titleBn = '📊 গোমতি নদীর প্রবাহ পূর্বাভাস (কুমিল্লা)',
+    title = 'Gomoti River Discharge Forecast (Cumilla)',
+    titleBn = 'গোমতি নদীর প্রবাহ পূর্বাভাস (কুমিল্লা)',
     dangerLevel = 290 // DL for Cumilla in m³/s
 }) => {
     const { language } = useLanguage();
@@ -159,7 +159,7 @@ const ComillaForecastChart = ({
 
     const layout = {
         title: {
-            text: `<b>FORECAST</b> - ${displayTitle} ${getForecastDateRange()}`,
+            text: `${displayTitle}`,
             font: { size: 14, family: 'Arial, sans-serif', color: '#1e40af' }
         },
         xaxis: {
