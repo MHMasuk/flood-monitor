@@ -50,7 +50,13 @@ const ComillaForecastChart = ({
         setError(null);
 
         try {
-            const response = await fetch('/api/comilla-forecast');
+            const response = await fetch('/api/comilla-forecast', {
+                cache: 'no-store',
+                headers: {
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache'
+                }
+            });
             if (!response.ok) {
                 throw new Error('Failed to fetch forecast data');
             }
@@ -83,18 +89,18 @@ const ComillaForecastChart = ({
         if (!forecastData || !forecastData.data) return [];
 
         const dates = forecastData.data.date.map(d => new Date(d));
-        const minValues = forecastData.data.min;
-        const meanValues = forecastData.data.mean;
-        const maxValues = forecastData.data.max;
+        const values25 = forecastData.data['25%'];
+        const values50 = forecastData.data['50%'];
+        const values75 = forecastData.data['75%'];
 
         const traces = [
-            // Fill area between min and max for better visibility
+            // Fill area between 25% and 75% for better visibility
             {
                 x: [...dates, ...dates.slice().reverse()],
-                y: [...maxValues, ...minValues.slice().reverse()],
+                y: [...values75, ...values25.slice().reverse()],
                 type: 'scatter',
                 fill: 'toself',
-                fillcolor: 'rgba(200, 200, 200, 0.3)',
+                fillcolor: 'rgba(147, 197, 253, 0.25)',
                 line: { color: 'transparent' },
                 name: 'Range',
                 showlegend: false,
@@ -102,30 +108,30 @@ const ComillaForecastChart = ({
             },
             {
                 x: dates,
-                y: maxValues,
+                y: values75,
                 type: 'scatter',
                 mode: 'lines+markers',
-                name: 'Max',
+                name: '75%',
                 line: { color: '#dc2626', width: 1.5, dash: 'dot' },
-                marker: { size: 6, color: '#dc2626', symbol: 'triangle-up' }
+                marker: { size: 6, color: '#dc2626', symbol: 'triangle-up', line: { color: '#fff', width: 0.5 } }
             },
             {
                 x: dates,
-                y: meanValues,
+                y: values50,
                 type: 'scatter',
                 mode: 'lines+markers',
-                name: 'Mean',
-                line: { color: '#2563eb', width: 2 },
-                marker: { size: 6, color: '#2563eb', symbol: 'circle' }
+                name: '50%',
+                line: { color: '#1d4ed8', width: 2 },
+                marker: { size: 6, color: '#1d4ed8', symbol: 'diamond', line: { color: '#fff', width: 0.5 } }
             },
             {
                 x: dates,
-                y: minValues,
+                y: values25,
                 type: 'scatter',
                 mode: 'lines+markers',
-                name: 'Min',
-                line: { color: '#16a34a', width: 1.5, dash: 'dash' },
-                marker: { size: 6, color: '#16a34a', symbol: 'triangle-down' }
+                name: '25%',
+                line: { color: '#15803d', width: 1.5, dash: 'dash' },
+                marker: { size: 6, color: '#15803d', symbol: 'triangle-down', line: { color: '#fff', width: 0.5 } }
             }
         ];
 
@@ -138,7 +144,7 @@ const ComillaForecastChart = ({
                 mode: 'lines',
                 // name: language === 'bn' ? 'বিপদ স্তর (DL)' : 'Danger Level (DL)',
                 name: 'Danger Level (DL)',
-                line: { color: 'red', width: 2, dash: 'dash' }
+                line: { color: 'red', width: 1.5, dash: 'dash' }
             });
         }
 
