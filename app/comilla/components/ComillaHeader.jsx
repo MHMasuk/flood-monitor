@@ -23,6 +23,7 @@ const ComillaHeader = () => {
             <div className="navbar-center">
                 {/* Add your custom center logos here */}
                 {/*<RimesLogo />*/}
+
                 <Link href="/feni">
                     <Image src="/icons/pani-unnoyon-board.png" alt="pani-unnoyon-board" width={50} height={20} />
                 </Link>
