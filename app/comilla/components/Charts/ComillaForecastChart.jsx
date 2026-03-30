@@ -40,10 +40,6 @@ const ComillaForecastChart = ({
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const updateChartHeight = () => {
-        setChartHeight(calculateChartHeight());
-    };
-
     // Fetch forecast data
     const fetchForecastData = useCallback(async () => {
         setIsLoading(true);
@@ -54,7 +50,8 @@ const ComillaForecastChart = ({
                 cache: 'no-store',
                 headers: {
                     'Cache-Control': 'no-cache, no-store, must-revalidate',
-                    'Pragma': 'no-cache'
+                    'Pragma': 'no-cache',
+                    'Expires': '0'
                 }
             });
             if (!response.ok) {
@@ -71,16 +68,27 @@ const ComillaForecastChart = ({
     }, []);
 
     useEffect(() => {
+        const updateChartHeight = () => {
+            setChartHeight(calculateChartHeight());
+        };
+
         updateChartHeight();
         fetchForecastData();
 
         const handleResize = () => updateChartHeight();
         window.addEventListener('resize', handleResize);
 
+        // Auto-refresh data every 5 minutes
+        const refreshInterval = setInterval(() => {
+            console.log('🔄 Auto-refreshing Comilla forecast data...');
+            fetchForecastData();
+        }, 5 * 60 * 1000); // 5 minutes
+
         return () => {
             window.removeEventListener('resize', handleResize);
+            clearInterval(refreshInterval);
         };
-    }, []);
+    }, [fetchForecastData]);
 
 
 
@@ -111,8 +119,8 @@ const ComillaForecastChart = ({
                 y: values75,
                 type: 'scatter',
                 mode: 'lines+markers',
-                name: '75%',
-                line: { color: '#dc2626', width: 1.5, dash: 'dot' },
+                name: '75% (High)',
+                line: { color: '#dc2626', width: 1, dash: 'dot' },
                 marker: { size: 6, color: '#dc2626', symbol: 'triangle-up', line: { color: '#fff', width: 0.5 } }
             },
             {
@@ -120,8 +128,8 @@ const ComillaForecastChart = ({
                 y: values50,
                 type: 'scatter',
                 mode: 'lines+markers',
-                name: '50%',
-                line: { color: '#1d4ed8', width: 2 },
+                name: '50% (Medium)',
+                line: { color: '#1d4ed8', width: 1.5 },
                 marker: { size: 6, color: '#1d4ed8', symbol: 'diamond', line: { color: '#fff', width: 0.5 } }
             },
             {
@@ -129,8 +137,8 @@ const ComillaForecastChart = ({
                 y: values25,
                 type: 'scatter',
                 mode: 'lines+markers',
-                name: '25%',
-                line: { color: '#15803d', width: 1.5, dash: 'dash' },
+                name: '25% (Low)',
+                line: { color: '#15803d', width: 1, dash: 'dash' },
                 marker: { size: 6, color: '#15803d', symbol: 'triangle-down', line: { color: '#fff', width: 0.5 } }
             }
         ];
@@ -152,20 +160,25 @@ const ComillaForecastChart = ({
         return traces;
     };
 
-    const displayTitle = language === 'bn' ? titleBn : title;
-
     // Get forecast date range for subtitle
-    const getForecastDateRange = () => {
+    const getForecastDateRange = useCallback(() => {
         if (!forecastData || !forecastData.data || !forecastData.data.date) return '';
         const dates = forecastData.data.date;
         const startDate = new Date(dates[0]).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
         const endDate = new Date(dates[dates.length - 1]).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
         return `(${startDate} - ${endDate})`;
-    };
+    }, [forecastData]);
+
+    // Dynamic title that includes forecast date
+    const displayTitle = React.useMemo(() => {
+        const baseTitle = language === 'bn' ? titleBn : title;
+        const dateRange = getForecastDateRange();
+        return dateRange ? `${baseTitle} ${dateRange}` : baseTitle;
+    }, [language, title, titleBn, getForecastDateRange]);
 
     const layout = {
         title: {
-            text: `${displayTitle}`,
+            text: displayTitle,
             font: { size: 14, family: 'Arial, sans-serif', color: '#1e40af' }
         },
         xaxis: {
@@ -266,6 +279,7 @@ const ComillaForecastChart = ({
                 {language === 'bn' ? '🔮 পূর্বাভাস' : '🔮 FORECAST'}
             </div>
             <Plot
+                key={forecastData?.metadata?.run_datetime || Date.now()}
                 data={preparePlotData()}
                 layout={layout}
                 config={{

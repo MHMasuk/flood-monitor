@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 
+// Disable caching for this route
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
     try {
         const response = await fetch(
@@ -7,8 +11,12 @@ export async function GET() {
             {
                 headers: {
                     "Content-Type": "application/json",
+                    "Cache-Control": "no-cache, no-store, must-revalidate",
+                    "Pragma": "no-cache",
+                    "Expires": "0"
                 },
                 cache: "no-store",
+                next: { revalidate: 0 }
             }
         );
 
@@ -17,7 +25,15 @@ export async function GET() {
         }
 
         const data = await response.json();
-        return NextResponse.json(data);
+
+        // Return with cache-control headers
+        return NextResponse.json(data, {
+            headers: {
+                "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
+                "Pragma": "no-cache",
+                "Expires": "0"
+            }
+        });
     } catch (error) {
         console.error("Error fetching Comilla forecast data:", error);
         return NextResponse.json(
