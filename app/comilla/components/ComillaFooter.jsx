@@ -17,7 +17,7 @@ const ComillaFooter = () => {
                 <RimesLogo />
                 <p>Technical & Implementing partner : <strong>Regional Integrated Multi-Hazard Early Warning System (RIMES)</strong></p>
             </div>
-            <div className="flex items-center gap-4 md:place-self-center md:justify-self-end">
+            <div className="flex items-center gap-4 md:place-self-center md:justify-self-end mr-4">
                 {/* Language Toggle Button */}
                 <button
                     onClick={toggleLanguage}
