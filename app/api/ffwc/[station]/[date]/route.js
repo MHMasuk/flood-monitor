@@ -12,9 +12,12 @@ export async function GET(request, { params }) {
             );
         }
 
+        const url = `https://api.ffwc.gov.bd/data_load/trans-river-data-from-database/${station}/${date}`
+        console.log(url)
+
         // Fetch data from FFWC API
         const response = await fetch(
-            `https://api.ffwc.gov.bd/data_load/trans-river-data-from-database/${station}/${date}`,
+            url,
             {
                 headers: {
                     'Content-Type': 'application/json',

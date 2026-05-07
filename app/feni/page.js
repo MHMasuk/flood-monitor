@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { fetchTokenIfExpired } from "@/utils/jwtToken";
+import React, {useEffect, useRef, useState} from "react";
+import {fetchTokenIfExpired} from "@/utils/jwtToken";
 import TeestaMainChart from "./components/TeestaMainChart";
 import RainFall from "./components/RainFall";
 
@@ -107,10 +107,10 @@ const TeestaPage = () => {
                         value: parseFloat(item.value)
                     }));
 
-                    return { station_id: config.station_id, data: transformedData };
+                    return {station_id: config.station_id, data: transformedData};
                 } catch (error) {
                     console.error(`Error fetching data for station ${config.station_id}:`, error);
-                    return { station_id: config.station_id, data: [] };
+                    return {station_id: config.station_id, data: []};
                 }
             });
 

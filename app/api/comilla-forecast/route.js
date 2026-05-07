@@ -13,7 +13,9 @@ export async function GET() {
                     "Content-Type": "application/json",
                     "Cache-Control": "no-cache, no-store, must-revalidate",
                     "Pragma": "no-cache",
-                    "Expires": "0"
+                    "Expires": "0",
+                    'x-ffwc-internal-key': 'FFWC-Project-2026-Secure-V1', // Internal key for server validation
+                    'Origin': 'https://ffwc.gov.bd',
                 },
                 cache: "no-store",
                 next: { revalidate: 0 }
