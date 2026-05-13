@@ -226,16 +226,14 @@ const ComillaMainChart = (props) => {
                 <div className={`${showRainfall && RainfallComponent ? 'flex-[2]' : 'w-full'} px-4 py-4 overflow-auto`}>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
                         {/* Render FfwcIndiaLineChart for each India station config */}
-                        {safeIndiaStationConfigs.map((config, index) => {
+                        {(() => {
+                            return safeIndiaStationConfigs.map((config, index) => {
                             const chartId = `india-${config.stationCode}`;
                             const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
-                            const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
-                            const isLastChart = (index === safeIndiaStationConfigs.length - 1) && safeBdStationConfigs.length === 0;
-                            const shouldCenter = totalCharts % 2 === 1 && isLastChart;
 
                             return (
                                 <div key={config.stationCode}
-                                     className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
+                                     className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''}`}>
                                     <FfwcIndiaLineChart
                                         title={config.title || `Hydrograph view of ${config.name} (${config.stationCode})`}
                                         titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য (${config.stationCode})`}
@@ -246,9 +244,10 @@ const ComillaMainChart = (props) => {
                                         onThresholdCrossed={onThresholdCrossed}
                                         refreshInterval={refreshInterval}
                                     />
-                                </div>
+                                 </div>
                             );
-                        })}
+                        });
+                        })()}
 
                         {/* Render ComillaLineChart for each BD station config */}
                         {safeBdStationConfigs.map((config, index) => {
@@ -276,15 +275,21 @@ const ComillaMainChart = (props) => {
                             );
                         })}
 
-                        {/* Render Comilla Forecast Chart */}
-                        <div className="w-full h-full">
-                            <ComillaForecastChart
-                                title="Gomoti River Discharge Forecast (Cumilla)"
-                                titleBn="গোমতি নদীর প্রবাহ পূর্বাভাস (কুমিল্লা)"
-                                paperColor="#d1fae5"
-                                dangerLevel={290}
-                            />
-                        </div>
+                        {/* Render Comilla Forecast Chart - centered if total charts is odd */}
+                        {(() => {
+                            const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length + 1;
+                            const isOdd = totalCharts % 2 === 1;
+                            return (
+                                <div className={`w-full h-full ${isOdd ? 'lg:col-span-2 lg:w-1/2 lg:mx-auto' : ''}`}>
+                                    <ComillaForecastChart
+                                        title="Gomoti River Discharge Forecast (Cumilla)"
+                                        titleBn="গোমতি নদীর প্রবাহ পূর্বাভাস (কুমিল্লা)"
+                                        paperColor="#d1fae5"
+                                        dangerLevel={290}
+                                    />
+                                </div>
+                            );
+                        })()}
                     </div>
                 </div>
 

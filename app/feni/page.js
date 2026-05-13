@@ -7,13 +7,13 @@ import RainFall from "./components/RainFall";
 
 // India station configuration - supports multiple stations (FFWC API)
 const INDIA_STATION_CONFIG = [
-    {
-        stationCode: "013-MDSIL",
-        name: "(Upstream station of Parshuram) Belonia",
-        title: "Hydrograph view of (Upstream station of Parshuram) Belonia (013-MDSIL)",
-        titleBn: "পরশুরামের উজান স্টেশন বেলোনিয়ার (013-MDSIL) হাইড্রোগ্রাফ",
-        paper_bgcolor: "#fde2e4",
-    }
+    // {
+    //     stationCode: "013-MDSIL",
+    //     name: "(Upstream station of Parshuram) Belonia",
+    //     title: "Hydrograph view of (Upstream station of Parshuram) Belonia (013-MDSIL)",
+    //     titleBn: "পরশুরামের উজান স্টেশন বেলোনিয়ার (013-MDSIL) হাইড্রোগ্রাফ",
+    //     paper_bgcolor: "#fde2e4",
+    // }
 ];
 
 const BD_STATION_CONFIG = [

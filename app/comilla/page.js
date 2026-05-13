@@ -7,13 +7,13 @@ import RainFall from "./components/RainFall";
 
 // India station configuration - supports multiple stations (FFWC API)
 const INDIA_STATION_CONFIG = [
-    {
-        stationCode: "012-MDSIL",
-        name: "(Upstream station of Comilla) Sonamura",
-        title: "Hydrograph view of (Upstream station of Comilla) Sonamura (012-MDSIL)",
-        titleBn: "কুমিল্লার উজান স্টেশন সোনামুরা (012-MDSIL) হাইড্রোগ্রাফ",
-        paper_bgcolor: "#fde2e4",
-    }
+    // {
+    //     stationCode: "012-MDSIL",
+    //     name: "(Upstream station of Comilla) Sonamura",
+    //     title: "Hydrograph view of (Upstream station of Comilla) Sonamura (012-MDSIL)",
+    //     titleBn: "কুমিল্লার উজান স্টেশন সোনামুরা (012-MDSIL) হাইড্রোগ্রাফ",
+    //     paper_bgcolor: "#fde2e4",
+    // }
 ];
 
 const BD_STATION_CONFIG = [

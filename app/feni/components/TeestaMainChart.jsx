@@ -224,18 +224,25 @@ const TeestaMainChart = (props) => {
             <div className={`flex-1 overflow-auto ${showRainfall && RainfallComponent ? 'flex gap-4' : ''}`}>
                 {/* Charts Section */}
                 <div className={`${showRainfall && RainfallComponent ? 'flex-[2]' : 'w-full'} px-4 py-4 overflow-auto`}>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
+                    {(() => {
+                        const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
+                        const gridClass = totalCharts === 2
+                            ? "grid grid-cols-1 gap-4 h-full"
+                            : "grid grid-cols-1 lg:grid-cols-2 gap-4 h-full";
+                        return (
+                    <div className={gridClass}>
                         {/* Render FfwcIndiaLineChart for each India station config */}
-                        {safeIndiaStationConfigs.map((config, index) => {
+                        {(() => {
+                            const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
+                            return safeIndiaStationConfigs.map((config, index) => {
                             const chartId = `india-${config.stationCode}`;
                             const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
-                            const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
                             const isLastChart = (index === safeIndiaStationConfigs.length - 1) && safeBdStationConfigs.length === 0;
                             const shouldCenter = totalCharts % 2 === 1 && isLastChart;
 
                             return (
                                 <div key={config.stationCode}
-                                     className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
+                                     className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:w-1/2 lg:mx-auto' : ''}`}>
                                     <FfwcIndiaLineChart
                                         title={config.title || `Hydrograph view of ${config.name} (${config.stationCode})`}
                                         titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য (${config.stationCode})`}
@@ -249,20 +256,22 @@ const TeestaMainChart = (props) => {
                                     />
                                 </div>
                             );
-                        })}
+                        });
+                        })()}
 
                         {/* Render TeestaLineChart for each BD station config */}
-                        {safeBdStationConfigs.map((config, index) => {
+                        {(() => {
+                            const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
+                            return safeBdStationConfigs.map((config, index) => {
                             const chartData = bdStationDataMap[config.station_id] || [];
                             const chartId = `bd-${config.station_id}`;
                             const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
-                            const totalCharts = safeIndiaStationConfigs.length + safeBdStationConfigs.length;
                             const isLastChart = index === safeBdStationConfigs.length - 1;
                             const shouldCenter = totalCharts % 2 === 1 && isLastChart;
 
                             return (
                                 <div key={config.station_id}
-                                     className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:mx-auto lg:max-w-[50%]' : ''}`}>
+                                     className={`w-full h-full ${isAlerting ? 'animate-pulse' : ''} ${shouldCenter ? 'lg:col-span-2 lg:w-1/2 lg:mx-auto' : ''}`}>
                                     {chartData.length > 0 ? (
                                         <TeestaLineChart
                                             chart_data={chartData}
@@ -287,8 +296,11 @@ const TeestaMainChart = (props) => {
                                     )}
                                 </div>
                             );
-                        })}
+                        });
+                        })()}
                     </div>
+                        );
+                    })()}
                 </div>
 
                 {/* Rainfall Forecast Section */}
