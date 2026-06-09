@@ -21,6 +21,7 @@ const FfwcIndiaLineChart = ({
     console.log("title", title)
     const { language } = useLanguage();
     const [chartHeight, setChartHeight] = useState(400);
+    const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
     const [chartData, setChartData] = useState([]);
     const [initialLoading, setInitialLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -85,29 +86,17 @@ const FfwcIndiaLineChart = ({
         const screenHeight = window.innerHeight;
         const screenWidth = window.innerWidth;
 
-        // Header (64px) + Footer (56px) + padding/margins = 120px reserved
-        // Divide remaining space by number of rows (assuming 2 charts per row on desktop)
-        const reservedSpace = 140; // Header + Footer + padding
+        setIsMobile(screenWidth < 768);
+
+        const reservedSpace = 140;
         const availableHeight = screenHeight - reservedSpace;
 
-        let desiredHeight;
+        const desiredHeight = (availableHeight / 2) - 40;
 
-        if (screenWidth < 1024) {
-            // Mobile/Tablet: Stack vertically, so divide by number of charts
-            desiredHeight = (availableHeight / 2) - 40; // -40 for gaps
-        } else {
-            // Desktop: 2 columns, so charts are side by side
-            // If you have 4 charts (2 rows), divide by 2
-            desiredHeight = (availableHeight / 2) - 40; // -40 for gaps between rows
-        }
-
-        // Set reasonable constraints
         const minHeight = 280;
         const maxHeight = 550;
 
-        desiredHeight = Math.max(minHeight, Math.min(maxHeight, desiredHeight));
-
-        setChartHeight(desiredHeight);
+        setChartHeight(Math.max(minHeight, Math.min(maxHeight, desiredHeight)));
     };
 
     // Fetch station info from GeoJSON
@@ -283,34 +272,35 @@ const FfwcIndiaLineChart = ({
     const layout = {
         title: {
             text: language === 'bn' && titleBn ? titleBn : title,
-            font: { size: 16, family: 'Arial, sans-serif' }
+            font: { size: isMobile ? 12 : 16, family: 'Arial, sans-serif' }
         },
         xaxis: {
-            title: 'Date & Time',
+            title: isMobile ? '' : 'Date & Time',
             type: 'date',
             tickformat: '%d-%b %H:%M',
             showgrid: true,
-            tickangle: 0,
+            tickangle: isMobile ? -45 : 0,
             automargin: true,
             tickmode: 'auto',
-            nticks: 3
+            nticks: isMobile ? 3 : 5
         },
         yaxis: {
-            title: 'Water Level (m)',
+            title: isMobile ? 'Level (m)' : 'Water Level (m)',
             showgrid: true,
             automargin: true
         },
         paper_bgcolor: paperColor,
         plot_bgcolor: '#ffffff',
-        margin: { l: 55, r: 20, t: 50, b: 80 },
+        margin: { l: isMobile ? 45 : 55, r: 15, t: isMobile ? 35 : 50, b: isMobile ? 75 : 80 },
         height: chartHeight,
         showlegend: true,
         legend: {
             orientation: 'h',
-            y: -0.45,
+            y: isMobile ? -0.32 : -0.45,
             x: 0.5,
             xanchor: 'center',
-            yanchor: 'top'
+            yanchor: 'top',
+            font: { size: isMobile ? 10 : 12 }
         },
         autosize: true
     };

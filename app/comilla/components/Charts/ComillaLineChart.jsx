@@ -45,12 +45,14 @@ const ComillaLineChart = ({
     };
 
     const [chartHeight, setChartHeight] = useState(calculateChartHeight);
+    const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
     const [hasTriggeredWarning, setHasTriggeredWarning] = useState(false);
     const [hasTriggeredDanger, setHasTriggeredDanger] = useState(false);
     const [hasTriggeredHfl, setHasTriggeredHfl] = useState(false);
 
     const updateChartHeight = () => {
         setChartHeight(calculateChartHeight());
+        setIsMobile(window.innerWidth < 768);
     };
 
     // Determine which data to use: real API data or dummy data (memoized)
@@ -225,34 +227,35 @@ const ComillaLineChart = ({
     const layout = {
         title: {
             text: language === 'bn' && titleBn ? titleBn : title,
-            font: { size: 16, family: 'Arial, sans-serif' }
+            font: { size: isMobile ? 12 : 16, family: 'Arial, sans-serif' }
         },
         xaxis: {
-            title: 'Date & Time',
+            title: isMobile ? '' : 'Date & Time',
             type: 'date',
             tickformat: '%d-%b %H:%M',
             showgrid: true,
-            tickangle: 0,
+            tickangle: isMobile ? -45 : 0,
             automargin: true,
             tickmode: 'auto',
-            nticks: 5
+            nticks: isMobile ? 3 : 5
         },
         yaxis: {
-            title: 'Water Level (m)',
+            title: isMobile ? 'Level (m)' : 'Water Level (m)',
             showgrid: true,
             automargin: true
         },
         paper_bgcolor: paperColor,
         plot_bgcolor: '#ffffff',
-        margin: { l: 55, r: 20, t: 50, b: 60 },
+        margin: { l: isMobile ? 45 : 55, r: 15, t: isMobile ? 35 : 50, b: isMobile ? 75 : 60 },
         height: chartHeight,
         showlegend: true,
         legend: {
             orientation: 'h',
-            y: -0.45,
+            y: isMobile ? -0.32 : -0.45,
             x: 0.5,
             xanchor: 'center',
-            yanchor: 'top'
+            yanchor: 'top',
+            font: { size: isMobile ? 10 : 12 }
         },
         autosize: true
     };

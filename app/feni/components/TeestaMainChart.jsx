@@ -193,7 +193,7 @@ const TeestaMainChart = (props) => {
     return (
         <div className="w-full h-full flex flex-col overflow-hidden">
             {/* Central alarm control */}
-            <div className="fixed z-50 right-4 top-[50%] -translate-y-1/2 flex flex-col gap-2">
+            <div className="fixed z-50 right-4 bottom-4 sm:bottom-auto sm:top-[50%] sm:-translate-y-1/2 flex flex-col gap-2">
                 {/* Enable Audio button - shows when audio is not unlocked */}
                 {!audioUnlocked && !isSoundPlaying && (
                     <div className="tooltip tooltip-left" data-tip="Enable Alarm">
@@ -221,7 +221,7 @@ const TeestaMainChart = (props) => {
                 )}
             </div>
 
-            <div className={`flex-1 overflow-auto ${showRainfall && RainfallComponent ? 'flex gap-4' : ''}`}>
+            <div className={`flex-1 overflow-auto ${showRainfall && RainfallComponent ? 'flex flex-col lg:flex-row gap-4' : ''}`}>
                 {/* Charts Section */}
                 <div className={`${showRainfall && RainfallComponent ? 'flex-[2]' : 'w-full'} px-4 py-4 overflow-auto`}>
                     {(() => {

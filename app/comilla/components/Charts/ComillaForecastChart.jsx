@@ -36,6 +36,7 @@ const ComillaForecastChart = ({
     };
 
     const [chartHeight, setChartHeight] = useState(calculateChartHeight);
+    const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
     const [forecastData, setForecastData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -70,6 +71,7 @@ const ComillaForecastChart = ({
     useEffect(() => {
         const updateChartHeight = () => {
             setChartHeight(calculateChartHeight());
+            setIsMobile(window.innerWidth < 768);
         };
 
         updateChartHeight();
@@ -179,36 +181,35 @@ const ComillaForecastChart = ({
     const layout = {
         title: {
             text: displayTitle,
-            font: { size: 14, family: 'Arial, sans-serif', color: '#1e40af' }
+            font: { size: isMobile ? 11 : 14, family: 'Arial, sans-serif', color: '#1e40af' }
         },
         xaxis: {
-            // title: language === 'bn' ? 'তারিখ' : 'Date',
-            title: 'Date',
+            title: isMobile ? '' : 'Date',
             type: 'date',
             tickformat: '%d-%b',
             showgrid: true,
-            tickangle: 0,
+            tickangle: isMobile ? -45 : 0,
             automargin: true,
             tickmode: 'auto',
-            nticks: 8
+            nticks: isMobile ? 4 : 8
         },
         yaxis: {
-            // title: language === 'bn' ? 'প্রবাহ (m³/s)' : 'Discharge (m³/s)',
-            title: 'Discharge (m³/s)',
+            title: isMobile ? 'm³/s' : 'Discharge (m³/s)',
             showgrid: true,
             automargin: true
         },
         paper_bgcolor: paperColor,
         plot_bgcolor: '#ffffff',
-        margin: { l: 55, r: 20, t: 50, b: 120 },
+        margin: { l: isMobile ? 45 : 55, r: 15, t: isMobile ? 35 : 50, b: isMobile ? 75 : 120 },
         height: chartHeight,
         showlegend: true,
         legend: {
             orientation: 'h',
-            y: -0.45,
+            y: isMobile ? -0.32 : -0.45,
             x: 0.5,
             xanchor: 'center',
-            yanchor: 'top'
+            yanchor: 'top',
+            font: { size: isMobile ? 10 : 12 }
         },
         autosize: true
     };

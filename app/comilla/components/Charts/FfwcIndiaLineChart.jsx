@@ -17,6 +17,7 @@ const FfwcIndiaLineChart = ({
 }) => {
     const { language } = useLanguage();
     const [chartHeight, setChartHeight] = useState(400);
+    const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
     const [chartData, setChartData] = useState([]);
     const [initialLoading, setInitialLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -81,24 +82,17 @@ const FfwcIndiaLineChart = ({
         const screenHeight = window.innerHeight;
         const screenWidth = window.innerWidth;
 
-        // Header (64px) + Footer (56px) + padding/margins = 120px reserved
+        setIsMobile(screenWidth < 768);
+
         const reservedSpace = 140;
         const availableHeight = screenHeight - reservedSpace;
 
-        let desiredHeight;
-
-        if (screenWidth < 1024) {
-            desiredHeight = (availableHeight / 2) - 40;
-        } else {
-            desiredHeight = (availableHeight / 2) - 40;
-        }
+        const desiredHeight = (availableHeight / 2) - 40;
 
         const minHeight = 280;
         const maxHeight = 550;
 
-        desiredHeight = Math.max(minHeight, Math.min(maxHeight, desiredHeight));
-
-        setChartHeight(desiredHeight);
+        setChartHeight(Math.max(minHeight, Math.min(maxHeight, desiredHeight)));
     };
 
     // Fetch station info from GeoJSON
@@ -253,34 +247,35 @@ const FfwcIndiaLineChart = ({
     const layout = {
         title: {
             text: language === 'bn' && titleBn ? titleBn : (title || `Hydrograph view of ${stationName || stationInfo.name} (${stationCode})`),
-            font: { size: 16, family: 'Arial, sans-serif' }
+            font: { size: isMobile ? 12 : 16, family: 'Arial, sans-serif' }
         },
         xaxis: {
-            title: 'Date & Time',
+            title: isMobile ? '' : 'Date & Time',
             type: 'date',
             tickformat: '%d-%b %H:%M',
             showgrid: true,
-            tickangle: 0,
+            tickangle: isMobile ? -45 : 0,
             automargin: true,
             tickmode: 'auto',
-            nticks: 3
+            nticks: isMobile ? 3 : 5
         },
         yaxis: {
-            title: 'Water Level (m)',
+            title: isMobile ? 'Level (m)' : 'Water Level (m)',
             showgrid: true,
             automargin: true
         },
         paper_bgcolor: paperColor,
         plot_bgcolor: '#ffffff',
-        margin: { l: 55, r: 20, t: 50, b: 60 },
+        margin: { l: isMobile ? 45 : 55, r: 15, t: isMobile ? 35 : 50, b: isMobile ? 75 : 60 },
         height: chartHeight,
         showlegend: true,
         legend: {
             orientation: 'h',
-            y: -0.45,
+            y: isMobile ? -0.32 : -0.45,
             x: 0.5,
             xanchor: 'center',
-            yanchor: 'top'
+            yanchor: 'top',
+            font: { size: isMobile ? 10 : 12 }
         },
         autosize: true
     };
