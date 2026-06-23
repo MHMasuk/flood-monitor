@@ -15,7 +15,7 @@ const Headers = () => {
                 <Link href="/">
                     <Image src="/icons/flood_resilence.png" alt="od-resilience-logo" width={100} height={20} />
                 </Link>
-                <div className="ml-8 text-2xl text-black font-bold">
+                <div className="ml-2 md:ml-6 text-xs md:text-base lg:text-xl text-black font-bold">
                     <LiveClockUpdate />
                 </div>
             </div>
@@ -26,8 +26,8 @@ const Headers = () => {
                 </Link>
             </div>
             <div className="navbar-end">
-                <Link href="/rain-fall" target="_blank" className="btn btn-sm mr-1.5">RainFall Forecast</Link>
-                <Link href="/trend" target="_blank" className="btn btn-sm">Teesta Hydrograph</Link>
+                <Link href="/rain-fall" target="_blank" className="hidden md:inline-flex btn btn-sm mr-1.5">RainFall Forecast</Link>
+                <Link href="/trend" target="_blank" className="hidden md:inline-flex btn btn-sm mr-1.5">Teesta Hydrograph</Link>
                 <WordWideConcernsIcon />
             </div>
         </div>

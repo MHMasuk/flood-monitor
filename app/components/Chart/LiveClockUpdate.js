@@ -22,8 +22,9 @@ const LiveClockUpdate = ({ language = 'en' }) => {
     // Show placeholder during SSR to avoid hydration mismatch
     if (!date) {
         return (
-            <div>
-                <h2>-- ---, ---- --:--:-- --</h2>
+            <div className="flex flex-col leading-tight">
+                <span>-- ---, ----</span>
+                <span>--:--:-- --</span>
             </div>
         );
     }
@@ -45,8 +46,9 @@ const LiveClockUpdate = ({ language = 'en' }) => {
     });
 
     return (
-        <div>
-            <h2>{formattedDate} {formattedTime}</h2>
+        <div className="flex flex-col leading-tight">
+            <span>{formattedDate}</span>
+            <span>{formattedTime}</span>
         </div>
     );
 };

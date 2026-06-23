@@ -24,8 +24,11 @@ const DoaniaChart = ({chart_data, title, hfl, danger, warning, paperColor}) => {
 
     // Function to update the chart height based on screen size
     const updateChartHeight = () => {
+        const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
-        const desiredHeight = screenHeight * 0.4; // Adjust this value as needed
+        const desiredHeight = screenWidth >= 1024
+            ? (screenHeight - 148) / 2
+            : Math.round(screenHeight * 0.4);
         setChartHeight(desiredHeight);
     };
 
@@ -99,13 +102,11 @@ const DoaniaChart = ({chart_data, title, hfl, danger, warning, paperColor}) => {
         title: title,
         xaxis: {
             tickmode: 'linear',
-            tickformat: '%d %b %Y', // Show full date and time
-            // tickangle: -45, // Rotate labels to prevent overlap
-            automargin: true, // Automatically adjust margins for rotated labels
-            nticks: 10, // Limit number of ticks to prevent overcrowding
-            tickfont: {
-                size: 10 // Smaller font size for better fit
-            }
+            tickformat: '%d %b %Y',
+            hoverformat: '%d %b %Y %H:%M:%S',
+            automargin: true,
+            nticks: 10,
+            tickfont: { size: 10 }
         },
         yaxis: {title: 'Water Level (m)'},
         legend: {

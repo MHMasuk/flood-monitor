@@ -70,7 +70,7 @@ export default function Home() {
     }, []);
 
     return (
-        <main className="h-screen flex justify-center items-center">
+        <main className="flex justify-center pt-16 pb-12 lg:h-screen lg:overflow-hidden">
             {/*{(mikliGongStationData?.length > 0) ? (*/}
             {/*    <MainChartNew*/}
             {/*        mikliGongStationData={mikliGongStationData || []}*/}

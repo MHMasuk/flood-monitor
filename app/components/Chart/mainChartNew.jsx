@@ -168,8 +168,8 @@ const MainChartNew = (props) => {
     }
 
     return (
-        <div className="w-full mx-5">
-            <div className="fixed z-50 bg-red-700 right-0 top-[50%] bottom-[50%]">
+        <div className="w-full p-3 lg:h-full relative">
+            <div className="fixed z-50 right-0 top-1/2 -translate-y-1/2">
                 <div className="tooltip" data-tip="Stop The Alarm">
                     <button className="btn btn-sm btn-error" onClick={handleStop}>
                         <svg className="swap-off h-6 w-6" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
@@ -179,8 +179,8 @@ const MainChartNew = (props) => {
                     </button>
                 </div>
             </div>
-            <div className='flex gap-2 mb-1'>
-                <div className={`w-full ${mikligongAnimation ? 'animate-pulse' : ''}`}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-rows-2 gap-3 lg:h-full">
+                <div className={mikligongAnimation ? 'animate-pulse' : ''}>
                     {safeMikliGongData.length > 0 ? (
                         <LineChartWithDangerLine
                             chart_data={safeMikliGongData}
@@ -191,13 +191,13 @@ const MainChartNew = (props) => {
                             paperColor="#fee2e2"
                         />
                     ) : (
-                        <div className="w-full h-96 flex items-center justify-center border border-gray-200 bg-white">
+                        <div className="w-full h-full flex items-center justify-center border border-gray-200 bg-white">
                             <p className="text-gray-500">No data available for Mekhliganj</p>
                         </div>
                     )}
                 </div>
 
-                <div className={`w-full ${domohoniAnimation ? 'animate-pulse' : ''}`}>
+                <div className={domohoniAnimation ? 'animate-pulse' : ''}>
                     {safeDomohoniData.length > 0 ? (
                         <LineChartWithDangerLine
                             chart_data={safeDomohoniData}
@@ -208,14 +208,13 @@ const MainChartNew = (props) => {
                             paperColor='#ffedd5'
                         />
                     ) : (
-                        <div className="w-full h-96 flex items-center justify-center border border-gray-200 bg-white">
+                        <div className="w-full h-full flex items-center justify-center border border-gray-200 bg-white">
                             <p className="text-gray-500">No data available for Domohani</p>
                         </div>
                     )}
                 </div>
-            </div>
-            <div className='flex gap-2'>
-                <div className={`w-full ${daliaAnimation ? 'animate-pulse' : ''}`}>
+
+                <div className={daliaAnimation ? 'animate-pulse' : ''}>
                     {safeDaliaData.length > 0 ? (
                         <DaliaChartDemo
                             chart_data={safeDaliaData}
@@ -226,13 +225,13 @@ const MainChartNew = (props) => {
                             paperColor="#fef9c3"
                         />
                     ) : (
-                        <div className="w-full h-96 flex items-center justify-center border border-gray-200 bg-white">
+                        <div className="w-full h-full flex items-center justify-center border border-gray-200 bg-white">
                             <p className="text-gray-500">No data available for Dalia</p>
                         </div>
                     )}
                 </div>
 
-                <div className={`w-full ${doaniaAnimation ? 'animate-pulse' : ''}`}>
+                <div className={doaniaAnimation ? 'animate-pulse' : ''}>
                     {safeDoaniaData.length > 0 ? (
                         <DoaniaChart
                             chart_data={safeDoaniaData}
@@ -243,7 +242,7 @@ const MainChartNew = (props) => {
                             paperColor='#ecfccb'
                         />
                     ) : (
-                        <div className="w-full h-96 flex items-center justify-center border border-gray-200 bg-white">
+                        <div className="w-full h-full flex items-center justify-center border border-gray-200 bg-white">
                             <p className="text-gray-500">No data available for Doani</p>
                         </div>
                     )}
