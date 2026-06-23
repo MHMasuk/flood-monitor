@@ -61,23 +61,23 @@ const Trend = () => {
     }
 
     return (
-        <div className="min-h-screen pt-16 pb-12 flex justify-center items-center p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-6xl">
-                <div className="flex flex-col justify-center items-center">
+        <div className="min-h-screen pt-16 pb-12 flex justify-center items-center px-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full">
+                <div className="flex justify-center items-center">
                     <img
                         src={`https://flood-ffwc.rimes.int/others/teesta-tank-new-plts/${imageData?.discharge_level?.replace('./plots/', '') || '14102024_corr_DL.png'}`}
                         alt="Discharge Level Chart"
-                        className="w-full h-auto max-h-[40vh] md:max-h-[calc(100vh-7rem)] object-contain"
+                        className="w-full h-auto max-h-[42vh] md:max-h-[calc(100vh-7rem)] object-contain"
                         // onError={(e) => {
                         //     e.target.src = `https://flood-ffwc.rimes.int/others/teesta-tank-plts/14102024_corr_DL.png`
                         // }}
                     />
                 </div>
-                <div className="flex flex-col justify-center items-center">
+                <div className="flex justify-center items-center">
                     <img
                         src={`https://flood-ffwc.rimes.int/others/teesta-tank-new-plts/${imageData?.exceedance?.replace('./plots/', '') || 'exceendence20241014.png'}`}
                         alt="Exceedance Chart"
-                        className="w-full h-auto max-h-[40vh] md:max-h-[calc(100vh-7rem)] object-contain"
+                        className="w-full h-auto max-h-[42vh] md:max-h-[calc(100vh-7rem)] object-contain"
                         // onError={(e) => {
                         //     e.target.src = `https://flood-ffwc.rimes.int/others/teesta-tank-plts/exceendence20241014.png`
                         // }}
