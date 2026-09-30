@@ -1,0 +1,300 @@
+"use client";
+
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import useSound from "use-sound";
+import FulgaziLineChart from "./Charts/FulgaziLineChart";
+import FfwcIndiaLineChart from "./Charts/FfwcIndiaLineChart";
+import { DUMMY_BD_STATION_DATA } from "./Charts/dummyBdStationData";
+
+const FulgaziMainChart = (props) => {
+    const {
+        indiaStationConfigs,
+        bdStationConfigs,
+        bdForecastData,
+        useDummyData = false,
+        refreshInterval = 15,
+        onRefreshIntervalChange,
+        showRainfall = false,
+        RainfallComponent = null
+    } = props;
+    const safeBdStationConfigs = React.useMemo(() => bdStationConfigs || [], [bdStationConfigs]);
+    const safeIndiaStationConfigs = React.useMemo(() => indiaStationConfigs || [], [indiaStationConfigs]);
+
+    const [play, { stop }] = useSound("./mp3/loud_alarm.mp3");
+    const [isSoundPlaying, setIsSoundPlaying] = useState(false);
+    const [audioUnlocked, setAudioUnlocked] = useState(false);
+    const [pendingAlarm, setPendingAlarm] = useState(false);
+    const intervalRefSound = useRef(null);
+    const intervalRefBdData = useRef(null);
+    const intervalRefCountdown = useRef(null);
+
+    // State for countdown timer
+    const [secondsUntilRefresh, setSecondsUntilRefresh] = useState(refreshInterval * 60);
+    const [lastRefreshTime, setLastRefreshTime] = useState(new Date());
+
+    // State for BD station data - stores data for each series_id
+    const [bdStationDataMap, setBdStationDataMap] = useState({});
+    const [isBdDataLoading, setIsBdDataLoading] = useState(true);
+
+    // Track which charts have crossed thresholds (for animation)
+    const [alertedCharts, setAlertedCharts] = useState(new Set());
+
+    // Track if alarm has been triggered (to prevent re-triggering)
+    const [alarmTriggered, setAlarmTriggered] = useState(false);
+
+    // Unlock audio (must be called from user interaction)
+    const unlockAudioAndPlay = () => {
+        setAudioUnlocked(true);
+        // If there's a pending alarm, start it immediately
+        if (pendingAlarm) {
+            startCentralAlarm();
+        }
+    };
+
+    // Start central alarm sound (plays in loop)
+    const startCentralAlarm = useCallback(() => {
+        if (isSoundPlaying) return;
+
+        console.log('🔊 Starting central alarm...');
+        intervalRefSound.current = setInterval(() => {
+            play();
+        }, 6000);
+        play(); // Play immediately
+        setIsSoundPlaying(true);
+        setAlarmTriggered(true);
+    }, [isSoundPlaying, play]);
+
+    // Stop central alarm
+    const stopCentralAlarm = () => {
+        console.log('🔇 Stopping central alarm...');
+        stop();
+        setIsSoundPlaying(false);
+        clearInterval(intervalRefSound.current);
+    };
+
+    // Called by child charts when threshold is crossed
+    const onThresholdCrossed = useCallback((chartId) => {
+        console.log(`⚠️ Threshold crossed for chart: ${chartId}`);
+
+        setAlertedCharts(prev => {
+            const newSet = new Set(prev);
+            newSet.add(chartId);
+            return newSet;
+        });
+
+        // Trigger alarm if not already triggered
+        if (!alarmTriggered) {
+            if (audioUnlocked) {
+                startCentralAlarm();
+            } else {
+                setPendingAlarm(true);
+            }
+        }
+    }, [alarmTriggered, audioUnlocked, startCentralAlarm]);
+
+    // Fetch BD station data for all configs
+    const fetchBdStationData = useCallback(async () => {
+        if (!safeBdStationConfigs.length) return;
+
+        // Set loading state
+        setIsBdDataLoading(true);
+
+        // Update last refresh time
+        setLastRefreshTime(new Date());
+        setSecondsUntilRefresh(refreshInterval * 60);
+
+        // Use dummy data if useDummyData is true
+        if (useDummyData) {
+            const newDataMap = {};
+            safeBdStationConfigs.forEach(config => {
+                // Use the same dummy data for all BD stations
+                newDataMap[config.station_id] = DUMMY_BD_STATION_DATA;
+            });
+            setBdStationDataMap(newDataMap);
+            setIsBdDataLoading(false);
+            return;
+        }
+
+        // Use forecast data from props if available
+        if (bdForecastData && Object.keys(bdForecastData).length > 0) {
+            setBdStationDataMap(bdForecastData);
+            setIsBdDataLoading(false);
+        } else {
+            setIsBdDataLoading(false);
+        }
+    }, [safeBdStationConfigs, useDummyData, refreshInterval, bdForecastData]);
+
+    // Fetch BD station data on mount and set up interval
+    useEffect(() => {
+        fetchBdStationData();
+
+        // Clear any existing interval
+        if (intervalRefBdData.current) {
+            clearInterval(intervalRefBdData.current);
+        }
+
+        // Refresh BD station data based on refreshInterval
+        intervalRefBdData.current = setInterval(() => {
+            fetchBdStationData();
+        }, refreshInterval * 60 * 1000);
+
+        return () => {
+            if (intervalRefBdData.current) {
+                clearInterval(intervalRefBdData.current);
+            }
+        };
+    }, [fetchBdStationData, refreshInterval]); // Re-run when refreshInterval changes
+
+    // Countdown timer effect
+    useEffect(() => {
+        // Reset countdown when refreshInterval changes
+        setSecondsUntilRefresh(refreshInterval * 60);
+
+        // Clear existing countdown interval
+        if (intervalRefCountdown.current) {
+            clearInterval(intervalRefCountdown.current);
+        }
+
+        // Start countdown
+        intervalRefCountdown.current = setInterval(() => {
+            setSecondsUntilRefresh(prev => {
+                if (prev <= 1) {
+                    return refreshInterval * 60;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => {
+            if (intervalRefCountdown.current) {
+                clearInterval(intervalRefCountdown.current);
+            }
+        };
+    }, [refreshInterval]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            clearInterval(intervalRefSound.current);
+        };
+    }, []);
+
+    // Center the last chart in its row when the total chart count is odd
+    const isOddChartCount = (safeIndiaStationConfigs.length + safeBdStationConfigs.length) % 2 === 1;
+    const centeredChartClass = 'lg:col-span-2 lg:w-1/2 lg:mx-auto';
+
+    // Show loading state if no configs
+    if (!safeBdStationConfigs.length && !safeIndiaStationConfigs.length) {
+        return (
+            <div className="w-full px-5 flex items-center justify-center h-64">
+                <div className="text-center bg-white p-8 rounded-lg border border-gray-200">
+                    <div className="loading loading-spinner loading-lg"></div>
+                    <p className="mt-4 text-gray-600">Loading chart data...</p>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="w-full h-full flex flex-col overflow-hidden">
+            {/* Central alarm control */}
+            <div className="fixed z-50 right-4 bottom-4 sm:bottom-auto sm:top-[50%] sm:-translate-y-1/2 flex flex-col gap-2">
+                {/* Enable Audio button - shows when audio is not unlocked */}
+                {!audioUnlocked && !isSoundPlaying && (
+                    <div className="tooltip tooltip-left" data-tip="Enable Alarm">
+                        <button
+                            onClick={unlockAudioAndPlay}
+                            className={`btn btn-sm btn-primary ${pendingAlarm ? 'animate-bounce' : ''}`}
+                        >
+                            🔔 Enable Alarm
+                        </button>
+                    </div>
+                )}
+
+                {/* Stop Alarm button - shows when alarm is playing */}
+                {isSoundPlaying && (
+                    <div className="tooltip tooltip-left" data-tip="Stop The Alarm">
+                        <button className="btn btn-sm btn-error" onClick={stopCentralAlarm}>
+                            <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
+                                <path d="M3,9H7L12,4V20L7,15H3V9M16.59,12L14,9.41L15.41,8L18,10.59L20.59,8L22,9.41L19.41,12L22,14.59L20.59,16L18,13.41L15.41,16L14,14.59L16.59,12Z"/>
+                            </svg>
+                            Stop
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            <div className={`flex-1 overflow-auto ${showRainfall && RainfallComponent ? 'flex flex-col lg:flex-row gap-4' : ''}`}>
+                {/* Charts Section */}
+                <div className={`${showRainfall && RainfallComponent ? 'flex-[2]' : 'w-full'} px-4 py-4 overflow-auto`}>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
+                        {/* Last chart is centered when total charts is odd */}
+                        {/* Render FfwcIndiaLineChart for each India station config */}
+                        {(() => {
+                            return safeIndiaStationConfigs.map((config, index) => {
+                            const chartId = `india-${config.stationCode}`;
+                            const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
+                            const isCentered = isOddChartCount && !safeBdStationConfigs.length && index === safeIndiaStationConfigs.length - 1;
+
+                            return (
+                                <div key={config.stationCode}
+                                     className={`w-full h-full ${isCentered ? centeredChartClass : ''} ${isAlerting ? 'animate-pulse' : ''}`}>
+                                    <FfwcIndiaLineChart
+                                        title={config.title || `Hydrograph view of ${config.name} (${config.stationCode})`}
+                                        titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য (${config.stationCode})`}
+                                        stationCode={config.stationCode}
+                                        stationName={config.name}
+                                        source={config.source}
+                                        paperColor={config.paper_bgcolor || "#fef9c3"}
+                                        chartId={chartId}
+                                        onThresholdCrossed={onThresholdCrossed}
+                                        refreshInterval={refreshInterval}
+                                    />
+                                 </div>
+                            );
+                        });
+                        })()}
+
+                        {/* Render FulgaziLineChart for each BD station config */}
+                        {safeBdStationConfigs.map((config, index) => {
+                            const chartData = bdStationDataMap[config.station_id] || [];
+                            const chartId = `bd-${config.station_id}`;
+                            const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
+                            const isCentered = isOddChartCount && index === safeBdStationConfigs.length - 1;
+
+                            return (
+                                <div key={config.station_id}
+                                     className={`w-full h-full ${isCentered ? centeredChartClass : ''} ${isAlerting ? 'animate-pulse' : ''}`}>
+                                    <FulgaziLineChart
+                                        chart_data={chartData}
+                                        title={config.title || `Hydrograph view of ${config.name}`}
+                                        titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য`}
+                                        danger={config.danger}
+                                        warning={config.warning}
+                                        hfl={config.hfl}
+                                        paperColor={config.paper_bgcolor || "#fef9c3"}
+                                        chartId={chartId}
+                                        onThresholdCrossed={onThresholdCrossed}
+                                        useDummyData={useDummyData}
+                                        isLoading={isBdDataLoading && chartData.length === 0}
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Rainfall Forecast Section */}
+                {showRainfall && RainfallComponent && (
+                    <div className="flex-[1] min-w-0 py-4 pr-4">
+                        <div className="h-full bg-white rounded-lg shadow-lg overflow-hidden">
+                            <RainfallComponent />
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default FulgaziMainChart;

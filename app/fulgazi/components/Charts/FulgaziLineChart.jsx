@@ -1,0 +1,283 @@
+"use client";
+
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import dynamic from "next/dynamic";
+import { convertToGMTPlus6 } from "@/utils/convertToUtc";
+import { DUMMY_BD_STATION_DATA } from './dummyBdStationData';
+import { useLanguage } from "@/app/context/LanguageContext";
+
+const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
+
+const FulgaziLineChart = ({
+    chart_data,
+    title,
+    titleBn, // Bangla title (optional)
+    hfl,
+    danger,
+    warning,
+    paperColor,
+    chartId = '',
+    onThresholdCrossed = null,
+    useDummyData = false,
+    isLoading = false
+}) => {
+    const { language } = useLanguage();
+
+    // Calculate initial height function
+    const calculateChartHeight = () => {
+        if (typeof window === 'undefined') return 400; // Default for SSR
+
+        const screenHeight = window.innerHeight;
+        const screenWidth = window.innerWidth;
+        const reservedSpace = 140;
+        const availableHeight = screenHeight - reservedSpace;
+
+        let desiredHeight;
+        if (screenWidth < 1024) {
+            desiredHeight = (availableHeight / 2) - 40;
+        } else {
+            desiredHeight = (availableHeight / 2) - 40;
+        }
+
+        const minHeight = 280;
+        const maxHeight = 550;
+        return Math.max(minHeight, Math.min(maxHeight, desiredHeight));
+    };
+
+    const [chartHeight, setChartHeight] = useState(calculateChartHeight);
+    const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
+    const [hasTriggeredWarning, setHasTriggeredWarning] = useState(false);
+    const [hasTriggeredDanger, setHasTriggeredDanger] = useState(false);
+    const [hasTriggeredHfl, setHasTriggeredHfl] = useState(false);
+
+    const updateChartHeight = () => {
+        setChartHeight(calculateChartHeight());
+        setIsMobile(window.innerWidth < 768);
+    };
+
+    // Determine which data to use: real API data or dummy data (memoized)
+    const dataToUse = useMemo(() => (useDummyData ? DUMMY_BD_STATION_DATA : (chart_data || [])), [useDummyData, chart_data]);
+
+    // Check if water level has crossed thresholds
+    const checkWaterLevelAlerts = useCallback((data) => {
+        if (!data || data.length === 0 || !warning) return;
+
+        // Sort data by time
+        const sortedData = [...data].sort((a, b) =>
+            new Date(a.datetime) - new Date(b.datetime)
+        );
+
+        // Count how many points are above each threshold
+        const warningLevel = parseFloat(warning);
+        const dangerLevel = parseFloat(danger);
+        const hflLevel = parseFloat(hfl);
+
+        const countAboveHfl = hfl ? sortedData.filter(d => d.value >= hflLevel).length : 0;
+        const countAboveDanger = danger ? sortedData.filter(d => d.value >= dangerLevel).length : 0;
+        const countAboveWarning = warning ? sortedData.filter(d => d.value >= warningLevel).length : 0;
+
+        const latestValue = sortedData[sortedData.length - 1]?.value;
+        console.log(`[${chartId}] Checking alerts - Latest: ${latestValue}, Above HFL: ${countAboveHfl}, Above Danger: ${countAboveDanger}, Above Warning: ${countAboveWarning}`);
+
+        // Only trigger if exactly 1 point crossed the threshold (first time crossing)
+        if (latestValue !== null && latestValue !== undefined) {
+            // Check HFL
+            if (hfl && countAboveHfl === 1 && latestValue >= hflLevel && !hasTriggeredHfl) {
+                console.log(`🔴 [${chartId}] HFL level crossed! Current: ${latestValue}, HFL: ${hflLevel}`);
+                setHasTriggeredHfl(true);
+                if (onThresholdCrossed && chartId) {
+                    onThresholdCrossed(chartId);
+                }
+            }
+            // Check Danger
+            else if (danger && countAboveDanger === 1 && latestValue >= dangerLevel && !hasTriggeredDanger && !hasTriggeredHfl) {
+                console.log(`🚨 [${chartId}] Danger level crossed! Current: ${latestValue}, Danger: ${dangerLevel}`);
+                setHasTriggeredDanger(true);
+                if (onThresholdCrossed && chartId) {
+                    onThresholdCrossed(chartId);
+                }
+            }
+            // Check Warning
+            else if (warning && countAboveWarning === 1 && latestValue >= warningLevel && !hasTriggeredWarning && !hasTriggeredDanger && !hasTriggeredHfl) {
+                console.log(`⚠️ [${chartId}] Warning level crossed! Current: ${latestValue}, Warning: ${warningLevel}`);
+                setHasTriggeredWarning(true);
+                if (onThresholdCrossed && chartId) {
+                    onThresholdCrossed(chartId);
+                }
+            }
+        }
+    }, [warning, danger, hfl, hasTriggeredWarning, hasTriggeredDanger, hasTriggeredHfl, chartId, onThresholdCrossed]);
+
+    useEffect(() => {
+        updateChartHeight();
+        window.addEventListener('resize', updateChartHeight);
+        return () => window.removeEventListener('resize', updateChartHeight);
+    }, []);
+
+    // Process and check alerts when data changes
+    useEffect(() => {
+        if (dataToUse && dataToUse.length > 0) {
+            const processedData = dataToUse
+                .filter(entry => (entry.value !== null && entry.value !== undefined))
+                .map(entry => ({
+                    datetime: entry.datetime,
+                    value: Number(entry.value)
+                }));
+            checkWaterLevelAlerts(processedData);
+        }
+    }, [dataToUse, checkWaterLevelAlerts]);
+
+    // Show loading state
+    if (isLoading) {
+        const displayTitle = language === 'bn' && titleBn ? titleBn : title;
+        return (
+            <div
+                className="w-full rounded-lg relative flex items-center justify-center border border-gray-200"
+                style={{ height: chartHeight + 'px', backgroundColor: paperColor }}
+            >
+                <div className="text-center p-4">
+                    <div className="w-12 h-12 mx-auto mb-3">
+                        <svg className="animate-spin text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                    <p className="text-gray-600 font-semibold">{language === 'bn' ? 'তথ্য লোড হচ্ছে...' : 'Loading Data...'}</p>
+                    <p className="text-gray-500 text-sm mt-1">{displayTitle}</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!dataToUse || dataToUse.length === 0) {
+        const displayTitle = language === 'bn' && titleBn ? titleBn : title;
+        return (
+            <div
+                className="w-full rounded-lg relative flex items-center justify-center border border-gray-200"
+                style={{ height: chartHeight + 'px', backgroundColor: paperColor }}
+            >
+                <div className="text-center p-4">
+                    <svg className="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    <p className="text-gray-600 font-semibold">{language === 'bn' ? 'তথ্য পাওয়া যায়নি' : 'No Data Available'}</p>
+                    <p className="text-gray-500 text-sm mt-1">{displayTitle}</p>
+                    <p className="text-gray-400 text-xs mt-2">{language === 'bn' ? 'পরে আবার চেষ্টা করুন' : 'Please try again later'}</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Process BD API data format for plotting
+    const processedData = dataToUse
+        .filter(entry => (entry.value !== null && entry.value !== undefined))
+        .map(entry => ({
+            datetime: convertToGMTPlus6(entry.datetime),
+            value: Number(entry.value)
+        }));
+
+    const charData = [
+        {
+            x: processedData.map(item => item.datetime),
+            y: processedData.map(item => item.value),
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Water Level',
+            line: { color: 'green', width: 2 },
+            marker: { size: 6, color: 'green' }
+        }
+    ];
+
+    // Add warning line if exists
+    if (warning) {
+        charData.push({
+            x: [processedData[0]?.datetime, processedData[processedData.length - 1]?.datetime],
+            y: [warning, warning],
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Warning Level',
+            line: { color: 'orange', width: 2, dash: 'dash' }
+        });
+    }
+
+    // Add danger line if exists
+    if (danger) {
+        charData.push({
+            x: [processedData[0]?.datetime, processedData[processedData.length - 1]?.datetime],
+            y: [danger, danger],
+            type: 'scatter',
+            mode: 'lines',
+            name: 'Danger Level',
+            line: { color: 'red', width: 2, dash: 'dash' }
+        });
+    }
+
+    // Add HFL line if exists
+    if (hfl) {
+        charData.push({
+            x: [processedData[0]?.datetime, processedData[processedData.length - 1]?.datetime],
+            y: [hfl, hfl],
+            type: 'scatter',
+            mode: 'lines',
+            name: 'HFL',
+            line: { color: 'darkred', width: 2, dash: 'dot' }
+        });
+    }
+
+    const layout = {
+        title: {
+            text: language === 'bn' && titleBn ? titleBn : title,
+            font: { size: isMobile ? 12 : 16, family: 'Arial, sans-serif' }
+        },
+        xaxis: {
+            title: isMobile ? '' : 'Date & Time',
+            type: 'date',
+            tickformat: '%d-%b %H:%M',
+            showgrid: true,
+            tickangle: isMobile ? -45 : 0,
+            automargin: true,
+            tickmode: 'auto',
+            nticks: isMobile ? 3 : 5
+        },
+        yaxis: {
+            title: isMobile ? 'Level (m)' : 'Water Level (m)',
+            showgrid: true,
+            automargin: true
+        },
+        paper_bgcolor: paperColor,
+        plot_bgcolor: '#ffffff',
+        margin: { l: isMobile ? 45 : 55, r: 15, t: isMobile ? 35 : 50, b: isMobile ? 75 : 60 },
+        height: chartHeight,
+        showlegend: true,
+        legend: {
+            orientation: 'h',
+            y: isMobile ? -0.32 : -0.45,
+            x: 0.5,
+            xanchor: 'center',
+            yanchor: 'top',
+            font: { size: isMobile ? 10 : 12 }
+        },
+        autosize: true
+    };
+
+    const config = {
+        responsive: true,
+        displayModeBar: false,
+        displaylogo: false,
+        useResizeHandler: true
+    };
+
+    return (
+        <div className="w-full border border-gray-200 rounded-lg overflow-hidden">
+            <Plot
+                data={charData}
+                layout={layout}
+                config={config}
+                style={{ width: '100%', height: '100%' }}
+                useResizeHandler={true}
+            />
+        </div>
+    );
+};
+
+export default FulgaziLineChart;
