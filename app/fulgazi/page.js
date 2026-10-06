@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { fetchTokenIfExpired } from "@/utils/jwtToken";
 import FulgaziMainChart from "./components/FulgaziMainChart";
 import RainFall from "./components/RainFall";
@@ -18,25 +18,45 @@ const INDIA_STATION_CONFIG = [
 ];
 
 const BD_STATION_CONFIG = [
+    // {
+    //     station_id: "5624",
+    //     name: "Comilla (SW110)",
+    //     title: "Hydrograph view of Comilla (SW110)",
+    //     titleBn: "কুমিল্লা (SW110) পানি সমতলের হাইড্রোগ্রাফ",
+    //     hfl: "12.57",
+    //     danger: "11.3",
+    //     warning: "10.00",
+    //     paper_bgcolor: "#e7d4f8",
+    // },
+    // {
+    //     station_id: "5802",
+    //     name: "(Downstream station of Comilla) Debidwar (SW114)",
+    //     title: "Hydrograph view of (Down stream of Comilla) Debidwar (SW114)",
+    //     titleBn: "কুমিল্লার ভাটির স্টেশন দেবিদ্বার (SW114) এর হাইড্রোগ্রাফ",
+    //     hfl: "9.36",
+    //     danger: "8.09",
+    //     warning: "7.00",
+    //     paper_bgcolor: "#fef9c3",
+    // },
     {
-        station_id: "5624",
-        name: "Comilla (SW110)",
-        title: "Hydrograph view of Comilla (SW110)",
-        titleBn: "কুমিল্লা (SW110) পানি সমতলের হাইড্রোগ্রাফ",
-        hfl: "12.57",
-        danger: "11.3",
-        warning: "10.00",
-        paper_bgcolor: "#e7d4f8",
+        station_id: "21",
+        source: "ffwc-bd", // "ffwc-bd" -> api.ffwc.gov.bd (FFWC station id), default -> swh.bwdb.gov.bd (series id)
+        name: "Parshuram",
+        title: "Hydrograph view of Parshuram",
+        titleBn: "পরশুরাম পানি সমতলের হাইড্রোগ্রাফ",
+        // hfl & danger are loaded from the FFWC station info API (rhwl / dl)
+        // warning: "11.55",
+        paper_bgcolor: "#dbeafe",
     },
     {
-        station_id: "5802",
-        name: "(Downstream station of Comilla) Debidwar (SW114)",
-        title: "Hydrograph view of (Down stream of Comilla) Debidwar (SW114)",
-        titleBn: "কুমিল্লার ভাটির স্টেশন দেবিদ্বার (SW114) এর হাইড্রোগ্রাফ",
-        hfl: "9.36",
-        danger: "8.09",
-        warning: "7.00",
-        paper_bgcolor: "#fef9c3",
+        station_id: "136",
+        source: "ffwc-bd", // "ffwc-bd" -> api.ffwc.gov.bd (FFWC station id), default -> swh.bwdb.gov.bd (series id)
+        name: "Suber Bazar",
+        title: "Hydrograph view of Suber Bazar",
+        titleBn: "সুবার বাজার পানি সমতলের হাইড্রোগ্রাফ",
+        // hfl & danger are loaded from the FFWC station info API (rhwl / dl)
+        // warning: "9.00",
+        paper_bgcolor: "#e7d4f8",
     }
 ]
 
@@ -45,6 +65,7 @@ const FulgaziPage = () => {
     const [stationConfig, setStationConfig] = useState(null);
     const [stationName, setStationName] = useState("");
     const [bdForecastData, setBdForecastData] = useState({});
+    const [bdStationInfo, setBdStationInfo] = useState({}); // station_id -> { danger, hfl } from FFWC station info API
     const [refreshInterval, setRefreshInterval] = useState(15); // Default 15 minutes
     const intervalRef = useRef(null);
 
@@ -77,7 +98,11 @@ const FulgaziPage = () => {
             // Fetch station data for all BD stations
             const fetchPromises = BD_STATION_CONFIG.map(async (config) => {
                 try {
-                    const response = await fetch(`/api/bd-station/${config.station_id}`, {
+                    const url = config.source === 'ffwc-bd'
+                        ? `/api/ffwc-bd-station/${config.station_id}`
+                        : `/api/bd-station/${config.station_id}`;
+
+                    const response = await fetch(url, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -93,7 +118,7 @@ const FulgaziPage = () => {
                         value: parseFloat(item.value)
                     }));
 
-                    return { station_id: config.station_id, data: transformedData };
+                    return { station_id: config.station_id, data: transformedData, station: result.station || null };
                 } catch (error) {
                     console.error(`Error fetching data for station ${config.station_id}:`, error);
                     return { station_id: config.station_id, data: [] };
@@ -104,15 +129,32 @@ const FulgaziPage = () => {
 
             // Convert array to object map
             const dataMap = {};
+            const infoMap = {};
             results.forEach(result => {
                 dataMap[result.station_id] = result.data;
+                if (result.station) {
+                    infoMap[result.station_id] = result.station;
+                }
             });
+
+            setBdStationInfo(prev => ({ ...prev, ...infoMap }));
 
             setBdForecastData(dataMap);
         } catch (error) {
             console.error('Error fetching BD station data:', error);
         }
     }
+
+    // Override danger/hfl with values from the FFWC station info API when available
+    const bdStationConfigs = useMemo(() => BD_STATION_CONFIG.map(config => {
+        const info = bdStationInfo[config.station_id];
+        if (!info) return config;
+        return {
+            ...config,
+            danger: info.danger != null ? String(info.danger) : config.danger,
+            hfl: info.hfl != null ? String(info.hfl) : config.hfl,
+        };
+    }), [bdStationInfo]);
 
     useEffect(() => {
         // Fetch data on component mount
@@ -169,7 +211,7 @@ const FulgaziPage = () => {
                 stationConfig={stationConfig}
                 stationName={stationName}
                 indiaStationConfigs={INDIA_STATION_CONFIG}
-                bdStationConfigs={BD_STATION_CONFIG}
+                bdStationConfigs={bdStationConfigs}
                 bdForecastData={bdForecastData}
                 useDummyData={false}
                 refreshInterval={refreshInterval}
