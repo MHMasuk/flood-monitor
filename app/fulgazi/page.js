@@ -9,7 +9,10 @@ import RainFall from "./components/RainFall";
 const INDIA_STATION_CONFIG = [
     {
         stationCode: "013-MDSIL",
-        source: "cwc", // "cwc" -> cwcdata.ffwc.gov.bd, "ffwc" (default) -> api.ffwc.gov.bd
+        // "cwc" -> cwcdata.ffwc.gov.bd (FFWC proxy of India CWC data)
+        // "ffs" -> ffs.india-water.gov.in (India CWC FFS directly; may be blocked outside India)
+        // "ffwc" (default) -> api.ffwc.gov.bd
+        source: "ffs",
         name: "(Upstream station of Fulgazi) Belonia",
         title: "Water Level Hydrograph Belonia (013-MDSIL)",
         titleBn: "বেলোনিয়া উজানের (013-MDSIL) স্টেশন পানি সমতলের হাইড্রোগ্রাফ",

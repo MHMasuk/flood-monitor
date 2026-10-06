@@ -9,7 +9,7 @@ const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 const FfwcIndiaLineChart = ({
     stationCode,
     stationName,
-    source = 'ffwc', // 'ffwc' or 'cwc' - which API to fetch water level data from
+    source = 'ffwc', // 'ffwc', 'cwc' or 'ffs' - which API to fetch water level data from
     paperColor = '#ffffff',
     chartId = '',
     title, // English title
@@ -129,7 +129,9 @@ const FfwcIndiaLineChart = ({
 
             const url = source === 'cwc'
                 ? `/api/cwc-station/${stationCode}`
-                : `/api/ffwc/${stationCode}/${formattedDate}`;
+                : source === 'ffs'
+                    ? `/api/ffs-station/${stationCode}`
+                    : `/api/ffwc/${stationCode}/${formattedDate}`;
 
             const response = await fetch(url);
             if (!response.ok) {
@@ -137,8 +139,8 @@ const FfwcIndiaLineChart = ({
             }
             let data = await response.json();
 
-            // Normalize CWC response to the FFWC shape ({ data_time, waterlevel })
-            if (source === 'cwc') {
+            // Normalize CWC / FFS response to the FFWC shape ({ data_time, waterlevel })
+            if (source === 'cwc' || source === 'ffs') {
                 data = (Array.isArray(data) ? data : []).map(item => ({
                     data_time: item.id?.dataTime,
                     waterlevel: item.dataValue
