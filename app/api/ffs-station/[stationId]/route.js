@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getFfsStationData } from "@/utils/getFfsStationData";
 
 export const dynamic = 'force-dynamic';
+// ffs.india-water.gov.in only accepts requests from India - always run this function in Vercel's Mumbai region
+export const preferredRegion = 'bom1';
 
 export async function GET(request, context) {
     const { params } = context;
