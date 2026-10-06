@@ -23,35 +23,12 @@ const FulgaziLineChart = ({
 }) => {
     const { language } = useLanguage();
 
-    // Calculate initial height function
-    const calculateChartHeight = () => {
-        if (typeof window === 'undefined') return 400; // Default for SSR
-
-        const screenHeight = window.innerHeight;
-        const screenWidth = window.innerWidth;
-        const reservedSpace = 140;
-        const availableHeight = screenHeight - reservedSpace;
-
-        let desiredHeight;
-        if (screenWidth < 1024) {
-            desiredHeight = (availableHeight / 2) - 40;
-        } else {
-            desiredHeight = (availableHeight / 2) - 40;
-        }
-
-        const minHeight = 280;
-        const maxHeight = 550;
-        return Math.max(minHeight, Math.min(maxHeight, desiredHeight));
-    };
-
-    const [chartHeight, setChartHeight] = useState(calculateChartHeight);
     const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
     const [hasTriggeredWarning, setHasTriggeredWarning] = useState(false);
     const [hasTriggeredDanger, setHasTriggeredDanger] = useState(false);
     const [hasTriggeredHfl, setHasTriggeredHfl] = useState(false);
 
     const updateChartHeight = () => {
-        setChartHeight(calculateChartHeight());
         setIsMobile(window.innerWidth < 768);
     };
 
@@ -132,8 +109,8 @@ const FulgaziLineChart = ({
         const displayTitle = language === 'bn' && titleBn ? titleBn : title;
         return (
             <div
-                className="w-full rounded-lg relative flex items-center justify-center border border-gray-200"
-                style={{ height: chartHeight + 'px', backgroundColor: paperColor }}
+                className="w-full h-full rounded-lg relative flex items-center justify-center border border-gray-200"
+                style={{ backgroundColor: paperColor }}
             >
                 <div className="text-center p-4">
                     <div className="w-12 h-12 mx-auto mb-3">
@@ -153,8 +130,8 @@ const FulgaziLineChart = ({
         const displayTitle = language === 'bn' && titleBn ? titleBn : title;
         return (
             <div
-                className="w-full rounded-lg relative flex items-center justify-center border border-gray-200"
-                style={{ height: chartHeight + 'px', backgroundColor: paperColor }}
+                className="w-full h-full rounded-lg relative flex items-center justify-center border border-gray-200"
+                style={{ backgroundColor: paperColor }}
             >
                 <div className="text-center p-4">
                     <svg className="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,7 +224,6 @@ const FulgaziLineChart = ({
         paper_bgcolor: paperColor,
         plot_bgcolor: '#ffffff',
         margin: { l: isMobile ? 45 : 55, r: 15, t: isMobile ? 35 : 50, b: isMobile ? 75 : 60 },
-        height: chartHeight,
         showlegend: true,
         legend: {
             orientation: 'h',
@@ -268,7 +244,10 @@ const FulgaziLineChart = ({
     };
 
     return (
-        <div className="w-full border border-gray-200 rounded-lg overflow-hidden">
+        <div
+            className="w-full h-full border border-gray-200 rounded-lg overflow-hidden"
+            style={{ backgroundColor: paperColor }}
+        >
             <Plot
                 data={charData}
                 layout={layout}

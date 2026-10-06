@@ -64,7 +64,7 @@ const FulgaziPage = () => {
     const [stationData, setStationData] = useState([]);
     const [stationConfig, setStationConfig] = useState(null);
     const [stationName, setStationName] = useState("");
-    const [bdForecastData, setBdForecastData] = useState({});
+    const [bdForecastData, setBdForecastData] = useState(null); // null = not loaded yet
     const [bdStationInfo, setBdStationInfo] = useState({}); // station_id -> { danger, hfl } from FFWC station info API
     const [refreshInterval, setRefreshInterval] = useState(15); // Default 15 minutes
     const intervalRef = useRef(null);
@@ -142,6 +142,7 @@ const FulgaziPage = () => {
             setBdForecastData(dataMap);
         } catch (error) {
             console.error('Error fetching BD station data:', error);
+            setBdForecastData(prev => prev ?? {}); // stop the loading state; charts show "no data"
         }
     }
 

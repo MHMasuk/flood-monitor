@@ -115,13 +115,13 @@ const FulgaziMainChart = (props) => {
             return;
         }
 
-        // Use forecast data from props if available
-        if (bdForecastData && Object.keys(bdForecastData).length > 0) {
-            setBdStationDataMap(bdForecastData);
-            setIsBdDataLoading(false);
-        } else {
-            setIsBdDataLoading(false);
+        // Keep showing the loading state until the API response has arrived
+        if (bdForecastData == null) {
+            return;
         }
+
+        setBdStationDataMap(bdForecastData);
+        setIsBdDataLoading(false);
     }, [safeBdStationConfigs, useDummyData, refreshInterval, bdForecastData]);
 
     // Fetch BD station data on mount and set up interval
@@ -227,7 +227,7 @@ const FulgaziMainChart = (props) => {
             <div className={`flex-1 overflow-auto ${showRainfall && RainfallComponent ? 'flex flex-col lg:flex-row gap-4' : ''}`}>
                 {/* Charts Section */}
                 <div className={`${showRainfall && RainfallComponent ? 'flex-[2]' : 'w-full'} px-4 py-4 overflow-auto`}>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 lg:auto-rows-fr gap-4 lg:h-full">
                         {/* Last chart is centered when total charts is odd */}
                         {/* Render FfwcIndiaLineChart for each India station config */}
                         {(() => {
@@ -238,7 +238,7 @@ const FulgaziMainChart = (props) => {
 
                             return (
                                 <div key={config.stationCode}
-                                     className={`w-full h-full ${isCentered ? centeredChartClass : ''} ${isAlerting ? 'animate-pulse' : ''}`}>
+                                     className={`w-full h-[320px] lg:h-full lg:min-h-0 ${isCentered ? centeredChartClass : ''} ${isAlerting ? 'animate-pulse' : ''}`}>
                                     <FfwcIndiaLineChart
                                         title={config.title || `Hydrograph view of ${config.name} (${config.stationCode})`}
                                         titleBn={config.titleBn || `${config.name} এর হাইড্রোগ্রাফ দৃশ্য (${config.stationCode})`}
@@ -264,7 +264,7 @@ const FulgaziMainChart = (props) => {
 
                             return (
                                 <div key={config.station_id}
-                                     className={`w-full h-full ${isCentered ? centeredChartClass : ''} ${isAlerting ? 'animate-pulse' : ''}`}>
+                                     className={`w-full h-[320px] lg:h-full lg:min-h-0 ${isCentered ? centeredChartClass : ''} ${isAlerting ? 'animate-pulse' : ''}`}>
                                     <FulgaziLineChart
                                         chart_data={chartData}
                                         title={config.title || `Hydrograph view of ${config.name}`}

@@ -17,7 +17,6 @@ const FfwcIndiaLineChart = ({
     onThresholdCrossed = null // Callback when threshold is crossed
 }) => {
     const { language } = useLanguage();
-    const [chartHeight, setChartHeight] = useState(400);
     const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
     const [chartData, setChartData] = useState([]);
     const [initialLoading, setInitialLoading] = useState(true);
@@ -80,20 +79,7 @@ const FfwcIndiaLineChart = ({
 
     // Function to update the chart height based on screen size
     const updateChartHeight = () => {
-        const screenHeight = window.innerHeight;
-        const screenWidth = window.innerWidth;
-
-        setIsMobile(screenWidth < 768);
-
-        const reservedSpace = 140;
-        const availableHeight = screenHeight - reservedSpace;
-
-        const desiredHeight = (availableHeight / 2) - 40;
-
-        const minHeight = 280;
-        const maxHeight = 550;
-
-        setChartHeight(Math.max(minHeight, Math.min(maxHeight, desiredHeight)));
+        setIsMobile(window.innerWidth < 768);
     };
 
     // Fetch station info from GeoJSON
@@ -280,7 +266,6 @@ const FfwcIndiaLineChart = ({
         paper_bgcolor: paperColor,
         plot_bgcolor: '#ffffff',
         margin: { l: isMobile ? 45 : 55, r: 15, t: isMobile ? 35 : 50, b: isMobile ? 75 : 60 },
-        height: chartHeight,
         showlegend: true,
         legend: {
             orientation: 'h',
@@ -297,8 +282,8 @@ const FfwcIndiaLineChart = ({
         const displayTitle = language === 'bn' && titleBn ? titleBn : (title || `Hydrograph view of ${stationName || stationInfo.name} (${stationCode})`);
         return (
             <div
-                className="w-full flex items-center justify-center border border-gray-200 rounded-lg"
-                style={{ height: chartHeight + 'px', backgroundColor: paperColor }}
+                className="w-full h-full flex items-center justify-center border border-gray-200 rounded-lg"
+                style={{ backgroundColor: paperColor }}
             >
                 <div className="text-center p-4">
                     <div className="w-12 h-12 mx-auto mb-3">
@@ -318,8 +303,7 @@ const FfwcIndiaLineChart = ({
         const displayTitle = language === 'bn' && titleBn ? titleBn : (title || `Hydrograph view of ${stationName || stationInfo.name} (${stationCode})`);
         return (
             <div
-                className="w-full flex items-center justify-center border border-red-200 bg-red-50 rounded-lg"
-                style={{ height: chartHeight + 'px' }}
+                className="w-full h-full flex items-center justify-center border border-red-200 bg-red-50 rounded-lg"
             >
                 <div className="text-center p-4">
                     <svg className="w-12 h-12 mx-auto text-red-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -337,8 +321,8 @@ const FfwcIndiaLineChart = ({
         const displayTitle = language === 'bn' && titleBn ? titleBn : (title || `Hydrograph view of ${stationName || stationInfo.name} (${stationCode})`);
         return (
             <div
-                className="w-full flex items-center justify-center border border-gray-200 rounded-lg"
-                style={{ height: chartHeight + 'px', backgroundColor: paperColor }}
+                className="w-full h-full flex items-center justify-center border border-gray-200 rounded-lg"
+                style={{ backgroundColor: paperColor }}
             >
                 <div className="text-center p-4">
                     <svg className="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -353,7 +337,10 @@ const FfwcIndiaLineChart = ({
     }
 
     return (
-        <div className="w-full border border-gray-200 rounded-lg overflow-hidden">
+        <div
+            className="w-full h-full border border-gray-200 rounded-lg overflow-hidden"
+            style={{ backgroundColor: paperColor }}
+        >
             <Plot
                 data={preparePlotData()}
                 layout={layout}
