@@ -10,9 +10,9 @@ export default function FulgaziLayout({children}) {
             <div className="h-screen flex flex-col overflow-hidden">
                 <FulgaziHeader/>
                 <main className="flex-1 overflow-hidden pt-16 pb-14">
-                    {/*<FulgaziHeader/>*/}
+                    {/* <FulgaziHeader/> */}
                         {children}
-                    {/*<FulgaziFooter/>*/}
+                    {/* <FulgaziFooter/> */}
                 </main>
                 <FulgaziFooter/>
             </div>
