@@ -1,6 +1,8 @@
 // File: utils/getFfsStationData.js
 // Fetches observed water level (HHS) directly from the India CWC Flood Forecasting System (ffs.india-water.gov.in).
 // Response has the same shape as cwcdata.ffwc.gov.bd: [{ id: { dataTime, stationCode, datatypeCode }, dataValue }]
+// Request format matches utils/getStationData.js (no custom headers, "btn" date range) - FFS returns HTTP 500 otherwise.
+import { getFormattedDate } from "@/utils/healper";
 
 function expression(fieldName, operator, value) {
     return { expression: { valueIsRelationField: false, fieldName, operator, value } };
@@ -9,17 +11,18 @@ function expression(fieldName, operator, value) {
 export async function getFfsStationData(stationId, days = 7) {
     const baseUrl = 'https://ffs.india-water.gov.in/iam/api/new-entry-data/specification/sorted';
 
-    const from = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString().replace('Z', '');
+    const from = getFormattedDate(new Date().setDate(new Date().getDate() - days));
+    const to = getFormattedDate(new Date());
 
+    // Same JSON structure that utils/getStationData.js actually sends (its duplicate "and" key drops the dataValue filter)
     const specification = {
         where: {
             where: {
                 where: expression('id.stationCode', 'eq', stationId),
                 and: expression('id.datatypeCode', 'eq', 'HHS'),
             },
-            and: expression('dataValue', 'null', 'false'),
+            and: expression('id.dataTime', 'btn', `${from},${to}`),
         },
-        and: expression('id.dataTime', 'gte', from),
     };
 
     const sortCriteria = {
@@ -32,11 +35,6 @@ export async function getFfsStationData(stationId, days = 7) {
     });
 
     const res = await fetch(`${baseUrl}?${queryParams.toString()}`, {
-        headers: {
-            'Accept': 'application/json',
-            'class-name': 'com.eptisa.dto.SimpleNewEntryDataDto',
-            'Referer': 'https://ffs.india-water.gov.in/',
-        },
         cache: 'no-store' // Disable caching to always get fresh data
     });
 
