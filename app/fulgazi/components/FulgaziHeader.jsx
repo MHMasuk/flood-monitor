@@ -21,7 +21,7 @@ const FulgaziHeader = () => {
                         data-tip="Click to enlarge QR code"
                     >
                         <Image
-                            src="/qr_code/flood_monitor_comilla.png"
+                            src="/qr_code/flood_monitor_fulgazi.png"
                             alt="QR Code – scan to visit Fulgazi flood monitor"
                             width={44}
                             height={44}
