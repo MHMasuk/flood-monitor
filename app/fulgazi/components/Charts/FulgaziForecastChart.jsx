@@ -170,12 +170,15 @@ const FulgaziForecastChart = ({
         xaxis: {
             title: isMobile ? '' : 'Forecast Date',
             type: 'date',
-            tickformat: '%-d. %b',
+            tickformat: '%d-%b %H:%M',
             showgrid: true,
             tickangle: isMobile ? -45 : 0,
             automargin: true,
-            tickmode: 'auto',
-            nticks: isMobile ? 5 : 15
+            // Fixed daily spacing (Plotly's auto ticks fall back to weekly over a 15-day range)
+            tickmode: 'linear',
+            tick0: dates[0],
+            // Step in whole days so about 4 dates are labelled without overlapping
+            dtick: Math.max(1, Math.ceil((dates.length - 1) / 4)) * 24 * 60 * 60 * 1000
         },
         yaxis: {
             title: isMobile ? 'm³/s' : 'Discharge (m³/s)',
