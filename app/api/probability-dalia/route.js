@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
+// Fetch the latest file list per request instead of prerendering it at build time
+export const dynamic = 'force-dynamic';
+
 const url = "https://flood-ffwc.rimes.int/others/teesta-tank-plts/";
 
 // Function to fetch the file list from the URL

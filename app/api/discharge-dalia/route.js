@@ -1,5 +1,8 @@
 import {NextResponse} from "next/server";
 
+// Fetch the latest file list per request instead of prerendering it at build time
+export const dynamic = 'force-dynamic';
+
 const url = "https://flood-ffwc.rimes.int/others/teesta-tank-plts/";
 
 // Function to fetch the file list from the URL
@@ -65,5 +68,6 @@ export async function GET() {
     let discharge_data = date
 
     // Send the data as a JSON response
-    return NextResponse.json(discharge_data);
+    // null when the file list could not be fetched (undefined is not JSON serializable)
+    return NextResponse.json(discharge_data ?? null);
 }
