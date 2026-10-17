@@ -4,12 +4,14 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import useSound from "use-sound";
 import FulgaziLineChart from "./Charts/FulgaziLineChart";
 import FfwcIndiaLineChart from "./Charts/FfwcIndiaLineChart";
+import FulgaziForecastChart from "./Charts/FulgaziForecastChart";
 import { DUMMY_BD_STATION_DATA } from "./Charts/dummyBdStationData";
 
 const FulgaziMainChart = (props) => {
     const {
         indiaStationConfigs,
         bdStationConfigs,
+        basinForecastConfigs,
         bdForecastData,
         useDummyData = false,
         refreshInterval = 15,
@@ -19,6 +21,7 @@ const FulgaziMainChart = (props) => {
     } = props;
     const safeBdStationConfigs = React.useMemo(() => bdStationConfigs || [], [bdStationConfigs]);
     const safeIndiaStationConfigs = React.useMemo(() => indiaStationConfigs || [], [indiaStationConfigs]);
+    const safeBasinForecastConfigs = React.useMemo(() => basinForecastConfigs || [], [basinForecastConfigs]);
 
     const [play, { stop }] = useSound("./mp3/loud_alarm.mp3");
     const [isSoundPlaying, setIsSoundPlaying] = useState(false);
@@ -180,7 +183,7 @@ const FulgaziMainChart = (props) => {
     }, []);
 
     // Center the last chart in its row when the total chart count is odd
-    const isOddChartCount = (safeIndiaStationConfigs.length + safeBdStationConfigs.length) % 2 === 1;
+    const isOddChartCount = (safeIndiaStationConfigs.length + safeBdStationConfigs.length + safeBasinForecastConfigs.length) % 2 === 1;
     const centeredChartClass = 'lg:col-span-2 lg:w-1/2 lg:mx-auto';
 
     // Show loading state if no configs
@@ -234,7 +237,7 @@ const FulgaziMainChart = (props) => {
                             return safeIndiaStationConfigs.map((config, index) => {
                             const chartId = `india-${config.stationCode}`;
                             const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
-                            const isCentered = isOddChartCount && !safeBdStationConfigs.length && index === safeIndiaStationConfigs.length - 1;
+                            const isCentered = isOddChartCount && !safeBdStationConfigs.length && !safeBasinForecastConfigs.length && index === safeIndiaStationConfigs.length - 1;
 
                             return (
                                 <div key={config.stationCode}
@@ -260,7 +263,7 @@ const FulgaziMainChart = (props) => {
                             const chartData = bdStationDataMap[config.station_id] || [];
                             const chartId = `bd-${config.station_id}`;
                             const isAlerting = alertedCharts.has(chartId) && isSoundPlaying;
-                            const isCentered = isOddChartCount && index === safeBdStationConfigs.length - 1;
+                            const isCentered = isOddChartCount && !safeBasinForecastConfigs.length && index === safeBdStationConfigs.length - 1;
 
                             return (
                                 <div key={config.station_id}
@@ -277,6 +280,25 @@ const FulgaziMainChart = (props) => {
                                         onThresholdCrossed={onThresholdCrossed}
                                         useDummyData={useDummyData}
                                         isLoading={isBdDataLoading && chartData.length === 0}
+                                    />
+                                </div>
+                            );
+                        })}
+
+                        {/* Render FulgaziForecastChart for each basin forecast config */}
+                        {safeBasinForecastConfigs.map((config, index) => {
+                            const isCentered = isOddChartCount && index === safeBasinForecastConfigs.length - 1;
+
+                            return (
+                                <div key={`forecast-${config.basin}`}
+                                     className={`w-full h-[320px] lg:h-full lg:min-h-0 ${isCentered ? centeredChartClass : ''}`}>
+                                    <FulgaziForecastChart
+                                        basin={config.basin}
+                                        title={config.title}
+                                        titleBn={config.titleBn}
+                                        dangerLevel={config.danger}
+                                        paperColor={config.paper_bgcolor || "#e0f2fe"}
+                                        refreshInterval={refreshInterval}
                                     />
                                 </div>
                             );

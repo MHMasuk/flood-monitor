@@ -63,6 +63,17 @@ const BD_STATION_CONFIG = [
     }
 ]
 
+// FFWC basin-wise discharge forecast (api.ffwc.gov.bd/data_load/basin-wise-forecast/<basin>/latest/)
+const BASIN_FORECAST_CONFIG = [
+    {
+        basin: "parshuram",
+        title: "Feni River Discharge Forecast (Parshuram)",
+        titleBn: "ফেনী নদীর প্রবাহ পূর্বাভাস (পরশুরাম)",
+        danger: "240", // fallback; the API metadata "dl" takes precedence
+        paper_bgcolor: "#e0f2fe",
+    }
+]
+
 const FulgaziPage = () => {
     const [stationData, setStationData] = useState([]);
     const [stationConfig, setStationConfig] = useState(null);
@@ -216,6 +227,7 @@ const FulgaziPage = () => {
                 stationName={stationName}
                 indiaStationConfigs={INDIA_STATION_CONFIG}
                 bdStationConfigs={bdStationConfigs}
+                basinForecastConfigs={BASIN_FORECAST_CONFIG}
                 bdForecastData={bdForecastData}
                 useDummyData={false}
                 refreshInterval={refreshInterval}
