@@ -15,7 +15,7 @@ const INDIA_STATION_CONFIG = [
         source: "ffs",
         name: "(Upstream station of Fulgazi) Belonia",
         title: "Water Level Hydrograph Belonia (013-MDSIL)",
-        titleBn: "বেলোনিয়া উজানের (013-MDSIL) স্টেশন পানি সমতলের হাইড্রোগ্রাফ",
+        titleBn: "বেলোনিয়া (013-MDSIL) উজানের স্টেশন পানি সমতলের হাইড্রোগ্রাফ",
         paper_bgcolor: "#fde2e4",
     }
 ];
