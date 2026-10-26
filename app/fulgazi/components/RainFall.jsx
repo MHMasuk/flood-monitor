@@ -6,7 +6,7 @@ const RainFall = () => {
             <iframe
                 src="https://instant.rimes.int/weather_map_teesta"
                 style={{width: "100%", height: "100%"}}
-                title="Weather Map Fulgazi"
+                title="Weather Map Fulgazi in flood monitor app."
                 className="rounded-lg shadow-lg"
             ></iframe>
         </div>
