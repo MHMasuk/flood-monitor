@@ -248,7 +248,7 @@ const FfwcIndiaLineChart = ({
     const layout = {
         title: {
             text: language === 'bn' && titleBn ? titleBn : (title || `Hydrograph view of ${stationName || stationInfo.name} (${stationCode})`),
-            font: { size: isMobile ? 12 : 16, family: 'Arial, sans-serif' }
+            font: { size: isMobile ? 11 : 12, family: 'Arial, sans-serif' }
         },
         xaxis: {
             title: isMobile ? '' : 'Date & Time',

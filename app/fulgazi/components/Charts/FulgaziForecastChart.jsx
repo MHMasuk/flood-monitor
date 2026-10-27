@@ -165,7 +165,7 @@ const FulgaziForecastChart = ({
     const layout = {
         title: {
             text: displayTitle,
-            font: { size: isMobile ? 11 : 14, family: 'Arial, sans-serif', color: '#1e40af' }
+            font: { size: isMobile ? 11 : 12, family: 'Arial, sans-serif', color: '#1e40af' }
         },
         xaxis: {
             title: isMobile ? '' : 'Forecast Date',
