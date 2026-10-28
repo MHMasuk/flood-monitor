@@ -227,9 +227,9 @@ const FulgaziMainChart = (props) => {
                 )}
             </div>
 
-            <div className={`flex-1 min-h-0 ${showRainfall && RainfallComponent ? 'flex flex-col lg:flex-row gap-4 p-4 2xl:gap-6 2xl:p-6 min-[2560px]:gap-10 min-[2560px]:p-10 overflow-auto lg:overflow-hidden' : 'overflow-auto'}`}>
-                {/* Charts Section */}
-                <div className={`${showRainfall && RainfallComponent ? 'shrink-0 lg:shrink lg:flex-[2] min-w-0 lg:min-h-0 lg:h-full' : 'w-full px-4 py-4'} overflow-auto`}>
+            <div className={`flex-1 min-h-0 ${showRainfall && RainfallComponent ? 'flex flex-col lg:flex-row p-4 2xl:p-6 min-[2560px]:p-10 overflow-auto lg:overflow-hidden' : 'overflow-auto'}`}>
+                {/* Charts Section: spacing to the map uses margins, since older TV browsers don't support flex gap */}
+                <div className={`${showRainfall && RainfallComponent ? 'shrink-0 lg:shrink lg:flex-[2] min-w-0 lg:min-h-0 lg:h-full mb-4 lg:mb-0 lg:mr-4 2xl:mr-6 min-[2560px]:mr-10' : 'w-full px-4 py-4'} overflow-auto`}>
                     <div className="grid grid-cols-1 lg:grid-cols-2 lg:auto-rows-fr gap-4 2xl:gap-6 min-[2560px]:gap-10 lg:h-full">
                         {/* Last chart is centered when total charts is odd */}
                         {/* Render FfwcIndiaLineChart for each India station config */}
