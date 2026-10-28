@@ -227,9 +227,9 @@ const FulgaziMainChart = (props) => {
                 )}
             </div>
 
-            <div className={`flex-1 min-h-0 overflow-auto ${showRainfall && RainfallComponent ? 'flex flex-col lg:flex-row gap-4 p-4' : ''}`}>
+            <div className={`flex-1 min-h-0 ${showRainfall && RainfallComponent ? 'flex flex-col lg:flex-row gap-4 p-4 overflow-auto lg:overflow-hidden' : 'overflow-auto'}`}>
                 {/* Charts Section */}
-                <div className={`${showRainfall && RainfallComponent ? 'lg:flex-[2] min-w-0 lg:min-h-0' : 'w-full px-4 py-4'} overflow-auto`}>
+                <div className={`${showRainfall && RainfallComponent ? 'shrink-0 lg:shrink lg:flex-[2] min-w-0 lg:min-h-0 lg:h-full' : 'w-full px-4 py-4'} overflow-auto`}>
                     <div className="grid grid-cols-1 lg:grid-cols-2 lg:auto-rows-fr gap-4 lg:h-full">
                         {/* Last chart is centered when total charts is odd */}
                         {/* Render FfwcIndiaLineChart for each India station config */}
@@ -306,9 +306,9 @@ const FulgaziMainChart = (props) => {
                     </div>
                 </div>
 
-                {/* Rainfall Forecast Section */}
+                {/* Rainfall Forecast Section: below lg, height = viewport minus fixed header (4rem), footer (3.5rem) and padding (2rem) */}
                 {showRainfall && RainfallComponent && (
-                    <div className="lg:flex-[1] min-w-0 h-[480px] sm:h-[560px] lg:h-auto bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div className="shrink-0 lg:shrink lg:flex-[1] min-w-0 h-[calc(100dvh-9.5rem)] min-h-[400px] lg:min-h-0 lg:h-full bg-white rounded-lg shadow-lg overflow-hidden">
                         <RainfallComponent />
                     </div>
                 )}
