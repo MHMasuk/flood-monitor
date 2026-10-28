@@ -2,12 +2,11 @@ import React from "react";
 
 const RainFall = () => {
     return (
-        <div className="h-full flex justify-center items-center p-4">
+        <div className="w-full h-full">
             <iframe
                 src="https://instant.rimes.int/weather_map_teesta"
-                style={{width: "100%", height: "100%"}}
                 title="Weather Map Fulgazi in flood monitor app."
-                className="rounded-lg shadow-lg"
+                className="block w-full h-full border-0"
             ></iframe>
         </div>
     )
