@@ -4,10 +4,11 @@ import {NextResponse} from "next/server";
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-
-    // Call the function to get Domohoni station data
-    const data = await getDomohoniStationData();
-
-    // Send the data as a JSON response
-    return NextResponse.json(data);
+    try {
+        const data = await getDomohoniStationData();
+        return NextResponse.json(data);
+    } catch (error) {
+        console.error('domohoni route error:', error);
+        return NextResponse.json({error: error.message}, {status: 502});
+    }
 }

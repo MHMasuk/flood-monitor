@@ -26,3 +26,13 @@ export async function getCwcStationData(stationId = '022-LBDJPG') {
 
     return res.json();
 }
+
+// Water-level (HHS) series for a CWC station, sorted by time ascending.
+export async function getCwcHhsSeries(stationId) {
+    const data = await getCwcStationData(stationId);
+    if (!Array.isArray(data)) return [];
+
+    return data
+        .filter((entry) => entry?.id?.datatypeCode === 'HHS' && entry?.dataValue != null)
+        .sort((a, b) => a.id.dataTime.localeCompare(b.id.dataTime));
+}
