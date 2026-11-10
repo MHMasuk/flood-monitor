@@ -7,13 +7,43 @@ import DaliaChartDemo from "@/app/components/Chart/DaliaChatDemo";
 import DoaniaChart from "@/app/components/Chart/DoaniaChart";
 import ProductChart from "@/app/components/Chart/ProductChart";
 
+// Per-station placeholder: spinner while loading, error message if the
+// request failed, or a "no data" note if it succeeded with an empty result.
+const StationFallback = ({ name, status, onRetry }) => {
+    const { loading = true, error = null } = status || {};
+
+    return (
+        <div className="w-full h-full min-h-64 flex flex-col items-center justify-center gap-2 border border-gray-200 bg-white p-4 text-center">
+            {loading ? (
+                <>
+                    <span className="loading loading-spinner loading-md"></span>
+                    <p className="text-gray-500">Loading data for {name}...</p>
+                </>
+            ) : error ? (
+                <>
+                    <p className="text-red-600 font-medium">Failed to load data for {name}</p>
+                    {onRetry && (
+                        <button className="btn btn-sm btn-outline mt-1" onClick={onRetry}>
+                            Retry
+                        </button>
+                    )}
+                </>
+            ) : (
+                <p className="text-gray-500">No data available for {name}</p>
+            )}
+        </div>
+    );
+};
+
 const MainChartNew = (props) => {
     const {
         mikliGongStationData,
         daliaStationData,
         doaniaStationData,
         domohoniWaterLevelData,
-        productData
+        productData,
+        stationStatus = {},
+        onRetry
     } = props;
 
     // Add null checks and default to empty arrays
@@ -154,19 +184,6 @@ const MainChartNew = (props) => {
         setDaliaAnimation(false);
     };
 
-    // Show loading state if critical data is not available
-    if (!safeMikliGongData.length && !safeDomohoniData.length &&
-        !safeDaliaData.length && !safeDoaniaData.length) {
-        return (
-            <div className="w-full mx-5 flex items-center justify-center h-64">
-                <div className="text-center bg-white p-8 rounded-lg border border-gray-200">
-                    <div className="loading loading-spinner loading-lg"></div>
-                    <p className="mt-4 text-gray-600">Loading chart data...</p>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="w-full p-3 lg:h-full relative">
             <div className="fixed z-50 right-0 top-1/2 -translate-y-1/2">
@@ -191,9 +208,11 @@ const MainChartNew = (props) => {
                             paperColor="#fee2e2"
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center border border-gray-200 bg-white">
-                            <p className="text-gray-500">No data available for Mekhliganj</p>
-                        </div>
+                        <StationFallback
+                            name="Mekhliganj"
+                            status={stationStatus.mikliGong}
+                            onRetry={onRetry ? () => onRetry("mikliGong") : undefined}
+                        />
                     )}
                 </div>
 
@@ -208,9 +227,11 @@ const MainChartNew = (props) => {
                             paperColor='#ffedd5'
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center border border-gray-200 bg-white">
-                            <p className="text-gray-500">No data available for Domohani</p>
-                        </div>
+                        <StationFallback
+                            name="Domohani"
+                            status={stationStatus.domohoni}
+                            onRetry={onRetry ? () => onRetry("domohoni") : undefined}
+                        />
                     )}
                 </div>
 
@@ -225,9 +246,11 @@ const MainChartNew = (props) => {
                             paperColor="#fef9c3"
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center border border-gray-200 bg-white">
-                            <p className="text-gray-500">No data available for Dalia</p>
-                        </div>
+                        <StationFallback
+                            name="Dalia"
+                            status={stationStatus.dalia}
+                            onRetry={onRetry ? () => onRetry("dalia") : undefined}
+                        />
                     )}
                 </div>
 
@@ -242,9 +265,11 @@ const MainChartNew = (props) => {
                             paperColor='#ecfccb'
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center border border-gray-200 bg-white">
-                            <p className="text-gray-500">No data available for Doani</p>
-                        </div>
+                        <StationFallback
+                            name="Doani"
+                            status={stationStatus.doania}
+                            onRetry={onRetry ? () => onRetry("doania") : undefined}
+                        />
                     )}
                 </div>
             </div>

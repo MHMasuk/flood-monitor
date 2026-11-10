@@ -1,98 +1,86 @@
 "use client";
 
-// api call
 import MainChartNew from "@/app/components/Chart/mainChartNew";
-
-import React, {useEffect, useRef, useState} from "react";
-
+import React, {useCallback, useEffect, useState} from "react";
 import {fetchTokenIfExpired} from "@/utils/jwtToken";
 
+const REFRESH_INTERVAL = 15 * 60 * 1000;
+const REQUEST_TIMEOUT = 30 * 1000;
+
+const initialStation = {data: [], loading: true, error: null};
+
+// Each station is fetched independently so one failing/slow station
+// never blocks the others from rendering.
+const STATIONS = {
+    mikliGong: {url: '/api/mikligong', auth: false},
+    domohoni: {url: '/api/domohoni', auth: false},
+    doania: {url: '/api/doani', auth: true},
+    dalia: {url: '/api/dalia', auth: true},
+};
+
+async function fetchStation({url, auth}) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+    try {
+        const headers = {'Content-Type': 'application/json'};
+        if (auth) {
+            const token = await fetchTokenIfExpired();
+            if (!token) throw new Error('Authentication failed');
+            headers['Custom-Token'] = token;
+        }
+
+        const response = await fetch(url, {headers, signal: controller.signal});
+        if (!response.ok) throw new Error(`Server responded with ${response.status}`);
+
+        const json = await response.json();
+        const data = auth ? json?.data : json;
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        if (error.name === 'AbortError') throw new Error('Request timed out');
+        throw error;
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
 export default function Home() {
-    const [mikliGongStationData, setMikliGongStationData] = useState([]);
-    const [domohoniWaterLevelData, setDomohoniWaterLevelData] = useState([]);
-    const [daliaStationData, setDaliaStationData] = useState([]);
-    const [doaniaStationData, setDoaniaStationData] = useState([]);
-    const [loading, setLoading] = useState(true); // Add loading state
+    const [stations, setStations] = useState(() =>
+        Object.fromEntries(Object.keys(STATIONS).map((key) => [key, initialStation]))
+    );
 
-    const intervalRef = useRef(null); // Create a ref to hold the interval ID
-
-    async function fetchData(url, setData) {
+    const loadStation = useCallback(async (key) => {
+        setStations((prev) => ({...prev, [key]: {...prev[key], loading: true}}));
         try {
-            const response = await fetch(url);
-            const data = await response.json();
-            setData(data);
+            const data = await fetchStation(STATIONS[key]);
+            setStations((prev) => ({...prev, [key]: {data, loading: false, error: null}}));
         } catch (error) {
-            console.error(`Error fetching data from ${url}:`, error);
-            // Set error state here
+            console.error(`Error fetching ${key} data:`, error);
+            // Keep previously loaded data (if any) but surface the error
+            setStations((prev) => ({
+                ...prev,
+                [key]: {...prev[key], loading: false, error: error.message || 'Failed to load data'},
+            }));
         }
-    }
-
-    async function fetchNewData(url, setData) {
-        try {
-            const tokenData = await fetchTokenIfExpired();
-
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Custom-Token': `${tokenData}`,
-                },
-            });
-            const data = await response.json();
-            setData(data.data);
-        } catch (error) {
-            console.error(`Error fetching data from ${url}:`, error);
-            setData([]);
-        }
-    }
+    }, []);
 
     useEffect(() => {
-        // Fetch data on component mount
-        fetchData('/api/mikligong', setMikliGongStationData);
-        fetchData('/api/domohoni', setDomohoniWaterLevelData);
-        fetchNewData('/api/doani', setDoaniaStationData);
-        fetchNewData('/api/dalia', setDaliaStationData);
-
-        // Set up interval to fetch data every 15 minutes
-        intervalRef.current = setInterval(() => {
-            fetchData('/api/mikligong', setMikliGongStationData);
-            fetchData('/api/domohoni', setDomohoniWaterLevelData);
-            fetchNewData('/api/doani', setDoaniaStationData);
-            fetchNewData('/api/dalia', setDaliaStationData);
-        }, 15 * 60 * 1000);
-
-        // Cleanup interval on component unmount
-        return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-        };
-    }, []);
+        const loadAll = () => Object.keys(STATIONS).forEach(loadStation);
+        loadAll();
+        const interval = setInterval(loadAll, REFRESH_INTERVAL);
+        return () => clearInterval(interval);
+    }, [loadStation]);
 
     return (
         <main className="flex justify-center pt-16 pb-12 lg:h-screen lg:overflow-hidden">
-            {/*{(mikliGongStationData?.length > 0) ? (*/}
-            {/*    <MainChartNew*/}
-            {/*        mikliGongStationData={mikliGongStationData || []}*/}
-            {/*        domohoniWaterLevelData={domohoniWaterLevelData || []}*/}
-            {/*        daliaStationData={daliaStationData || []}*/}
-            {/*        doaniaStationData={doaniaStationData || []}*/}
-            {/*    />*/}
-            {/*) : (*/}
-            {/*    // Loading state*/}
-            {/*    <div className="bg-white p-8 rounded-lg border border-gray-200 shadow-lg text-center">*/}
-            {/*        <div className="loading loading-spinner loading-lg mb-4"></div>*/}
-            {/*        <p className="text-gray-600 text-lg">Loading chart data...</p>*/}
-            {/*        <p className="text-gray-400 text-sm mt-2">Please wait while we fetch the latest data</p>*/}
-            {/*    </div>*/}
-            {/*)}*/}
-
             <MainChartNew
-                mikliGongStationData={mikliGongStationData || []}
-                domohoniWaterLevelData={domohoniWaterLevelData || []}
-                daliaStationData={daliaStationData || []}
-                doaniaStationData={doaniaStationData || []}
+                mikliGongStationData={stations.mikliGong.data}
+                domohoniWaterLevelData={stations.domohoni.data}
+                daliaStationData={stations.dalia.data}
+                doaniaStationData={stations.doania.data}
+                stationStatus={stations}
+                onRetry={loadStation}
             />
         </main>
-    )
+    );
 }
