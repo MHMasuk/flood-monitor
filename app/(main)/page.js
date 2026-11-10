@@ -9,33 +9,46 @@ const REQUEST_TIMEOUT = 30 * 1000;
 
 const initialStation = {data: [], loading: true, error: null};
 
+// CWC data is fetched directly from the browser: cwcdata.ffwc.gov.bd sits behind
+// Cloudflare, which blocks requests from Vercel's servers (HTTP 403 challenge),
+// but allows browser requests and sends `Access-Control-Allow-Origin: *`.
+const CWC_URL = 'https://cwcdata.ffwc.gov.bd/cwcdata/st_data.php?st_id=';
+
+// Keep only water-level (HHS) readings, sorted by time ascending.
+const toHhsSeries = (data) =>
+    data
+        .filter((entry) => entry?.id?.datatypeCode === 'HHS' && entry?.dataValue != null)
+        .sort((a, b) => a.id.dataTime.localeCompare(b.id.dataTime));
+
 // Each station is fetched independently so one failing/slow station
 // never blocks the others from rendering.
 const STATIONS = {
-    mikliGong: {url: '/api/cwc/mikligong', auth: false},
-    domohoni: {url: '/api/cwc/domohoni', auth: false},
+    mikliGong: {url: `${CWC_URL}023-LBDJPG`, auth: false, transform: toHhsSeries},
+    domohoni: {url: `${CWC_URL}022-LBDJPG`, auth: false, transform: toHhsSeries},
     doania: {url: '/api/doani', auth: true},
     dalia: {url: '/api/dalia', auth: true},
 };
 
-async function fetchStation({url, auth}) {
+async function fetchStation({url, auth, transform}) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
 
     try {
-        const headers = {'Content-Type': 'application/json'};
+        const headers = {};
         if (auth) {
             const token = await fetchTokenIfExpired();
             if (!token) throw new Error('Authentication failed');
+            headers['Content-Type'] = 'application/json';
             headers['Custom-Token'] = token;
         }
 
-        const response = await fetch(url, {headers, signal: controller.signal});
+        const response = await fetch(url, {headers, signal: controller.signal, cache: 'no-store'});
         if (!response.ok) throw new Error(`Server responded with ${response.status}`);
 
         const json = await response.json();
         const data = auth ? json?.data : json;
-        return Array.isArray(data) ? data : [];
+        if (!Array.isArray(data)) return [];
+        return transform ? transform(data) : data;
     } catch (error) {
         if (error.name === 'AbortError') throw new Error('Request timed out');
         throw error;
