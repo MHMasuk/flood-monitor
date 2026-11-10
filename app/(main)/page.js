@@ -12,8 +12,8 @@ const initialStation = {data: [], loading: true, error: null};
 // Each station is fetched independently so one failing/slow station
 // never blocks the others from rendering.
 const STATIONS = {
-    mikliGong: {url: '/api/mikligong', auth: false},
-    domohoni: {url: '/api/domohoni', auth: false},
+    mikliGong: {url: '/api/cwc/mikligong', auth: false},
+    domohoni: {url: '/api/cwc/domohoni', auth: false},
     doania: {url: '/api/doani', auth: true},
     dalia: {url: '/api/dalia', auth: true},
 };
